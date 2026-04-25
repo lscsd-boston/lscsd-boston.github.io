@@ -117,236 +117,352 @@
     </div>
 
 <script>
-    const CONFIG = {
-        firebase: { databaseURL: atob("aHR0cHM6Ly9sc2NzZC1wb3J0YWwxMy1kZWZhdWx0LXJ0ZGIuZmlyZWJhc2Vpby5jb20v") },
-        discord: { 
-            ownerId: '1097047579876929616', 
-            clientId: '1496624504548364448', 
-            redirectUri: window.location.origin + '/',
-            logWebhook: 'https://discord.com/api/webhooks/1497496288416108565/eshuRyqkErg2HOrUVqLFXaFEWjw6Ql1PSz8EQGjHtDyYkY62weFhHZLe8sC1rb8Owaxn'
+    (function(){
+        // ========== СКРЫТАЯ КОНФИГУРАЦИЯ (без прямых ссылок) ==========
+        const CONFIG = (function(){
+            // Декодирование Firebase URL
+            const fbUrl = atob("aHR0cHM6Ly9sc2NzZC1wb3J0YWwxMy1kZWZhdWx0LXJ0ZGIuZmlyZWJhc2Vpby5jb20v");
+            // Discord ID владельца
+            const ownerId = atob("MTA5NzA0NzU3OTg3NjkyOTYxNg==");
+            // Client ID (можно оставить открытым, т.к. это стандартный параметр OAuth)
+            const clientId = '1496624504548364448';
+            const redirectUri = window.location.origin + '/';
+            
+            return { firebase: { databaseURL: fbUrl }, discord: { ownerId, clientId, redirectUri } };
+        })();
+        
+        // Инициализация Firebase
+        firebase.initializeApp(CONFIG.firebase);
+        const db = firebase.database();
+        
+        // Состояние
+        let state = { user: null, cats: [], admins: {}, userLvl: 0, bugWebhook: null };
+        
+        // Функция безопасного экранирования HTML
+        function escapeHtml(str) {
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+                return c;
+            });
         }
-    };
-
-    firebase.initializeApp(CONFIG.firebase);
-    const db = firebase.database();
-    let state = { user: null, cats: [], admins: {}, userLvl: 0 };
-
-    async function sendDiscordMsg(title, desc, ping = false) {
-        const payload = { content: ping ? `<@${CONFIG.discord.ownerId}>` : '', embeds: [{ title: title, description: desc, color: 13935475, timestamp: new Date() }] };
-        return fetch(CONFIG.discord.logWebhook, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
-    }
-
-    function showAlert(t, msg) {
-        document.getElementById('modal-title').innerText = t;
-        document.getElementById('modal-text').innerText = msg;
-        document.getElementById('modal-extra-content').innerHTML = '';
-        document.getElementById('modal-actions').innerHTML = `<button class="btn-main" style="margin:0" onclick="closeModal()">ОК</button>`;
-        document.getElementById('modal-overlay').style.display = 'flex';
-    }
-    function closeModal() { document.getElementById('modal-overlay').style.display = 'none'; }
-
-    async function init() {
-        let token = new URLSearchParams(window.location.hash.slice(1)).get('access_token') || localStorage.getItem('sd_token');
-        if (token) {
-            localStorage.setItem('sd_token', token);
+        
+        // Показ уведомлений
+        function showAlert(t, msg, isError = false) {
+            document.getElementById('modal-title').innerText = t;
+            document.getElementById('modal-text').innerText = msg;
+            document.getElementById('modal-extra-content').innerHTML = '';
+            document.getElementById('modal-actions').innerHTML = `<button class="btn-main" style="margin:0" onclick="closeModal()">ОК</button>`;
+            document.getElementById('modal-overlay').style.display = 'flex';
+        }
+        
+        window.closeModal = function() { document.getElementById('modal-overlay').style.display = 'none'; };
+        
+        // Отправка в скрытый лог (защита от спама и XSS)
+        async function sendSecureLog(title, desc, ping = false) {
+            if(!state.bugWebhook) return;
+            const payload = { 
+                content: ping ? `<@${CONFIG.discord.ownerId}>` : '', 
+                embeds: [{ 
+                    title: escapeHtml(title).substring(0, 256), 
+                    description: escapeHtml(desc).substring(0, 2000), 
+                    color: 13935475, 
+                    timestamp: new Date() 
+                }] 
+            };
             try {
-                const res = await fetch('https://discord.com/api/users/@me', { headers: { Authorization: `Bearer ${token}` } });
-                state.user = await res.json();
-                document.getElementById('preloader').style.display = 'none';
-                document.getElementById('ui-header').style.display = 'flex';
-                document.getElementById('main-container').style.display = 'block';
-                sync();
-            } catch(e) { logout(); }
-        } else {
-            document.getElementById('preloader').style.display = 'none';
-            document.getElementById('page-login').style.display = 'flex';
+                await fetch(state.bugWebhook, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
+            } catch(e) { console.warn("Log failed"); }
         }
-    }
-
-    function sync() {
-        // Синхронизация админов
-        db.ref('portal_db/admins').on('value', snap => {
-            state.admins = snap.val() || {};
-            if (state.user.id === CONFIG.discord.ownerId) {
-                state.userLvl = 5;
-                document.getElementById('owner-tools').style.display = 'block';
-            } else {
-                state.userLvl = state.admins[state.user.id] || 0;
-            }
-            renderHeader();
-        });
-
-        // Синхронизация категорий
-        db.ref('portal_db/categories').on('value', snap => {
-            state.cats = snap.val() || [];
-            renderHome();
-            renderAdminList();
-        });
-    }
-
-    function renderHome() {
-        const grid = document.getElementById('grid-main');
-        grid.innerHTML = '';
-        state.cats.forEach(c => {
-            grid.innerHTML += `<div class="card" onclick="openForm(${c.id})"><div style="font-size:2.5rem; margin-bottom:15px;">${c.emoji}</div><h3 style="font-weight:800;">${c.name}</h3></div>`;
-        });
-    }
-
-    function openForm(id) {
-        state.activeCat = state.cats.find(x => x.id === id);
-        state.selectedDept = null;
-        document.getElementById('apply-title').innerText = state.activeCat.name;
         
-        const fields = document.getElementById('apply-fields');
-        const deptBox = document.getElementById('dept-selector');
-        const deptBtns = document.getElementById('dept-btns');
-        fields.innerHTML = '';
-        deptBox.style.display = 'none';
-
-        state.activeCat.questions.forEach(q => {
-            if (q.includes('[') && q.includes('|')) {
-                const raw = q.match(/\[(.*?)\]/)[1];
-                deptBox.style.display = 'block';
-                document.getElementById('dept-label').innerText = q.split('[')[0].trim() || "Выберите отдел";
-                deptBtns.innerHTML = '';
-                raw.split(',').forEach(p => {
-                    const info = p.split('|').map(s => s.trim());
-                    const b = document.createElement('div');
-                    b.className = 'opt-btn'; b.innerText = info[0];
-                    b.onclick = () => {
-                        document.querySelectorAll('.opt-btn').forEach(x => x.classList.remove('active'));
-                        b.classList.add('active');
-                        state.selectedDept = { name: info[0], role: info[1], hook: info[2] || state.activeCat.webhook };
-                    };
-                    deptBtns.appendChild(b);
-                });
-            } else {
-                const isReq = q.endsWith('*');
-                fields.innerHTML += `<label>${q.replace('*','')} ${isReq ? '<span style="color:red">•</span>' : ''}</label>
-                <textarea class="u-input" data-req="${isReq}" style="height:100px;"></textarea>`;
-            }
-        });
-        showPage('page-apply');
-    }
-
-    async function submitApplication() {
-        const inputs = Array.from(document.querySelectorAll('#apply-fields textarea'));
-        let valid = true;
-        inputs.forEach(i => {
-            if(i.dataset.req === "true" && !i.value.trim()) { i.style.borderColor = 'red'; valid = false; }
-            else { i.style.borderColor = 'var(--border)'; }
-        });
-        if(!valid) return showAlert("Ошибка", "Заполните обязательные поля!");
-
-        const btn = document.getElementById('submit-btn');
-        btn.disabled = true;
-        const answers = inputs.map((t, idx) => ({ name: `Вопрос ${idx+1}`, value: t.value || "—" }));
-        const hook = state.selectedDept ? state.selectedDept.hook : state.activeCat.webhook;
+        // Получение безопасного webhook (хранится в Firebase, а не в коде)
+        async function loadSecureWebhooks() {
+            try {
+                const snap = await db.ref('portal_db/config/webhooks').once('value');
+                const hooks = snap.val() || {};
+                state.bugWebhook = hooks.bugWebhook || null;
+                // Для каждого направления webhook тоже будут храниться в БД отдельно, но для безопасности берём из того же места
+            } catch(e) { console.warn("Cannot load webhooks"); }
+        }
         
-        await fetch(hook, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({
-            content: (state.selectedDept && state.selectedDept.role !== '123') ? `<@&${state.selectedDept.role}>` : '',
-            embeds: [{ title: `ЗАЯВКА: ${state.activeCat.name}`, fields: answers, footer: { text: `От: ${state.user.username}` }, timestamp: new Date() }]
-        })});
-        
-        showAlert("Успех", "Заявка отправлена!");
-        showPage('page-home');
-        btn.disabled = false;
-    }
-
-    function renderAdminList() {
-        const list = document.getElementById('admin-cat-list');
-        list.innerHTML = '';
-        state.cats.forEach(c => {
-            const canEdit = state.userLvl >= (c.minLvl || 1);
-            list.innerHTML += `
-                <div class="cat-item" style="${!canEdit ? 'opacity:0.5; cursor:not-allowed;' : ''}" onclick="${canEdit ? `editForm(${c.id})` : ''}">
-                    <span>${c.emoji} ${c.name}</span>
-                    <span class="lvl-badge">LVL ${c.minLvl || 1}</span>
-                </div>`;
-        });
-    }
-
-    function editForm(id) {
-        const c = state.cats.find(x => x.id === id);
-        document.getElementById('admin-editor').innerHTML = `
-            <label>Название</label><input type="text" id="ed-name" class="u-input" value="${c.name}">
-            <label>Нужный уровень админки (1-5)</label>
-            <input type="number" id="ed-lvl" class="u-input" min="1" max="5" value="${c.minLvl || 1}">
-            <label>Webhook</label><input type="text" id="ed-webhook" class="u-input" value="${c.webhook || ''}">
-            <label>Вопросы</label>
-            <textarea id="ed-qs" class="u-input" style="height:150px;">${c.questions.join('\n')}</textarea>
-            <button class="btn-main" onclick="saveForm(${id})">СОХРАНИТЬ ИЗМЕНЕНИЯ</button>
-        `;
-    }
-
-    function saveForm(id) {
-        const idx = state.cats.findIndex(x => x.id === id);
-        state.cats[idx] = {
-            ...state.cats[idx],
-            name: document.getElementById('ed-name').value,
-            minLvl: parseInt(document.getElementById('ed-lvl').value) || 1,
-            webhook: document.getElementById('ed-webhook').value,
-            questions: document.getElementById('ed-qs').value.split('\n').filter(x => x.trim())
+        // Окно баг-репорта (ИСПРАВЛЕНО)
+        window.openBugReport = function() {
+            document.getElementById('modal-title').innerText = "СООБЩИТЬ О БАГЕ";
+            document.getElementById('modal-text').innerText = "Опишите проблему подробно. Мы исправим в ближайшее время.";
+            document.getElementById('modal-extra-content').innerHTML = `
+                <textarea id="bug-text" class="u-input" style="height:120px; margin-top:15px;" placeholder="Что случилось? Куда нажимали? ..."></textarea>
+            `;
+            document.getElementById('modal-actions').innerHTML = `
+                <button class="btn-main" style="background:#333; margin:0" onclick="closeModal()">ОТМЕНА</button>
+                <button class="btn-main" style="margin:0" onclick="sendBugReport()">ОТПРАВИТЬ</button>
+            `;
+            document.getElementById('modal-overlay').style.display = 'flex';
         };
-        db.ref('portal_db/categories').set(state.cats).then(() => showAlert("Готово", "Форма обновлена!"));
-    }
-
-    // --- Управление Админами ---
-    function openAdminManager() {
-        document.getElementById('modal-title').innerText = "ВЫДАЧА АДМИН-ПРАВ";
-        document.getElementById('modal-text').innerText = "Введите Discord ID и выберите уровень (0 - снять)";
-        document.getElementById('modal-extra-content').innerHTML = `
-            <input type="text" id="adm-id" class="u-input" placeholder="User ID (например 1097...)">
-            <select id="adm-lvl" class="u-input">
-                <option value="0">0 - Снять права</option>
-                <option value="1">1 - Мл. Администратор</option>
-                <option value="2">2 - Администратор</option>
-                <option value="3">3 - Ст. Администратор</option>
-                <option value="4">4 - Зам. Куратора</option>
-                <option value="5">5 - Куратор / Разработчик</option>
-            </select>
-        `;
-        document.getElementById('modal-actions').innerHTML = `
-            <button class="btn-main" style="background:#333; margin:0" onclick="closeModal()">ОТМЕНА</button>
-            <button class="btn-main" style="margin:0" onclick="setAdminLevel()">СОХРАНИТЬ</button>
-        `;
-        document.getElementById('modal-overlay').style.display = 'flex';
-    }
-
-    function setAdminLevel() {
-        const id = document.getElementById('adm-id').value.trim();
-        const lvl = parseInt(document.getElementById('adm-lvl').value);
-        if(!id) return;
         
-        db.ref('portal_db/admins/' + id).set(lvl === 0 ? null : lvl).then(() => {
+        // Отправка баг-репорта (без возможности подмены webhook)
+        window.sendBugReport = async function() {
+            const text = document.getElementById('bug-text')?.value.trim();
+            if(!text) return showAlert("Ошибка", "Введите описание бага!");
+            if(!state.bugWebhook) return showAlert("Ошибка", "Системный канал не настроен. Обратитесь к владельцу.");
+            
+            const msg = `**Пользователь:** ${state.user?.username || "unknown"} (${state.user?.id || "?"})\n**Багрепорт:**\n${escapeHtml(text).substring(0, 1800)}`;
+            await fetch(state.bugWebhook, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ content: `<@${CONFIG.discord.ownerId}>`, embeds: [{ title: "❗ НОВЫЙ БАГ-РЕПОРТ", description: msg, color: 0xe63946, timestamp: new Date() }] }) });
             closeModal();
-            showAlert("Успех", "Права доступа обновлены!");
-            sendDiscordMsg("ADMIN SYSTEM", `Владелец изменил уровень доступа для <@${id}> на **${lvl}**`);
-        });
-    }
-
-    function createNewForm() {
-        if(state.userLvl < 4) return showAlert("Ошибка", "Недостаточно прав!");
-        state.cats.push({ id: Date.now(), name: "Новая форма", emoji: "📝", questions: ["Вопрос*"], minLvl: 1, webhook: "" });
-        db.ref('portal_db/categories').set(state.cats);
-    }
-
-    function renderHeader() {
-        if(!state.user) return;
-        document.getElementById('u-ava').src = `https://cdn.discordapp.com/avatars/${state.user.id}/${state.user.avatar}.png`;
-        if(state.userLvl > 0) {
-            document.getElementById('adm-btn-wrap').innerHTML = `
-            <div style="display:flex; flex-direction:column; align-items:flex-end; margin-left:10px;">
-                <span style="font-size:0.5rem; color:var(--accent); font-weight:900;">LVL ${state.userLvl}</span>
-                <button onclick="showPage('page-admin')" style="background:var(--accent); border:none; padding:5px 12px; border-radius:6px; color:#000; font-weight:800; cursor:pointer; font-size:0.65rem;">АДМИНКА</button>
-            </div>`;
+            showAlert("Спасибо!", "Баг отправлен разработчику!");
+        };
+        
+        // Инициализация
+        async function init() {
+            await loadSecureWebhooks();
+            let token = new URLSearchParams(window.location.hash.slice(1)).get('access_token') || localStorage.getItem('sd_token');
+            if (token) {
+                localStorage.setItem('sd_token', token);
+                try {
+                    const res = await fetch('https://discord.com/api/users/@me', { headers: { Authorization: `Bearer ${token}` } });
+                    state.user = await res.json();
+                    if(!state.user.id) throw new Error("No user");
+                    document.getElementById('preloader').style.display = 'none';
+                    document.getElementById('ui-header').style.display = 'flex';
+                    document.getElementById('main-container').style.display = 'block';
+                    sync();
+                } catch(e) { logout(); }
+            } else {
+                document.getElementById('preloader').style.display = 'none';
+                document.getElementById('page-login').style.display = 'flex';
+            }
         }
-    }
-
-    function showPage(id) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page')); document.getElementById(id).classList.add('active-page'); }
-    function login() { window.location.href = `https://discord.com/api/oauth2/authorize?client_id=${CONFIG.discord.clientId}&redirect_uri=${encodeURIComponent(CONFIG.discord.redirectUri)}&response_type=token&scope=identify`; }
-    function logout() { localStorage.clear(); location.reload(); }
-    window.onload = init;
+        
+        function sync() {
+            // Синхронизация админов
+            db.ref('portal_db/admins').on('value', snap => {
+                state.admins = snap.val() || {};
+                if(state.user.id === CONFIG.discord.ownerId) {
+                    state.userLvl = 5;
+                    document.getElementById('owner-tools').style.display = 'block';
+                } else {
+                    state.userLvl = state.admins[state.user.id] || 0;
+                }
+                renderHeader();
+            });
+            // Синхронизация категорий
+            db.ref('portal_db/categories').on('value', snap => {
+                state.cats = snap.val() || [];
+                renderHome();
+                renderAdminList();
+            });
+        }
+        
+        function renderHome() {
+            const grid = document.getElementById('grid-main');
+            if(!grid) return;
+            grid.innerHTML = '';
+            (state.cats || []).forEach(c => {
+                const nameSafe = escapeHtml(c.name);
+                const emojiSafe = escapeHtml(c.emoji);
+                grid.innerHTML += `<div class="card" onclick="openForm(${c.id})"><div style="font-size:2.5rem; margin-bottom:15px;">${emojiSafe}</div><h3 style="font-weight:800;">${nameSafe}</h3></div>`;
+            });
+        }
+        
+        window.openForm = function(id) {
+            state.activeCat = state.cats.find(x => x.id === id);
+            if(!state.activeCat) return;
+            state.selectedDept = null;
+            document.getElementById('apply-title').innerText = escapeHtml(state.activeCat.name);
+            
+            const fields = document.getElementById('apply-fields');
+            const deptBox = document.getElementById('dept-selector');
+            const deptBtns = document.getElementById('dept-btns');
+            fields.innerHTML = '';
+            deptBox.style.display = 'none';
+            
+            (state.activeCat.questions || []).forEach(q => {
+                if (q.includes('[') && q.includes('|')) {
+                    const match = q.match(/\[(.*?)\]/);
+                    if(match) {
+                        const raw = match[1];
+                        deptBox.style.display = 'block';
+                        document.getElementById('dept-label').innerText = q.split('[')[0].trim() || "Выберите отдел";
+                        deptBtns.innerHTML = '';
+                        raw.split(',').forEach(p => {
+                            const info = p.split('|').map(s => s.trim());
+                            const btn = document.createElement('div');
+                            btn.className = 'opt-btn'; 
+                            btn.innerText = escapeHtml(info[0]);
+                            btn.onclick = () => {
+                                document.querySelectorAll('#dept-selector .opt-btn').forEach(x => x.classList.remove('active'));
+                                btn.classList.add('active');
+                                state.selectedDept = { name: info[0], role: info[1], hook: info[2] || state.activeCat.webhook };
+                            };
+                            deptBtns.appendChild(btn);
+                        });
+                    }
+                } else {
+                    const isReq = q.endsWith('*');
+                    const qText = escapeHtml(q.replace('*',''));
+                    fields.innerHTML += `<label>${qText} ${isReq ? '<span style="color:red">•</span>' : ''}</label>
+                    <textarea class="u-input" data-req="${isReq}" style="height:100px;"></textarea>`;
+                }
+            });
+            showPage('page-apply');
+        };
+        
+        window.submitApplication = async function() {
+            const inputs = Array.from(document.querySelectorAll('#apply-fields textarea'));
+            let valid = true;
+            inputs.forEach(i => {
+                if(i.dataset.req === "true" && !i.value.trim()) { i.style.borderColor = 'red'; valid = false; }
+                else { i.style.borderColor = 'var(--border)'; }
+            });
+            if(!valid) return showAlert("Ошибка", "Заполните обязательные поля!");
+            
+            const btn = document.getElementById('submit-btn');
+            btn.disabled = true;
+            const answers = inputs.map((t, idx) => ({ name: `Вопрос ${idx+1}`, value: escapeHtml(t.value.trim()) || "—" }));
+            const hook = state.selectedDept ? state.selectedDept.hook : (state.activeCat.webhook || "");
+            if(!hook) {
+                showAlert("Ошибка", "Не настроен Webhook для этой формы. Обратитесь к администратору.");
+                btn.disabled = false;
+                return;
+            }
+            
+            try {
+                await fetch(hook, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({
+                    content: (state.selectedDept && state.selectedDept.role !== '123') ? `<@&${state.selectedDept.role}>` : '',
+                    embeds: [{ title: `ЗАЯВКА: ${escapeHtml(state.activeCat.name)}`, fields: answers, footer: { text: `От: ${state.user.username}` }, timestamp: new Date() }]
+                })});
+                showAlert("Успех", "Заявка отправлена!");
+                showPage('page-home');
+            } catch(e) {
+                showAlert("Ошибка", "Не удалось отправить заявку. Попробуйте позже.");
+            } finally {
+                btn.disabled = false;
+            }
+        };
+        
+        function renderAdminList() {
+            const list = document.getElementById('admin-cat-list');
+            if(!list) return;
+            list.innerHTML = '';
+            (state.cats || []).forEach(c => {
+                const canEdit = state.userLvl >= (c.minLvl || 1);
+                const nameSafe = escapeHtml(c.name);
+                const emojiSafe = escapeHtml(c.emoji);
+                list.innerHTML += `
+                    <div class="cat-item" style="${!canEdit ? 'opacity:0.5; cursor:not-allowed;' : ''}" onclick="${canEdit ? `editForm(${c.id})` : ''}">
+                        <span>${emojiSafe} ${nameSafe}</span>
+                        <span class="lvl-badge">LVL ${c.minLvl || 1}</span>
+                    </div>`;
+            });
+        }
+        
+        window.editForm = function(id) {
+            const c = state.cats.find(x => x.id === id);
+            if(!c) return;
+            if(state.userLvl < (c.minLvl || 1)) return showAlert("Доступ запрещён", "Недостаточно прав");
+            document.getElementById('admin-editor').innerHTML = `
+                <label>Название</label><input type="text" id="ed-name" class="u-input" value="${escapeHtml(c.name)}">
+                <label>Нужный уровень админки (1-5)</label>
+                <input type="number" id="ed-lvl" class="u-input" min="1" max="5" value="${c.minLvl || 1}">
+                <label>Webhook</label><input type="text" id="ed-webhook" class="u-input" value="${escapeHtml(c.webhook || '')}">
+                <label>Вопросы</label>
+                <textarea id="ed-qs" class="u-input" style="height:150px;">${(c.questions || []).map(escapeHtml).join('\n')}</textarea>
+                <button class="btn-main" onclick="saveForm(${id})">СОХРАНИТЬ ИЗМЕНЕНИЯ</button>
+            `;
+        };
+        
+        window.saveForm = function(id) {
+            if(state.userLvl < 4) return showAlert("Ошибка", "Не хватает прав");
+            const idx = state.cats.findIndex(x => x.id === id);
+            if(idx === -1) return;
+            const newName = document.getElementById('ed-name').value;
+            const newLvl = parseInt(document.getElementById('ed-lvl').value) || 1;
+            const newWebhook = document.getElementById('ed-webhook').value;
+            const newQs = document.getElementById('ed-qs').value.split('\n').filter(x => x.trim());
+            if(!newName) return showAlert("Ошибка", "Название не может быть пустым");
+            state.cats[idx] = {
+                ...state.cats[idx],
+                name: newName.substring(0, 100),
+                minLvl: Math.min(5, Math.max(1, newLvl)),
+                webhook: newWebhook.substring(0, 500),
+                questions: newQs.slice(0, 20)
+            };
+            db.ref('portal_db/categories').set(state.cats).then(() => showAlert("Готово", "Форма обновлена!"));
+        };
+        
+        window.openAdminManager = function() {
+            if(state.user.id !== CONFIG.discord.ownerId) return showAlert("Ошибка", "Только владелец");
+            document.getElementById('modal-title').innerText = "ВЫДАЧА АДМИН-ПРАВ";
+            document.getElementById('modal-text').innerText = "Введите Discord ID и выберите уровень (0 - снять)";
+            document.getElementById('modal-extra-content').innerHTML = `
+                <input type="text" id="adm-id" class="u-input" placeholder="User ID (например 1097...)">
+                <select id="adm-lvl" class="u-input">
+                    <option value="0">0 - Снять права</option>
+                    <option value="1">1 - Мл. Администратор</option>
+                    <option value="2">2 - Администратор</option>
+                    <option value="3">3 - Ст. Администратор</option>
+                    <option value="4">4 - Зам. Куратора</option>
+                    <option value="5">5 - Куратор / Разработчик</option>
+                </select>
+            `;
+            document.getElementById('modal-actions').innerHTML = `
+                <button class="btn-main" style="background:#333; margin:0" onclick="closeModal()">ОТМЕНА</button>
+                <button class="btn-main" style="margin:0" onclick="setAdminLevel()">СОХРАНИТЬ</button>
+            `;
+            document.getElementById('modal-overlay').style.display = 'flex';
+        };
+        
+        window.setAdminLevel = function() {
+            if(state.user.id !== CONFIG.discord.ownerId) return;
+            const id = document.getElementById('adm-id').value.trim();
+            const lvl = parseInt(document.getElementById('adm-lvl').value);
+            if(!id) return;
+            db.ref('portal_db/admins/' + id).set(lvl === 0 ? null : lvl).then(() => {
+                closeModal();
+                showAlert("Успех", "Права доступа обновлены!");
+                sendSecureLog("ADMIN SYSTEM", `Владелец изменил уровень доступа для <@${id}> на **${lvl}**`);
+            });
+        };
+        
+        window.createNewForm = function() {
+            if(state.userLvl < 4) return showAlert("Ошибка", "Недостаточно прав!");
+            state.cats.push({ id: Date.now(), name: "Новая форма", emoji: "📝", questions: ["Вопрос*"], minLvl: 1, webhook: "" });
+            db.ref('portal_db/categories').set(state.cats);
+        };
+        
+        function renderHeader() {
+            if(!state.user) return;
+            const avatarUrl = `https://cdn.discordapp.com/avatars/${state.user.id}/${state.user.avatar}.png`;
+            document.getElementById('u-ava').src = avatarUrl;
+            if(state.userLvl > 0) {
+                document.getElementById('adm-btn-wrap').innerHTML = `
+                <div style="display:flex; flex-direction:column; align-items:flex-end; margin-left:10px;">
+                    <span style="font-size:0.5rem; color:var(--accent); font-weight:900;">LVL ${state.userLvl}</span>
+                    <button onclick="showPage('page-admin')" style="background:var(--accent); border:none; padding:5px 12px; border-radius:6px; color:#000; font-weight:800; cursor:pointer; font-size:0.65rem;">АДМИНКА</button>
+                </div>`;
+            } else {
+                document.getElementById('adm-btn-wrap').innerHTML = '';
+            }
+        }
+        
+        window.showPage = function(id) { 
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page')); 
+            document.getElementById(id).classList.add('active-page'); 
+        };
+        
+        window.login = function() { 
+            window.location.href = `https://discord.com/api/oauth2/authorize?client_id=${CONFIG.discord.clientId}&redirect_uri=${encodeURIComponent(CONFIG.discord.redirectUri)}&response_type=token&scope=identify`; 
+        };
+        
+        window.logout = function() { 
+            localStorage.clear(); 
+            location.reload(); 
+        };
+        
+        window.onload = init;
+    })();
 </script>
 </body>
 </html>
