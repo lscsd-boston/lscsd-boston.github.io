@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>LSCSD | Portal</title>
+    <title>LSCSD Portal</title>
     <link rel="icon" type="image/png" href="image.png">
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
@@ -93,7 +93,7 @@
     <header id="ui-header">
         <img src="image.png" style="height:50px; cursor:pointer;" onclick="showPage('page-home')">
         <div style="display:flex; align-items:center; gap:15px;">
-            <button style="background:var(--error); border:none; color:#fff; padding:10px 15px; border-radius:10px; font-weight:800; cursor:pointer;" onclick="openBug()">ОШИБКА</button>
+            <button style="background:var(--error); border:none; color:#fff; padding:10px 15px; border-radius:10px; font-weight:800; cursor:pointer;" onclick="openBug()">СООБЩИТЬ ОБ ОШИБКЕ</button>
             <div id="adm-btn-wrap"></div>
             <img id="u-ava" style="width:40px; border-radius:50%; border:2px solid var(--accent); cursor:pointer;" onclick="logout()">
         </div>
@@ -101,7 +101,7 @@
 
     <div class="container" id="main-container">
         <div id="page-home" class="page active-page">
-            <h1 style="margin-bottom:35px; font-weight:900; font-size:2.2rem;">Направления</h1>
+            <h1 style="margin-bottom:35px; font-weight:900; font-size:2.2rem;">Доступные заявки</h1>
             <div id="grid-main" class="grid"></div>
         </div>
 
