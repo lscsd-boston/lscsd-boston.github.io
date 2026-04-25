@@ -292,6 +292,38 @@
     function modal(t, msg) { document.getElementById('modal-title').innerText = t; document.getElementById('modal-text').innerText = msg; document.getElementById('modal-overlay').style.display='flex'; }
     function closeM() { document.getElementById('modal-overlay').style.display='none'; }
 
+    // --- ФУНКЦИИ ДЛЯ КНОПКИ "ОШИБКА" ---
+    function openBug() {
+        document.getElementById('modal-title').innerText = "ОТЧЕТ ОБ ОШИБКЕ";
+        document.getElementById('modal-text').innerText = "Опишите проблему, которую вы обнаружили.";
+        document.getElementById('modal-extra').innerHTML = `
+            <textarea id="bug-text" class="u-input" style="height:120px; margin-top:10px;" placeholder="Что пошло не так?"></textarea>
+        `;
+        document.getElementById('modal-actions').innerHTML = `
+            <button class="btn-main" onclick="sendBug()">ОТПРАВИТЬ</button>
+            <button class="btn-main" style="background:#333; color:#fff;" onclick="closeM()">ОТМЕНА</button>
+        `;
+        document.getElementById('modal-overlay').style.display = 'flex';
+    }
+
+    async function sendBug() {
+        const msg = document.getElementById('bug-text').value;
+        if(!msg.trim()) return alert("Введите текст ошибки!");
+        const btn = document.querySelector('#modal-actions button');
+        btn.disabled = true; btn.innerText = "ОТПРАВКА...";
+        try {
+            await fetch(CFG.hook, { 
+                method: 'POST', 
+                headers: {'Content-Type': 'application/json'}, 
+                body: JSON.stringify({ 
+                    content: `🚨 **БАГ-РЕПОРТ**\n**От:** <@${state.user.id}>\n**Описание:** ${msg}` 
+                })
+            });
+            closeM(); alert("Отчет отправлен!");
+        } catch(e) { alert("Ошибка отправки"); } 
+        finally { btn.disabled = false; btn.innerText = "ОТПРАВИТЬ"; }
+    }
+
     function manageAdmins() {
         modal("Админы", "Введите ID и уровень (1-5)");
         document.getElementById('modal-extra').innerHTML = `<input id="mid" class="u-input" placeholder="User ID"><input id="mlvl" type="number" class="u-input" placeholder="Level (0 - снять)">`;
