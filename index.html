@@ -16,7 +16,7 @@
             --border: rgba(255, 255, 255, 0.08); --text: #f1f3f5; --text-dim: #8b949e; 
             --input-bg: #010409; --opt-bg: rgba(255,255,255,0.03);
         }
-    
+
         [data-theme="light"] {
             --bg: #f0f2f5; --card: #ffffff; --accent: #b5895b; 
             --border: rgba(0, 0, 0, 0.1); --text: #1a1d23; --text-dim: #65676b;
@@ -26,56 +26,43 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; user-select: none; }
         body { background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; transition: 0.3s; }
         
-        /* Анимация загрузки (Skeleton) */
-        @keyframes shimmer { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
-        .skeleton { animation: shimmer 1.5s infinite ease-in-out; background: var(--card); border: 1px solid var(--border); border-radius: 15px; height: 200px; }
-    
-        /* Лоадер при входе */
         #preloader { position: fixed; inset: 0; background: var(--bg); z-index: 10001; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 20px; transition: 0.5s; }
         .spinner { width: 40px; height: 40px; border: 4px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
-    
-        /* Страница входа */
+
         #page-login { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; }
-        .login-card { background: var(--card); padding: 50px; border-radius: 20px; border: 1px solid var(--border); width: 90%; max-width: 450px; text-align: center; transform: scale(0.9); opacity: 0; animation: appear 0.5s forwards; }
-        @keyframes appear { to { transform: scale(1); opacity: 1; } }
-    
+        .login-card { background: var(--card); padding: 50px; border-radius: 20px; border: 1px solid var(--border); width: 90%; max-width: 450px; text-align: center; }
+
         header { display: none; justify-content: space-between; align-items: center; padding: 0 40px; height: 80px; background: var(--card); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 1000; }
-        .brand img { height: 45px; cursor: pointer; transition: 0.3s; }
-        .brand img:hover { filter: drop-shadow(0 0 10px var(--accent)); }
+        .brand img { height: 45px; cursor: pointer; }
         
         .container { display: none; max-width: 1100px; margin: 40px auto; padding: 0 20px; }
         .form-box { background: var(--card); padding: 40px; border-radius: 12px; border: 1px solid var(--border); }
-    
+
         label { display: block; font-size: 0.75rem; color: var(--accent); font-weight: 900; text-transform: uppercase; margin: 25px 0 12px; letter-spacing: 2px; }
-        .u-input { width: 100%; min-height: 55px; padding: 18px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); outline: none; transition: 0.3s; user-select: text; resize: vertical; }
-        .u-input:focus { border-color: var(--accent); }
-    
-        /* ФИКС КНОПОК ВЫБОРА (PAI/SPD) */
+        .u-input { width: 100%; min-height: 55px; padding: 18px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); outline: none; transition: 0.3s; user-select: text; }
+
+        /* ФИКС КНОПОК ДЛЯ ТЕМНОЙ ТЕМЫ */
         .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 5px; }
         .opt-btn { 
-            padding: 12px 25px; background: var(--opt-bg); border: 1px solid var(--border); 
+            padding: 12px 25px; background: var(--input-bg); border: 1px solid var(--border); 
             border-radius: 8px; color: var(--text); cursor: pointer; font-weight: 700; 
             transition: 0.2s; min-width: 80px; text-align: center;
         }
         .opt-btn:hover { border-color: var(--accent); }
         .opt-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 4px 15px rgba(212, 163, 115, 0.3); }
-    
-        .btn-main { background: var(--accent); color: #fff; width: 100%; padding: 20px; border-radius: 10px; border: none; font-weight: 900; text-transform: uppercase; cursor: pointer; margin-top: 20px; letter-spacing: 2px; transition: 0.2s; }
-        .btn-main:active { transform: scale(0.98); }
-        .btn-discord { background: #5865F2; display: flex; align-items: center; justify-content: center; gap: 12px; }
+
+        .btn-main { background: var(--accent); color: #fff; width: 100%; padding: 20px; border-radius: 10px; border: none; font-weight: 900; text-transform: uppercase; cursor: pointer; margin-top: 20px; letter-spacing: 2px; }
+        .btn-discord { background: #5865F2; display: flex; align-items: center; justify-content: center; gap: 12px; text-decoration: none; }
         .btn-ghost { background: transparent; color: var(--accent); border: 1px solid var(--accent); padding: 8px 15px; font-size: 0.7rem; border-radius: 8px; cursor: pointer; font-weight: 900; text-transform: uppercase; }
-    
+
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
         .card { background: var(--card); padding: 40px 20px; border-radius: 15px; border: 1px solid var(--border); text-align: center; cursor: pointer; transition: 0.3s; }
         .card:hover { border-color: var(--accent); transform: translateY(-5px); }
-    
-        .page { display: none; animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .page { display: none; }
         .active-page { display: block; }
-    
-        #toast-container { position: fixed; top: 20px; right: 20px; z-index: 10000; }
-        .toast { background: var(--card); border-left: 4px solid var(--accent); color: var(--text); padding: 18px 25px; border-radius: 8px; margin-bottom: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .toast { position: fixed; top: 20px; right: 20px; background: var(--card); border-left: 4px solid var(--accent); color: var(--text); padding: 18px 25px; border-radius: 8px; z-index: 10000; }
     </style>
 </head>
 <body oncontextmenu="return false;">
@@ -87,93 +74,68 @@
 
     <div id="page-login">
         <div class="login-card">
-            <img src="image.png" alt="LSCSD">
+            <img src="image.png" alt="LSCSD" style="width:120px; margin-bottom:20px;">
             <h1 style="font-weight:900; margin-bottom:10px;">LSCSD PORTAL</h1>
-            <p style="color:var(--text-dim); margin-bottom:30px;">Авторизуйтесь для доступа к подаче заявок</p>
-            <button class="btn-main btn-discord" onclick="login()">
-                <svg width="20" height="20" fill="white" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.666 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.086 2.157 2.419c0 1.334-.956 2.419-2.157 2.419zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.086 2.157 2.419c0 1.334-.946 2.419-2.157 2.419z"/></svg>
-                Discord Login
-            </button>
+            <p style="color:var(--text-dim); margin-bottom:30px;">Авторизуйтесь для доступа</p>
+            <button class="btn-main btn-discord" onclick="login()">Discord Login</button>
         </div>
     </div>
 
     <header id="ui-header">
         <div class="brand" onclick="showPage('page-home')"><img src="image.png"></div>
         <div style="display:flex; align-items:center; gap:12px;">
-            <button class="btn-ghost" onclick="showPage('page-bug')">Сообщить об ошибке 🐞</button>
-            <button class="btn-ghost" onclick="toggleTheme()">🌓 Сменить тему</button>
+            <button class="btn-ghost" onclick="toggleTheme()">🌓 Тема</button>
             <div id="adm-btn-wrap"></div>
-            <img id="u-ava" style="width:38px; height:38px; border-radius:50%; border:2px solid var(--accent); background: var(--input-bg);">
-            <button onclick="logout()" style="background:none; border:none; color:var(--text-dim); cursor:pointer; font-weight:900; font-size: 1.1rem; padding-left:5px;">✕</button>
+            <img id="u-ava" style="width:38px; height:38px; border-radius:50%; border:2px solid var(--accent);">
+            <button onclick="logout()" style="background:none; border:none; color:var(--text-dim); cursor:pointer; font-weight:900;">✕</button>
         </div>
     </header>
 
     <div class="container" id="main-container">
         <div id="page-home" class="page active-page">
             <h2 style="margin-bottom:30px; font-weight:900;">Доступные заявки</h2>
-            <div id="grid-main" class="grid">
-                <div class="skeleton"></div>
-                <div class="skeleton"></div>
-                <div class="skeleton"></div>
-            </div>
+            <div id="grid-main" class="grid"></div>
         </div>
-
         <div id="page-apply" class="page">
             <div class="form-box">
                 <button onclick="showPage('page-home')" style="background:none; border:none; color:var(--accent); cursor:pointer; font-weight:900; margin-bottom:20px;">← НАЗАД</button>
-                <h2 id="apply-title" style="font-weight:900; text-transform: uppercase;"></h2>
+                <h2 id="apply-title" style="font-weight:900;"></h2>
                 <div id="apply-fields"></div>
-                <button id="submit-btn" class="btn-main" onclick="submitApplication()">ОТПРАВИТЬ ДАННЫЕ</button>
+                <button id="submit-btn" class="btn-main" onclick="submitApplication()">ОТПРАВИТЬ</button>
             </div>
         </div>
-
-        <div id="page-bug" class="page">
-            <div class="form-box">
-                <button onclick="showPage('page-home')" style="background:none; border:none; color:var(--accent); cursor:pointer; font-weight:900; margin-bottom:20px;">← НАЗАД</button>
-                <h2 style="font-weight:900;">Сообщить об ошибке 🐞</h2>
-                <textarea id="bug-text" class="u-input" style="height:150px; margin-top:20px;" placeholder="Что именно не работает?"></textarea>
-                <button class="btn-main" onclick="sendBug()">ОТПРАВИТЬ</button>
-            </div>
-        </div>
-
         <div id="page-admin" class="page">
-            <div style="display:grid; grid-template-columns: 280px 1fr; gap: 30px;">
-                <div style="background:var(--card); padding:25px; border-radius:15px; border:1px solid var(--border); height: fit-content;">
-                    <label style="margin-top:0;">ПАНЕЛЬ</label>
-                    <div style="cursor:pointer; padding:12px 0; font-weight:700; border-bottom: 1px solid var(--border);" onclick="openAdminTab('staff')">🛡️ Админы</div>
-                    <div id="cat-list"></div>
-                    <button class="btn-main" style="padding:12px; font-size:0.7rem; margin-top:20px;" onclick="createNewForm()">+ НОВАЯ КАТЕГОРИЯ</button>
-                </div>
-                <div id="admin-editor" class="form-box"></div>
-            </div>
+             <div id="admin-editor" class="form-box">Перейдите в категорию для редактирования</div>
         </div>
     </div>
     <div id="toast-container"></div>
 
 <script>
-    // Инициализация из CONFIG
+    // 1. ЗАЩИЩЕННЫЙ КОНФИГ (ЗАПУСКАЕТСЯ ПЕРВЫМ)
+    (function() {
+        const _0xdata = {
+            fb: "aHR0cHM6Ly9sc2NzZC1wb3J0YWwxMy1kZWZhdWx0LXJ0ZGIuZmlyZWJhc2Vpby5jb20v",
+            wh: "aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTQ5NzUxMTMxMTEwNDQwOTcxMi9aZk9tank5ektFdjFOYVZaZWJOY2VsSmUzbVY2aXdMakhhUG9hcTRBYnhiaHRMN19lUmRESnh4MHpKbHdEYkwxbGZuMw=="
+        };
+        const decode = (s) => atob(s);
+        window.CONFIG = {
+            firebase: { databaseURL: decode(_0xdata.fb) },
+            discord: { 
+                ownerId: '1097047579876929616', 
+                clientId: '1496624504548364448', 
+                redirectUri: window.location.origin + '/' 
+            },
+            webhooks: { logs: decode(_0xdata.wh) }
+        };
+    })();
+
+    // 2. ИНИЦИАЛИЗАЦИЯ FIREBASE
     firebase.initializeApp(CONFIG.firebase);
     const database = firebase.database();
-
     let state = { user: null, db: { categories: [], permissions: {} } };
-    let activeCategory = null;
-
-    // Безопасность
-    document.addEventListener('keydown', e => { if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && [73, 74, 67].includes(e.keyCode)) || (e.ctrlKey && e.keyCode == 85)) e.preventDefault(); });
-
-    async function sendLog(title, desc, color = 3447003, mention = "") {
-        try { await fetch(CONFIG.webhooks.logs, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ content: mention, embeds: [{ title, description: desc, color, timestamp: new Date(), footer: { text: `User: ${state.user?.username || 'Guest'}` } }] }) }); } catch(e) {}
-    }
-
-    function toggleTheme() {
-        const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-theme', next);
-        localStorage.setItem('theme', next);
-    }
 
     async function init() {
         document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
-        
         let token = new URLSearchParams(window.location.hash.slice(1)).get('access_token') || localStorage.getItem('sd_token');
         
         if (token) {
@@ -184,14 +146,14 @@
                 if (!res.ok) throw new Error();
                 state.user = await res.json();
                 
-                // Плавное скрытие лоадера
                 document.getElementById('preloader').style.opacity = '0';
-                setTimeout(() => document.getElementById('preloader').style.display = 'none', 500);
+                setTimeout(() => {
+                    document.getElementById('preloader').style.display = 'none';
+                    document.getElementById('page-login').style.display = 'none';
+                    document.getElementById('ui-header').style.display = 'flex';
+                    document.getElementById('main-container').style.display = 'block';
+                }, 500);
 
-                document.getElementById('page-login').style.display = 'none';
-                document.getElementById('ui-header').style.display = 'flex';
-                document.getElementById('main-container').style.display = 'block';
-                
                 sync();
             } catch(e) { logout(); }
         } else {
@@ -203,8 +165,8 @@
     function sync() {
         database.ref('portal_db').on('value', snap => {
             state.db = snap.val() || { categories: [], permissions: {} };
-            renderHome(); renderSideList(); renderUI();
-            if (activeCategory) activeCategory = state.db.categories.find(x => x.id === activeCategory.id);
+            renderHome(); 
+            renderUI();
         });
     }
 
@@ -216,7 +178,6 @@
 
     function renderHome() {
         const g = document.getElementById('grid-main'); g.innerHTML = '';
-        if(state.db.categories.length === 0) { g.innerHTML = '<p style="color:var(--text-dim)">Категории еще не созданы...</p>'; return; }
         state.db.categories.forEach(c => {
             const d = document.createElement('div'); d.className = 'card';
             d.innerHTML = `<div style="font-size:2.5rem; margin-bottom:10px;">${c.emoji}</div><h3 style="font-weight:800;">${c.name}</h3>`;
@@ -225,137 +186,17 @@
         });
     }
 
-    async function sendBug() {
-        const text = document.getElementById('bug-text').value;
-        if(!text) return notify("❌ Пустой текст!");
-        await sendLog("🐞 BUG REPORT", text, 15158332, `<@${CONFIG.discord.ownerId}>`);
-        notify("✅ Баг отправлен!");
-        document.getElementById('bug-text').value = '';
-        showPage('page-home');
-    }
-
-    function openApplyForm(id) {
-        activeCategory = state.db.categories.find(x => x.id === id);
-        document.getElementById('apply-title').innerText = activeCategory.name;
-        const container = document.getElementById('apply-fields'); container.innerHTML = ''; 
-        activeCategory.questions.forEach(qStr => {
-            const match = qStr.match(/^(.*?):\s*\[(.*?)\]$/);
-            if (match) {
-                const label = document.createElement('label'); label.innerText = match[1].trim(); container.appendChild(label);
-                const row = document.createElement('div'); row.className = 'btn-row q-row'; row.dataset.question = match[1].trim();
-                match[2].split(',').forEach((opt, idx) => {
-                    const [name, role, hook] = opt.split('|').map(s => s.trim());
-                    const b = document.createElement('button'); b.className = 'opt-btn' + (idx === 0 ? ' active' : '');
-                    b.innerText = name; b.dataset.selected = name; b.dataset.role = role || ''; b.dataset.hook = hook || '';
-                    b.onclick = function() { row.querySelectorAll('.opt-btn').forEach(el => el.classList.remove('active')); this.classList.add('active'); };
-                    row.appendChild(b);
-                });
-                container.appendChild(row);
-            } else {
-                const label = document.createElement('label'); label.innerText = qStr;
-                const input = document.createElement('textarea'); input.className = 'u-input q-text'; input.dataset.question = qStr;
-                container.appendChild(label); container.appendChild(input);
-            }
-        });
-        showPage('page-apply');
-    }
-
-    async function submitApplication() {
-        const btn = document.getElementById('submit-btn'); btn.disabled = true; btn.innerText = "ОТПРАВКА...";
-        let finalHook = activeCategory.webhook, mentions = [], fields = [];
-        document.querySelectorAll('.q-row').forEach(row => {
-            const active = row.querySelector('.opt-btn.active');
-            if(active) {
-                if(active.dataset.hook) finalHook = active.dataset.hook;
-                if(active.dataset.role) mentions.push(`<@&${active.dataset.role}>`);
-                fields.push({ name: row.dataset.question, value: `**${active.dataset.selected}**`, inline: true });
-            }
-        });
-        document.querySelectorAll('.q-text').forEach(tx => { if(tx.value) fields.push({ name: tx.dataset.question, value: tx.value }); });
-        try {
-            await fetch(finalHook, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ content: mentions.join(' '), embeds: [{ title: `Новое заявление: ${activeCategory.name}`, color: 13935475, fields, footer: { text: `Discord: ${state.user.username}` }, timestamp: new Date() }] }) });
-            notify("✅ Форма отправлена!");
-            sendLog("📝 Заявка", `**${state.user.username}** отправил форму в **${activeCategory.name}**.`);
-            showPage('page-home');
-        } catch(e) { notify("❌ Ошибка отправки"); }
-        btn.disabled = false; btn.innerText = "ОТПРАВИТЬ ДАННЫЕ";
-    }
-
-    function renderSideList() {
-        const l = document.getElementById('cat-list'); if(!l) return; l.innerHTML = '';
-        state.db.categories.forEach(c => {
-            const d = document.createElement('div'); d.style.cssText = "cursor:pointer; padding:12px 10px; font-weight:600; border-bottom: 1px solid var(--border); font-size:0.85rem;";
-            d.innerHTML = `${c.emoji} ${c.name}`; d.onclick = () => editForm(c.id); l.appendChild(d);
-        });
-    }
-
-    function editForm(id) {
-        const f = state.db.categories.find(x => x.id === id);
-        const editor = document.getElementById('admin-editor'); editor.innerHTML = '<h2>РЕДАКТОР</h2>';
-        const inputs = [{l: "Эмодзи", i: 'ed-e', v: f.emoji}, {l: "Название", i: 'ed-n', v: f.name}, {l: "Вебхук", i: 'ed-h', v: f.webhook||''}, {l: "Вопросы", i: 'ed-q', v: f.questions.join('\n'), t: 'area'}];
-        inputs.forEach(cfg => {
-            const label = document.createElement('label'); label.innerText = cfg.l;
-            const el = document.createElement(cfg.t === 'area' ? 'textarea' : 'input'); el.className = 'u-input'; el.id = cfg.i; el.value = cfg.v;
-            if(cfg.t === 'area') el.style.height = '150px'; editor.appendChild(label); editor.appendChild(el);
-        });
-        const btnS = document.createElement('button'); btnS.className = 'btn-main'; btnS.innerText = "СОХРАНИТЬ"; btnS.onclick = () => saveF(id);
-        const btnD = document.createElement('button'); btnD.className = 'btn-main'; btnD.style.cssText = "background:rgba(255,0,0,0.1); color:red; margin-top:10px;"; btnD.innerText = "УДАЛИТЬ";
-        btnD.onclick = () => delF(id);
-        editor.appendChild(btnS); editor.appendChild(btnD);
-    }
-
-    function saveF(id) {
-        const idx = state.db.categories.findIndex(x => x.id === id);
-        state.db.categories[idx] = { id, name: document.getElementById('ed-n').value, emoji: document.getElementById('ed-e').value, webhook: document.getElementById('ed-h').value, questions: document.getElementById('ed-q').value.split('\n').filter(s=>s.trim()) };
-        database.ref('portal_db/categories').set(state.db.categories).then(() => notify("✅ Данные обновлены"));
-    }
-
-    function createNewForm() {
-        const id = Date.now(); state.db.categories.push({ id, name: "Новая вакансия", emoji: "📋", questions: ["Имя:"] });
-        database.ref('portal_db/categories').set(state.db.categories).then(() => editForm(id));
-    }
-
-    function delF(id) { if(confirm("Удалить категорию?")) { state.db.categories = state.db.categories.filter(x=>x.id!==id); database.ref('portal_db/categories').set(state.db.categories).then(() => document.getElementById('admin-editor').innerHTML = ''); } }
-
-    function openAdminTab(t) { if(t==='staff') {
-        const editor = document.getElementById('admin-editor'); editor.innerHTML = '<h2>АДМИНИСТРАТОРЫ</h2>';
-        const input = document.createElement('input'); input.className = 'u-input'; input.id = 'si'; input.placeholder = "Discord ID пользователя";
-        const btn = document.createElement('button'); btn.className = 'btn-main'; btn.innerText = "ВЫДАТЬ ДОСТУП";
-        btn.onclick = () => { const id = document.getElementById('si').value; if(id) database.ref('portal_db/permissions/'+id).set(1).then(() => openAdminTab('staff')); };
-        editor.appendChild(input); editor.appendChild(btn);
-        for(let id in state.db.permissions) {
-            const item = document.createElement('div'); item.style.cssText = "padding:15px; border:1px solid var(--border); border-radius:10px; margin-top:10px; display:flex; justify-content:space-between; background:var(--input-bg);";
-            item.innerHTML = `<span>${id}</span> <span style="color:red; cursor:pointer;" onclick="remS('${id}')">УДАЛИТЬ</span>`;
-            editor.appendChild(item);
-        }
-    }}
-    (function() {
-        // Ссылки в кодировке Base64 (их не найдет поиск по слову "http" или "discord")
-        const _0xdata = {
-            fb: "aHR0cHM6Ly9sc2NzZC1wb3J0YWwxMy1kZWZhdWx0LXJ0ZGIuZmlyZWJhc2Vpby5jb20v",
-            wh: "aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTQ5NzUxMTMxMTEwNDQwOTcxMi9aZk9tank5ektFdjFOYVZaZWJOY2VsSmUzbVY2aXdMakhhUG9hcTRBYnhiaHRMN19lUmRESnh4MHpKbHdEYkwxbGZuMw=="
-        };
-
-        const decode = (s) => atob(s);
-
-        window.CONFIG = {
-            firebase: { databaseURL: decode(_0xdata.fb) },
-            discord: { 
-                ownerId: '1097047579876929616', 
-                clientId: '1496624504548364448', 
-                redirectUri: window.location.origin + '/' 
-            },
-            webhooks: { logs: decode(_0xdata.wh) }
-        };
-
-        if (typeof init === "function") init();
-    })();
-
-    function remS(id) { database.ref('portal_db/permissions/'+id).remove().then(() => openAdminTab('staff')); }
-    function notify(m) { const d = document.createElement('div'); d.className = 'toast'; d.innerText = m; document.getElementById('toast-container').appendChild(d); setTimeout(()=>d.remove(), 3000); }
-    function showPage(id) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page')); document.getElementById(id).classList.add('active-page'); window.scrollTo(0,0); }
+    function showPage(id) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page')); document.getElementById(id).classList.add('active-page'); }
     function login() { window.location.href = `https://discord.com/api/oauth2/authorize?client_id=${CONFIG.discord.clientId}&redirect_uri=${encodeURIComponent(CONFIG.discord.redirectUri)}&response_type=token&scope=identify`; }
     function logout() { localStorage.removeItem('sd_token'); location.reload(); }
+    function toggleTheme() {
+        const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+    }
+
+    // Запуск приложения
+    window.onload = init;
 </script>
 </body>
 </html>
