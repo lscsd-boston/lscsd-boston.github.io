@@ -4,91 +4,47 @@
     <meta charset="UTF-8">
     <title>LSCSD | Portal Elite</title>
     <link rel="icon" type="image/png" href="image.png">
-    
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
-        
-        :root { 
-            --bg: #05070a; --card: #0d1117; --accent: #d4a373; 
-            --border: rgba(255, 255, 255, 0.08); --text: #f1f3f5; --text-dim: #8b949e; 
-            --input-bg: #010409;
-        }
-
-        [data-theme="light"] {
-            --bg: #f0f2f5; --card: #ffffff; --accent: #b5895b; 
-            --border: rgba(0, 0, 0, 0.1); --text: #1a1d23; --text-dim: #65676b;
-            --input-bg: #fdfdfd;
-        }
-        
+        :root { --bg: #05070a; --card: #0d1117; --accent: #d4a373; --border: rgba(255, 255, 255, 0.08); --text: #f1f3f5; --text-dim: #8b949e; --input-bg: #010409; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; user-select: none; }
         body { background: var(--bg); color: var(--text); min-height: 100vh; transition: 0.3s; }
-        
-        /* Загрузка */
-        #preloader { position: fixed; inset: 0; background: var(--bg); z-index: 10001; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 20px; transition: 0.5s; }
+        #preloader { position: fixed; inset: 0; background: var(--bg); z-index: 10001; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 20px; }
         .spinner { width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
-        .loading-text { font-weight: 900; letter-spacing: 2px; color: var(--accent); font-size: 0.7rem; text-transform: uppercase; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-
-        /* Авторизация */
-        #page-login { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; }
-        .login-card { background: var(--card); padding: 50px; border-radius: 24px; border: 1px solid var(--border); width: 90%; max-width: 400px; text-align: center; }
-
-        /* Header */
         header { display: none; justify-content: space-between; align-items: center; padding: 0 5%; height: 80px; background: var(--card); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 1000; }
-        .brand img { height: 45px; cursor: pointer; }
-        
         .container { display: none; max-width: 1200px; margin: 40px auto; padding: 0 20px; }
         .form-box { background: var(--card); padding: 40px; border-radius: 20px; border: 1px solid var(--border); }
-
-        /* Inputs */
         label { display: block; font-size: 0.7rem; color: var(--accent); font-weight: 900; text-transform: uppercase; margin: 25px 0 10px; letter-spacing: 1px; }
         .u-input { width: 100%; padding: 18px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 12px; color: var(--text); outline: none; transition: 0.3s; font-size: 0.9rem; }
-        .u-input:focus { border-color: var(--accent); }
-
-        /* Кнопки */
         .btn-main { background: var(--accent); color: #fff; width: 100%; padding: 20px; border-radius: 12px; border: none; font-weight: 900; text-transform: uppercase; cursor: pointer; margin-top: 25px; letter-spacing: 1px; transition: 0.3s; }
-        .btn-main:hover { filter: brightness(1.1); transform: translateY(-2px); }
-        .btn-discord { background: #5865F2; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; }
-
-        /* Grid */
+        .btn-row { display: flex; gap: 10px; margin-bottom: 20px; }
+        .opt-btn { flex: 1; padding: 15px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); cursor: pointer; font-weight: 700; transition: 0.2s; text-align: center; }
+        .opt-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
         .card { background: var(--card); padding: 40px 20px; border-radius: 18px; border: 1px solid var(--border); text-align: center; cursor: pointer; transition: 0.3s; }
         .card:hover { border-color: var(--accent); transform: translateY(-5px); }
-
-        /* Админка Layout */
-        .admin-layout { display: grid; grid-template-columns: 320px 1fr; gap: 30px; }
-        .admin-sidebar { background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid var(--border); height: fit-content; }
-        .cat-item { padding: 15px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 10px; cursor: pointer; margin-bottom: 10px; transition: 0.2s; font-weight: 600; font-size: 0.9rem; }
-        .cat-item:hover, .cat-item.active { border-color: var(--accent); color: var(--accent); }
-
-        .page { display: none; animation: fadeIn 0.4s ease; }
-        .active-page { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
+        .admin-layout { display: grid; grid-template-columns: 300px 1fr; gap: 30px; }
+        .cat-item { padding: 15px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 10px; cursor: pointer; margin-bottom: 10px; }
+        .page { display: none; }
+        .active-page { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .toast { position: fixed; bottom: 30px; right: 30px; background: var(--card); border-left: 4px solid var(--accent); padding: 15px 25px; border-radius: 8px; z-index: 10000; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
     </style>
 </head>
 <body oncontextmenu="return false;">
 
-    <div id="preloader">
-        <div class="spinner"></div>
-        <div class="loading-text">SYSTEM LOADING</div>
-    </div>
+    <div id="preloader"><div class="spinner"></div></div>
 
-    <div id="page-login">
-        <div class="login-card">
-            <img src="image.png" style="width:100px; margin-bottom:20px;">
-            <h2 style="font-weight:900; margin-bottom:30px;">LSCSD PORTAL</h2>
-            <button class="btn-main btn-discord" onclick="login()">Discord Login</button>
-        </div>
+    <div id="page-login" style="display:none; height:100vh; flex-direction:column; justify-content:center; align-items:center;">
+        <img src="image.png" style="width:100px; margin-bottom:20px;">
+        <button class="btn-main" style="width:200px;" onclick="login()">Discord Login</button>
     </div>
 
     <header id="ui-header">
-        <div class="brand" onclick="showPage('page-home')"><img src="image.png"></div>
+        <div onclick="showPage('page-home')"><img src="image.png" style="height:45px; cursor:pointer;"></div>
         <div style="display:flex; align-items:center; gap:15px;">
             <div id="adm-btn-wrap"></div>
             <img id="u-ava" style="width:40px; height:40px; border-radius:50%; border:2px solid var(--accent);">
@@ -98,71 +54,62 @@
 
     <div class="container" id="main-container">
         <div id="page-home" class="page active-page">
-            <h2 style="font-weight:900; margin-bottom:30px; font-size:1.5rem;">Доступные направления</h2>
+            <h2 style="margin-bottom:30px; font-weight:900;">Направления</h2>
             <div id="grid-main" class="grid"></div>
         </div>
 
         <div id="page-apply" class="page">
             <div class="form-box">
                 <p onclick="showPage('page-home')" style="color:var(--accent); cursor:pointer; font-weight:900; margin-bottom:20px; font-size:0.8rem;">← НАЗАД</p>
-                <h2 id="apply-title" style="font-weight:900; margin-bottom:30px;"></h2>
+                <h2 id="apply-title" style="font-weight:900; margin-bottom:10px;"></h2>
+                <div id="dept-selector" style="display:none;">
+                    <label>Выберите отдел</label>
+                    <div class="btn-row">
+                        <div class="opt-btn" onclick="selectDept('PAI', this)">PAI</div>
+                        <div class="opt-btn" onclick="selectDept('SPD', this)">SPD</div>
+                    </div>
+                </div>
                 <div id="apply-fields"></div>
-                <button id="submit-btn" class="btn-main" onclick="submitApplication()">ОТПРАВИТЬ ЗАЯВКУ</button>
+                <button id="submit-btn" class="btn-main" onclick="submitApplication()">ОТПРАВИТЬ ДАННЫЕ</button>
             </div>
         </div>
 
         <div id="page-admin" class="page">
             <div class="admin-layout">
-                <div class="admin-sidebar">
-                    <h4 style="font-size:0.7rem; color:var(--text-dim); margin-bottom:15px; letter-spacing:1px;">СПИСОК ФОРМ</h4>
+                <div style="background:var(--card); padding:20px; border-radius:15px; border:1px solid var(--border);">
                     <div id="admin-cat-list"></div>
-                    <button class="btn-main" style="padding:15px; font-size:0.7rem;" onclick="createNewForm()">+ СОЗДАТЬ ФОРМУ</button>
+                    <button class="btn-main" onclick="createNewForm()">+ СОЗДАТЬ</button>
                 </div>
-                <div id="admin-editor" class="form-box" style="margin-top:0;">
-                    <p style="color:var(--text-dim); text-align:center; padding:40px;">Выберите форму для редактирования</p>
-                </div>
+                <div id="admin-editor" class="form-box"></div>
             </div>
         </div>
     </div>
 
-    <div id="toast-container"></div>
-
 <script>
-    // --- SECURITY & CONFIG ---
-    (function() {
-        const _d = (x) => atob(x);
-        window.CONFIG = {
-            firebase: { databaseURL: _d("aHR0cHM6Ly9sc2NzZC1wb3J0YWwxMy1kZWZhdWx0LXJ0ZGIuZmlyZWJhc2Vpby5jb20v") },
-            discord: { 
-                ownerId: '1097047579876929616', 
-                clientId: '1496624504548364448', 
-                redirectUri: window.location.origin + '/' 
-            },
-            logs: _d("aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTQ5NzUxMTMxMTEwNDQwOTcxMi9aZk9tank5ektFdjFOYVZaZWJOY2VsSmUzbVY2aXdMakhhUG9hcTRBYnhiaHRMN19lUmRESnh4MHpKbHdEYkwxbGZuMw==")
-        };
-        document.onkeydown = (e) => { if(e.keyCode == 123 || (e.ctrlKey && e.shiftKey && e.keyCode == 73)) return false; };
-    })();
+    const DEPTS = {
+        'PAI': { role: '1497506885967020104', hook: 'https://discord.com/api/webhooks/1497496288416108565/eshuRyqkErg2HOrUVqLFXaFEWjw6Ql1PSz8EQGjHtDyYkY62weFhHZLe8sC1rb8Owaxn' },
+        'SPD': { role: '1497523926018822154', hook: 'https://discord.com/api/webhooks/1497496288416108565/eshuRyqkErg2HOrUVqLFXaFEWjw6Ql1PSz8EQGjHtDyYkY62weFhHZLe8sC1rb8Owaxn' }
+    };
+
+    const CONFIG = {
+        firebase: { databaseURL: atob("aHR0cHM6Ly9sc2NzZC1wb3J0YWwxMy1kZWZhdWx0LXJ0ZGIuZmlyZWJhc2Vpby5jb20v") },
+        discord: { ownerId: '1097047579876929616', clientId: '1496624504548364448', redirectUri: window.location.origin + '/' }
+    };
 
     firebase.initializeApp(CONFIG.firebase);
     const db = firebase.database();
-    let state = { user: null, data: { categories: [] }, activeCatId: null };
+    let state = { user: null, cats: [], activeCat: null, selectedDept: null };
 
-    // --- INITIALIZATION ---
     async function init() {
         let token = new URLSearchParams(window.location.hash.slice(1)).get('access_token') || localStorage.getItem('sd_token');
-        
         if (token) {
             localStorage.setItem('sd_token', token);
-            window.history.replaceState(null, null, window.location.pathname);
             try {
                 const res = await fetch('https://discord.com/api/users/@me', { headers: { Authorization: `Bearer ${token}` } });
                 state.user = await res.json();
-                
                 document.getElementById('preloader').style.display = 'none';
-                document.getElementById('page-login').style.display = 'none';
                 document.getElementById('ui-header').style.display = 'flex';
                 document.getElementById('main-container').style.display = 'block';
-
                 sync();
             } catch(e) { logout(); }
         } else {
@@ -172,141 +119,124 @@
     }
 
     function sync() {
-        db.ref('portal_db').on('value', snap => {
-            const val = snap.val() || {};
-            state.data.categories = val.categories || [];
+        db.ref('portal_db/categories').on('value', snap => {
+            state.cats = snap.val() || [];
             renderHome();
             renderAdminList();
             renderHeader();
         });
     }
 
-    // --- RENDERING ---
     function renderHeader() {
         document.getElementById('u-ava').src = `https://cdn.discordapp.com/avatars/${state.user.id}/${state.user.avatar}.png`;
         if(state.user.id === CONFIG.discord.ownerId) {
-            document.getElementById('adm-btn-wrap').innerHTML = `<button onclick="showPage('page-admin')" style="background:var(--accent); border:none; padding:8px 15px; border-radius:8px; color:#fff; font-weight:700; font-size:0.7rem; cursor:pointer;">АДМИН</button>`;
+            document.getElementById('adm-btn-wrap').innerHTML = `<button class="opt-btn" onclick="showPage('page-admin')">АДМИН</button>`;
         }
     }
 
     function renderHome() {
         const grid = document.getElementById('grid-main');
         grid.innerHTML = '';
-        if(state.data.categories.length === 0) {
-            grid.innerHTML = '<p style="color:var(--text-dim);">Формы временно недоступны.</p>';
-            return;
-        }
-        state.data.categories.forEach(c => {
+        state.cats.forEach(c => {
             const el = document.createElement('div');
             el.className = 'card';
-            el.innerHTML = `<div style="font-size:2.5rem; margin-bottom:15px;">${c.emoji}</div><h3 style="font-weight:900;">${c.name}</h3>`;
+            el.innerHTML = `<div style="font-size:2.5rem; margin-bottom:10px;">${c.emoji}</div><h3>${c.name}</h3>`;
             el.onclick = () => openForm(c.id);
             grid.appendChild(el);
         });
     }
 
     function openForm(id) {
-        const c = state.data.categories.find(x => x.id === id);
-        state.activeCatId = id;
-        document.getElementById('apply-title').innerText = c.name;
+        state.activeCat = state.cats.find(x => x.id === id);
+        state.selectedDept = null;
+        document.getElementById('apply-title').innerText = state.activeCat.name;
+        
+        // Показываем выбор отдела если в названии есть "Отдел"
+        const selector = document.getElementById('dept-selector');
+        selector.style.display = state.activeCat.name.includes('Отдел') ? 'block' : 'none';
+        document.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('active'));
+
         const fields = document.getElementById('apply-fields');
         fields.innerHTML = '';
-
-        c.questions.forEach((q, i) => {
-            const l = document.createElement('label'); l.innerText = q;
-            const t = document.createElement('textarea'); t.className = 'u-input'; t.style.height = '100px'; t.placeholder = 'Введите ответ...';
-            fields.appendChild(l);
-            fields.appendChild(t);
+        state.activeCat.questions.forEach(q => {
+            fields.innerHTML += `<label>${q}</label><textarea class="u-input" style="height:80px;"></textarea>`;
         });
         showPage('page-apply');
     }
 
-    // --- ADMIN LOGIC ---
-    function renderAdminList() {
-        const list = document.getElementById('admin-cat-list');
-        if(!list) return;
-        list.innerHTML = '';
-        state.data.categories.forEach(c => {
-            const d = document.createElement('div');
-            d.className = 'cat-item';
-            d.innerText = `${c.emoji} ${c.name}`;
-            d.onclick = () => editForm(c.id);
-            list.appendChild(d);
-        });
+    function selectDept(dept, btn) {
+        state.selectedDept = dept;
+        document.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
     }
 
-    function editForm(id) {
-        const c = state.data.categories.find(x => x.id === id);
-        const ed = document.getElementById('admin-editor');
-        ed.innerHTML = `
-            <h3 style="margin-bottom:20px;">Настройка: ${c.name}</h3>
-            <label>Название</label>
-            <input type="text" id="ed-name" class="u-input" value="${c.name}">
-            <label>Эмодзи</label>
-            <input type="text" id="ed-emoji" class="u-input" value="${c.emoji}">
-            <label>Webhook Discord</label>
-            <input type="text" id="ed-webhook" class="u-input" value="${c.webhook || ''}">
-            <label>Вопросы (каждый с новой строки)</label>
-            <textarea id="ed-qs" class="u-input" style="height:150px;">${c.questions.join('\n')}</textarea>
-            <div style="display:flex; gap:10px; margin-top:20px;">
-                <button class="btn-main" onclick="saveForm(${c.id})">СОХРАНИТЬ</button>
-                <button class="btn-main" style="background:#ff4d4d;" onclick="deleteForm(${c.id})">УДАЛИТЬ</button>
-            </div>
-        `;
-    }
-
-    function createNewForm() {
-        const id = Date.now();
-        const n = { id: id, name: "Новое направление", emoji: "📂", questions: ["Имя Фамилия:", "Возраст:"], webhook: "" };
-        state.data.categories.push(n);
-        db.ref('portal_db/categories').set(state.data.categories);
-    }
-
-    function saveForm(id) {
-        const idx = state.data.categories.findIndex(x => x.id === id);
-        state.data.categories[idx] = {
-            id: id,
-            name: document.getElementById('ed-name').value,
-            emoji: document.getElementById('ed-emoji').value,
-            webhook: document.getElementById('ed-webhook').value,
-            questions: document.getElementById('ed-qs').value.split('\n').filter(x => x.trim() !== '')
-        };
-        db.ref('portal_db/categories').set(state.data.categories).then(() => notify("Сохранено!"));
-    }
-
-    function deleteForm(id) {
-        if(confirm("Удалить форму?")) {
-            state.data.categories = state.data.categories.filter(x => x.id !== id);
-            db.ref('portal_db/categories').set(state.data.categories);
-            document.getElementById('admin-editor').innerHTML = '<p style="color:var(--text-dim); text-align:center; padding:40px;">Выберите форму</p>';
-        }
-    }
-
-    // --- ACTIONS ---
     async function submitApplication() {
-        const c = state.data.categories.find(x => x.id === state.activeCatId);
-        const inputs = document.querySelectorAll('#apply-fields textarea');
-        let fields = [];
+        if(state.activeCat.name.includes('Отдел') && !state.selectedDept) return alert("Выберите отдел!");
         
-        inputs.forEach((input, i) => {
-            fields.push({ name: c.questions[i], value: input.value || "Не указано", inline: false });
-        });
+        const btn = document.getElementById('submit-btn');
+        btn.disabled = true;
+        
+        const answers = Array.from(document.querySelectorAll('#apply-fields textarea')).map((t, i) => ({
+            name: state.activeCat.questions[i], value: t.value || "—"
+        }));
 
+        const target = state.selectedDept ? DEPTS[state.selectedDept] : { hook: state.activeCat.webhook, role: '' };
+        
         const payload = {
+            content: target.role ? `<@&${target.role}>` : '',
             embeds: [{
-                title: `Новая заявка: ${c.name}`,
+                title: `Новая заявка: ${state.activeCat.name} ${state.selectedDept ? `[${state.selectedDept}]` : ''}`,
                 color: 13935475,
-                fields: fields,
-                footer: { text: `Отправитель: ${state.user.username} (${state.user.id})` },
+                fields: answers,
+                footer: { text: `От: ${state.user.username}` },
                 timestamp: new Date()
             }]
         };
 
         try {
-            await fetch(c.webhook || CONFIG.logs, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
-            notify("Заявка отправлена!");
+            await fetch(target.hook, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
+            alert("Заявка отправлена!");
             showPage('page-home');
-        } catch(e) { notify("Ошибка отправки!"); }
+        } catch(e) { alert("Ошибка!"); }
+        btn.disabled = false;
+    }
+
+    function renderAdminList() {
+        const list = document.getElementById('admin-cat-list');
+        if(!list) return;
+        list.innerHTML = '';
+        state.cats.forEach(c => {
+            list.innerHTML += `<div class="cat-item" onclick="editForm(${c.id})">${c.emoji} ${c.name}</div>`;
+        });
+    }
+
+    function editForm(id) {
+        const c = state.cats.find(x => x.id === id);
+        document.getElementById('admin-editor').innerHTML = `
+            <label>Название</label><input type="text" id="ed-name" class="u-input" value="${c.name}">
+            <label>Эмодзи</label><input type="text" id="ed-emoji" class="u-input" value="${c.emoji}">
+            <label>Webhook (если не отдел)</label><input type="text" id="ed-webhook" class="u-input" value="${c.webhook || ''}">
+            <label>Вопросы (через Enter)</label><textarea id="ed-qs" class="u-input" style="height:100px;">${c.questions.join('\n')}</textarea>
+            <button class="btn-main" onclick="saveForm(${id})">СОХРАНИТЬ</button>
+        `;
+    }
+
+    function saveForm(id) {
+        const idx = state.cats.findIndex(x => x.id === id);
+        state.cats[idx] = {
+            id: id,
+            name: document.getElementById('ed-name').value,
+            emoji: document.getElementById('ed-emoji').value,
+            webhook: document.getElementById('ed-webhook').value,
+            questions: document.getElementById('ed-qs').value.split('\n').filter(x => x.trim())
+        };
+        db.ref('portal_db/categories').set(state.cats);
+    }
+
+    function createNewForm() {
+        const n = { id: Date.now(), name: "Новая форма", emoji: "📄", questions: ["Имя:"], webhook: "" };
+        state.cats.push(n);
+        db.ref('portal_db/categories').set(state.cats);
     }
 
     function showPage(id) {
@@ -315,12 +245,7 @@
     }
 
     function login() { window.location.href = `https://discord.com/api/oauth2/authorize?client_id=${CONFIG.discord.clientId}&redirect_uri=${encodeURIComponent(CONFIG.discord.redirectUri)}&response_type=token&scope=identify`; }
-    function logout() { localStorage.removeItem('sd_token'); location.reload(); }
-    function notify(m) {
-        const t = document.createElement('div'); t.className = 'toast'; t.innerText = m;
-        document.getElementById('toast-container').appendChild(t);
-        setTimeout(() => t.remove(), 3000);
-    }
+    function logout() { localStorage.clear(); location.reload(); }
 
     window.onload = init;
 </script>
