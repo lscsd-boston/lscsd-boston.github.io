@@ -277,7 +277,7 @@
         });
         document.querySelectorAll('.q-text').forEach(tx => { if(tx.value) fields.push({ name: tx.dataset.question, value: tx.value }); });
         try {
-            await fetch(finalHook, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ content: mentions.join(' '), embeds: [{ title: `НОВЫЙ ОТКЛИК: ${activeCategory.name}`, color: 13935475, fields, footer: { text: `Discord: ${state.user.username}` }, timestamp: new Date() }] }) });
+            await fetch(finalHook, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ content: mentions.join(' '), embeds: [{ title: `Новое заявление: ${activeCategory.name}`, color: 13935475, fields, footer: { text: `Discord: ${state.user.username}` }, timestamp: new Date() }] }) });
             notify("✅ Форма отправлена!");
             sendLog("📝 Заявка", `**${state.user.username}** отправил форму в **${activeCategory.name}**.`);
             showPage('page-home');
