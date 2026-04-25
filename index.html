@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>LSCSD | LSCSD | Система подачи заявок</title>
+    <title>LSCSD | Система подачи заявок</title>
     <link rel="icon" type="image/png" href="image.png">
     
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
@@ -81,7 +81,7 @@
         <div class="login-card">
             <img src="image.png" alt="LSCSD">
             <h1 style="font-weight:900; margin-bottom:10px;">LSCSD PORTAL</h1>
-            <p style="color:var(--text-dim); margin-bottom:30px;">Авторизуйтесь для доступа к панели управления</p>
+            <p style="color:var(--text-dim); margin-bottom:30px;">Авторизуйтесь для доступа к подаче заявок</p>
             <button class="btn-main btn-discord" onclick="login()">
                 <svg width="20" height="20" fill="white" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.666 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.086 2.157 2.419c0 1.334-.956 2.419-2.157 2.419zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.086 2.157 2.419c0 1.334-.946 2.419-2.157 2.419z"/></svg>
                 Discord Login
@@ -92,8 +92,8 @@
     <header id="ui-header">
         <div class="brand" onclick="showPage('page-home')"><img src="image.png"></div>
         <div style="display:flex; align-items:center; gap:12px;">
-            <button class="btn-ghost" onclick="showPage('page-bug')">🐞 Баг</button>
-            <button class="btn-ghost" onclick="toggleTheme()">🌓</button>
+            <button class="btn-ghost" onclick="showPage('page-bug')">Сообщить об ошибке 🐞</button>
+            <button class="btn-ghost" onclick="toggleTheme()">🌓 Сменить тему</button>
             <div id="adm-btn-wrap"></div>
             <img id="u-ava" style="width:38px; height:38px; border-radius:50%; border:2px solid var(--accent); background: var(--input-bg);">
             <button onclick="logout()" style="background:none; border:none; color:var(--text-dim); cursor:pointer; font-weight:900; font-size: 1.1rem; padding-left:5px;">✕</button>
@@ -102,7 +102,7 @@
 
     <div class="container" id="main-container">
         <div id="page-home" class="page active-page">
-            <h2 style="margin-bottom:30px; font-weight:900;">НАПРАВЛЕНИЯ</h2>
+            <h2 style="margin-bottom:30px; font-weight:900;">Доступные заявки</h2>
             <div id="grid-main" class="grid">
                 <div class="skeleton"></div>
                 <div class="skeleton"></div>
@@ -122,7 +122,7 @@
         <div id="page-bug" class="page">
             <div class="form-box">
                 <button onclick="showPage('page-home')" style="background:none; border:none; color:var(--accent); cursor:pointer; font-weight:900; margin-bottom:20px;">← НАЗАД</button>
-                <h2 style="font-weight:900;">REPORT BUG 🐞</h2>
+                <h2 style="font-weight:900;">Сообщить об ошибке 🐞</h2>
                 <textarea id="bug-text" class="u-input" style="height:150px; margin-top:20px;" placeholder="Что именно не работает?"></textarea>
                 <button class="btn-main" onclick="sendBug()">ОТПРАВИТЬ</button>
             </div>
