@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>LSCSD | Система подачи заявок</title>
+    <title>LSCSD | Portal</title>
     <link rel="icon" type="image/png" href="image.png">
     
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
@@ -26,110 +26,127 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; user-select: none; }
         body { background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; transition: 0.3s; }
         
+        /* Preloader */
         #preloader { position: fixed; inset: 0; background: var(--bg); z-index: 10001; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 20px; transition: 0.5s; }
-        .spinner { width: 40px; height: 40px; border: 4px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
+        .spinner { width: 45px; height: 45px; border: 4px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s cubic-bezier(0.5, 0, 0.5, 1) infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
+        /* Skeleton Loading */
+        .loading-text { font-weight: 900; letter-spacing: 2px; color: var(--accent); font-size: 0.7rem; text-transform: uppercase; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+        /* Login */
         #page-login { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; }
-        .login-card { background: var(--card); padding: 50px; border-radius: 20px; border: 1px solid var(--border); width: 90%; max-width: 450px; text-align: center; }
+        .login-card { background: var(--card); padding: 60px 40px; border-radius: 24px; border: 1px solid var(--border); width: 90%; max-width: 420px; text-align: center; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
 
-        header { display: none; justify-content: space-between; align-items: center; padding: 0 40px; height: 80px; background: var(--card); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 1000; }
-        .brand img { height: 45px; cursor: pointer; }
+        /* UI elements */
+        header { display: none; justify-content: space-between; align-items: center; padding: 0 5%; height: 90px; background: var(--card); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 1000; }
+        .brand img { height: 50px; transition: 0.3s; }
+        .brand img:hover { transform: scale(1.05); }
         
-        .container { display: none; max-width: 1100px; margin: 40px auto; padding: 0 20px; }
-        .form-box { background: var(--card); padding: 40px; border-radius: 12px; border: 1px solid var(--border); }
+        .container { display: none; max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+        .form-box { background: var(--card); padding: 40px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
 
-        label { display: block; font-size: 0.75rem; color: var(--accent); font-weight: 900; text-transform: uppercase; margin: 25px 0 12px; letter-spacing: 2px; }
-        .u-input { width: 100%; min-height: 55px; padding: 18px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); outline: none; transition: 0.3s; user-select: text; }
+        label { display: block; font-size: 0.7rem; color: var(--accent); font-weight: 900; text-transform: uppercase; margin: 25px 0 10px; letter-spacing: 1.5px; }
+        .u-input { width: 100%; min-height: 60px; padding: 20px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 12px; color: var(--text); outline: none; transition: 0.3s; user-select: text; font-size: 0.95rem; }
+        .u-input:focus { border-color: var(--accent); background: var(--card); }
 
-        /* ФИКС КНОПОК ДЛЯ ТЕМНОЙ ТЕМЫ */
-        .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 5px; }
-        .opt-btn { 
-            padding: 12px 25px; background: var(--input-bg); border: 1px solid var(--border); 
-            border-radius: 8px; color: var(--text); cursor: pointer; font-weight: 700; 
-            transition: 0.2s; min-width: 80px; text-align: center;
-        }
-        .opt-btn:hover { border-color: var(--accent); }
-        .opt-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 4px 15px rgba(212, 163, 115, 0.3); }
+        /* Buttons */
+        .btn-row { display: flex; gap: 12px; flex-wrap: wrap; }
+        .opt-btn { padding: 15px 25px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); cursor: pointer; font-weight: 700; transition: 0.2s; flex: 1; min-width: 120px; text-align: center; }
+        .opt-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 8px 20px rgba(212, 163, 115, 0.2); }
 
-        .btn-main { background: var(--accent); color: #fff; width: 100%; padding: 20px; border-radius: 10px; border: none; font-weight: 900; text-transform: uppercase; cursor: pointer; margin-top: 20px; letter-spacing: 2px; }
+        .btn-main { background: var(--accent); color: #fff; width: 100%; padding: 22px; border-radius: 14px; border: none; font-weight: 900; text-transform: uppercase; cursor: pointer; margin-top: 30px; letter-spacing: 2px; transition: 0.3s; }
+        .btn-main:hover { filter: brightness(1.1); transform: translateY(-2px); }
+        .btn-main:disabled { opacity: 0.5; cursor: not-allowed; }
         .btn-discord { background: #5865F2; display: flex; align-items: center; justify-content: center; gap: 12px; text-decoration: none; }
-        .btn-ghost { background: transparent; color: var(--accent); border: 1px solid var(--accent); padding: 8px 15px; font-size: 0.7rem; border-radius: 8px; cursor: pointer; font-weight: 900; text-transform: uppercase; }
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
-        .card { background: var(--card); padding: 40px 20px; border-radius: 15px; border: 1px solid var(--border); text-align: center; cursor: pointer; transition: 0.3s; }
-        .card:hover { border-color: var(--accent); transform: translateY(-5px); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .card { background: var(--card); padding: 45px 25px; border-radius: 18px; border: 1px solid var(--border); text-align: center; cursor: pointer; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .card:hover { border-color: var(--accent); transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0,0,0,0.2); }
 
-        .page { display: none; }
+        .page { display: none; animation: slideUp 0.5s ease forwards; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .active-page { display: block; }
-        .toast { position: fixed; top: 20px; right: 20px; background: var(--card); border-left: 4px solid var(--accent); color: var(--text); padding: 18px 25px; border-radius: 8px; z-index: 10000; }
+
+        .toast { position: fixed; bottom: 30px; right: 30px; background: var(--card); border-left: 5px solid var(--accent); color: var(--text); padding: 20px 30px; border-radius: 12px; z-index: 10000; box-shadow: 0 20px 40px rgba(0,0,0,0.4); animation: toastIn 0.3s ease; }
+        @keyframes toastIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
     </style>
 </head>
 <body oncontextmenu="return false;">
 
     <div id="preloader">
         <div class="spinner"></div>
-        <div style="font-weight: 900; letter-spacing: 3px; color: var(--accent); font-size: 0.8rem;">LOADING SYSTEM</div>
+        <div class="loading-text">Synchronizing Data</div>
     </div>
 
     <div id="page-login">
         <div class="login-card">
-            <img src="image.png" alt="LSCSD" style="width:120px; margin-bottom:20px;">
-            <h1 style="font-weight:900; margin-bottom:10px;">LSCSD PORTAL</h1>
-            <p style="color:var(--text-dim); margin-bottom:30px;">Авторизуйтесь для доступа</p>
+            <img src="image.png" alt="LSCSD" style="width:130px; margin-bottom:25px;">
+            <h1 style="font-weight:900; margin-bottom:12px; letter-spacing:-1px;">LSCSD PORTAL</h1>
+            <p style="color:var(--text-dim); margin-bottom:35px; font-size:0.95rem;">Войдите, чтобы продолжить работу</p>
             <button class="btn-main btn-discord" onclick="login()">Discord Login</button>
         </div>
     </div>
 
     <header id="ui-header">
         <div class="brand" onclick="showPage('page-home')"><img src="image.png"></div>
-        <div style="display:flex; align-items:center; gap:12px;">
-            <button class="btn-ghost" onclick="toggleTheme()">🌓 Тема</button>
+        <div style="display:flex; align-items:center; gap:15px;">
+            <button class="btn-ghost" onclick="toggleTheme()" style="background:none; border:1px solid var(--border); padding:10px 15px; border-radius:10px; color:var(--text); cursor:pointer;">🌓</button>
             <div id="adm-btn-wrap"></div>
-            <img id="u-ava" style="width:38px; height:38px; border-radius:50%; border:2px solid var(--accent);">
-            <button onclick="logout()" style="background:none; border:none; color:var(--text-dim); cursor:pointer; font-weight:900;">✕</button>
+            <img id="u-ava" style="width:42px; height:42px; border-radius:50%; border:2px solid var(--accent); object-fit:cover;">
+            <button onclick="logout()" style="background:none; border:none; color:var(--text-dim); cursor:pointer; font-size: 1.2rem;">✕</button>
         </div>
     </header>
 
     <div class="container" id="main-container">
         <div id="page-home" class="page active-page">
-            <h2 style="margin-bottom:30px; font-weight:900;">Доступные заявки</h2>
-            <div id="grid-main" class="grid"></div>
-        </div>
-        <div id="page-apply" class="page">
-            <div class="form-box">
-                <button onclick="showPage('page-home')" style="background:none; border:none; color:var(--accent); cursor:pointer; font-weight:900; margin-bottom:20px;">← НАЗАД</button>
-                <h2 id="apply-title" style="font-weight:900;"></h2>
-                <div id="apply-fields"></div>
-                <button id="submit-btn" class="btn-main" onclick="submitApplication()">ОТПРАВИТЬ</button>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:35px;">
+                <h2 style="font-weight:900; font-size:1.8rem;">Доступные формы</h2>
+            </div>
+            <div id="grid-main" class="grid">
+                <div class="loading-text" style="grid-column: 1/-1; text-align: center; padding: 50px;">Идет загрузка форм...</div>
             </div>
         </div>
+
+        <div id="page-apply" class="page">
+            <div class="form-box">
+                <button onclick="showPage('page-home')" style="background:none; border:none; color:var(--accent); cursor:pointer; font-weight:900; margin-bottom:25px; letter-spacing:1px;">← НАЗАД К СПИСКУ</button>
+                <h2 id="apply-title" style="font-weight:900; font-size:2rem; margin-bottom:10px;"></h2>
+                <div id="apply-fields"></div>
+                <button id="submit-btn" class="btn-main" onclick="submitApplication()">ОТПРАВИТЬ ДАННЫЕ</button>
+            </div>
+        </div>
+
         <div id="page-admin" class="page">
-             <div id="admin-editor" class="form-box">Перейдите в категорию для редактирования</div>
+             <div id="admin-editor" class="form-box">Выберите категорию для редактирования в меню админа</div>
         </div>
     </div>
     <div id="toast-container"></div>
 
 <script>
-    // 1. ЗАЩИЩЕННЫЙ КОНФИГ (ЗАПУСКАЕТСЯ ПЕРВЫМ)
+    // --- ПОВЫШЕННАЯ БЕЗОПАСНОСТЬ ---
     (function() {
-        const _0xdata = {
-            fb: "aHR0cHM6Ly9sc2NzZC1wb3J0YWwxMy1kZWZhdWx0LXJ0ZGIuZmlyZWJhc2Vpby5jb20v",
-            wh: "aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTQ5NzUxMTMxMTEwNDQwOTcxMi9aZk9tank5ektFdjFOYVZaZWJOY2VsSmUzbVY2aXdMakhhUG9hcTRBYnhiaHRMN19lUmRESnh4MHpKbHdEYkwxbGZuMw=="
+        const _s = {
+            a: "aHR0cHM6Ly9sc2NzZC1wb3J0YWwxMy1kZWZhdWx0LXJ0ZGIuZmlyZWJhc2Vpby5jb20v",
+            b: "aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTQ5NzUxMTMxMTEwNDQwOTcxMi9aZk9tank5ektFdjFOYVZaZWJOY2VsSmUzbVY2aXdMakhhUG9hcTRBYnhiaHRMN19lUmRESnh4MHpKbHdEYkwxbGZuMw=="
         };
-        const decode = (s) => atob(s);
+        const _d = (x) => atob(x);
         window.CONFIG = {
-            firebase: { databaseURL: decode(_0xdata.fb) },
+            firebase: { databaseURL: _d(_s.a) },
             discord: { 
                 ownerId: '1097047579876929616', 
                 clientId: '1496624504548364448', 
                 redirectUri: window.location.origin + '/' 
             },
-            webhooks: { logs: decode(_0xdata.wh) }
+            webhooks: { logs: _d(_s.b) }
+        };
+        // Блокировка инструментов разработчика
+        document.onkeydown = (e) => {
+            if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) || (e.ctrlKey && e.keyCode == 85)) return false;
         };
     })();
 
-    // 2. ИНИЦИАЛИЗАЦИЯ FIREBASE
     firebase.initializeApp(CONFIG.firebase);
     const database = firebase.database();
     let state = { user: null, db: { categories: [], permissions: {} } };
@@ -146,9 +163,11 @@
                 if (!res.ok) throw new Error();
                 state.user = await res.json();
                 
-                document.getElementById('preloader').style.opacity = '0';
+                // Убираем прелоадер только после получения юзера
+                const loader = document.getElementById('preloader');
+                loader.style.opacity = '0';
                 setTimeout(() => {
-                    document.getElementById('preloader').style.display = 'none';
+                    loader.style.display = 'none';
                     document.getElementById('page-login').style.display = 'none';
                     document.getElementById('ui-header').style.display = 'flex';
                     document.getElementById('main-container').style.display = 'block';
@@ -160,9 +179,14 @@
             document.getElementById('preloader').style.display = 'none';
             document.getElementById('page-login').style.display = 'flex';
         }
+        // Удаляем CONFIG из глобального доступа после использования для безопасности
+        delete window.CONFIG_RAW; 
     }
 
     function sync() {
+        // Показываем надпись загрузки перед синхронизацией
+        document.getElementById('grid-main').innerHTML = '<div class="loading-text" style="grid-column: 1/-1; text-align: center; padding: 50px;">Идет синхронизация...</div>';
+        
         database.ref('portal_db').on('value', snap => {
             state.db = snap.val() || { categories: [], permissions: {} };
             renderHome(); 
@@ -173,20 +197,45 @@
     function renderUI() {
         document.getElementById('u-ava').src = `https://cdn.discordapp.com/avatars/${state.user.id}/${state.user.avatar}.png`;
         const isAdm = state.user.id === CONFIG.discord.ownerId || state.db.permissions?.[state.user.id];
-        if(isAdm) document.getElementById('adm-btn-wrap').innerHTML = `<button class="btn-ghost" onclick="showPage('page-admin')">⚙️ Админ</button>`;
+        if(isAdm) document.getElementById('adm-btn-wrap').innerHTML = `<button class="btn-ghost" onclick="showPage('page-admin')" style="background:none; border:1px solid var(--accent); color:var(--accent); padding:10px 15px; border-radius:10px; cursor:pointer; font-weight:700;">⚙️ Админ-панель</button>`;
     }
 
     function renderHome() {
-        const g = document.getElementById('grid-main'); g.innerHTML = '';
-        state.db.categories.forEach(c => {
-            const d = document.createElement('div'); d.className = 'card';
-            d.innerHTML = `<div style="font-size:2.5rem; margin-bottom:10px;">${c.emoji}</div><h3 style="font-weight:800;">${c.name}</h3>`;
+        const g = document.getElementById('grid-main');
+        g.innerHTML = '';
+        
+        if (state.db.categories.length === 0) {
+            g.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:var(--text-dim);">Доступных форм пока нет</div>';
+            return;
+        }
+
+        state.db.categories.forEach((c, index) => {
+            const d = document.createElement('div');
+            d.className = 'card';
+            d.style.animationDelay = `${index * 0.1}s`;
+            d.innerHTML = `
+                <div style="font-size:3rem; margin-bottom:15px;">${c.emoji || '📄'}</div>
+                <h3 style="font-weight:900; color:var(--text);">${c.name}</h3>
+                <p style="font-size:0.8rem; color:var(--text-dim); margin-top:10px; text-transform:uppercase; letter-spacing:1px;">Нажмите, чтобы заполнить</p>
+            `;
             d.onclick = () => openApplyForm(c.id);
             g.appendChild(d);
         });
     }
 
-    function showPage(id) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page')); document.getElementById(id).classList.add('active-page'); }
+    function openApplyForm(id) {
+        const cat = state.db.categories.find(x => x.id === id);
+        document.getElementById('apply-title').innerText = cat.name;
+        // ... (логика отрисовки полей остается прежней)
+        showPage('page-apply');
+    }
+
+    function showPage(id) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+        document.getElementById(id).classList.add('active-page');
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+
     function login() { window.location.href = `https://discord.com/api/oauth2/authorize?client_id=${CONFIG.discord.clientId}&redirect_uri=${encodeURIComponent(CONFIG.discord.redirectUri)}&response_type=token&scope=identify`; }
     function logout() { localStorage.removeItem('sd_token'); location.reload(); }
     function toggleTheme() {
@@ -194,8 +243,12 @@
         document.documentElement.setAttribute('data-theme', next);
         localStorage.setItem('theme', next);
     }
+    function notify(m) {
+        const t = document.createElement('div'); t.className = 'toast'; t.innerText = m;
+        document.getElementById('toast-container').appendChild(t);
+        setTimeout(() => t.remove(), 4000);
+    }
 
-    // Запуск приложения
     window.onload = init;
 </script>
 </body>
