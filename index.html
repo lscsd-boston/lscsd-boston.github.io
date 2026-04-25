@@ -333,7 +333,7 @@
     }
 
     function deleteForm(id) {
-        customModal("Удаление", "Вы действительно хотите удалить форму?", [{ name: "ОТМЕНА", color: "#333" }, { name: "УДАЛИТЬ", color: var(--error), cb: () => {
+        customModal("Удаление", "Вы действительно хотите удалить форму?", [{ name: "ОТМЕНА", color: "#333" }, { name: "УДАЛИТЬ", color: "#ff4d4d", cb: () => {
             state.cats = state.cats.filter(c => c.id !== id); db.ref('portal_db/categories').set(state.cats);
             document.getElementById('admin-editor').innerHTML = '<p style="text-align:center; color:var(--text-dim); margin-top:100px;">Форма удалена</p>';
         }}]);
