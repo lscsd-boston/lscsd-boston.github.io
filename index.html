@@ -247,42 +247,143 @@
 <script>
 // ==================== АНТИ-СЛИВ ====================
 (function() {
-    // Запрет правой кнопки мыши
-    document.addEventListener('contextmenu', e => e.preventDefault());
+    // Полный запрет контекстного меню
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+    }, true);
     
-    // Запрет Ctrl+S, Ctrl+U, Ctrl+C, Ctrl+P, F12, Ctrl+Shift+I, Ctrl+Shift+J
+    // Запрет всех опасных комбинаций клавиш
     document.addEventListener('keydown', function(e) {
-        if (
-            (e.ctrlKey && (e.key === 's' || e.key === 'u' || e.key === 'c' || e.key === 'p' || e.key === 'S' || e.key === 'U' || e.key === 'C' || e.key === 'P')) ||
-            (e.ctrlKey && e.shiftKey && (e.key === 'i' || e.key === 'I' || e.key === 'j' || e.key === 'J' || e.key === 'c' || e.key === 'C')) ||
-            e.key === 'F12' ||
-            (e.ctrlKey && e.key === 'F12')
-        ) {
+        // Ctrl+U (просмотр исходного кода)
+        if ((e.ctrlKey || e.metaKey) && (e.key === 'u' || e.key === 'U' || e.keyCode === 85)) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }
+        
+        // Ctrl+S (сохранить страницу)
+        if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S' || e.keyCode === 83)) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }
+        
+        // Ctrl+P (печать)
+        if ((e.ctrlKey || e.metaKey) && (e.key === 'p' || e.key === 'P' || e.keyCode === 80)) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }
+        
+        // Ctrl+C (копировать)
+        if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'C' || e.keyCode === 67)) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }
+        
+        // Ctrl+A (выделить всё)
+        if ((e.ctrlKey || e.metaKey) && (e.key === 'a' || e.key === 'A' || e.keyCode === 65)) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }
+        
+        // Ctrl+Shift+I (инструменты разработчика)
+        if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'i' || e.key === 'I' || e.keyCode === 73)) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }
+        
+        // Ctrl+Shift+J (консоль)
+        if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'j' || e.key === 'J' || e.keyCode === 74)) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }
+        
+        // Ctrl+Shift+C (выбор элемента)
+        if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'c' || e.key === 'C' || e.keyCode === 67)) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }
+        
+        // F12
+        if (e.key === 'F12' || e.keyCode === 123) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }
+    }, true);
+    
+    // Перехват на уровне window (для всех фреймов)
+    window.addEventListener('keydown', function(e) {
+        if ((e.ctrlKey || e.metaKey) && (e.key === 'u' || e.key === 'U' || e.keyCode === 85)) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }
+        if (e.key === 'F12' || e.keyCode === 123) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }
+    }, true);
+    
+    // Запрет выделения текста (включая Shift+Click)
+    document.addEventListener('selectstart', function(e) {
+        e.preventDefault();
+        return false;
+    });
+    
+    // Запрет перетаскивания элементов
+    document.addEventListener('dragstart', function(e) {
+        e.preventDefault();
+        return false;
+    });
+    
+    // Блокировка DevTools через отладчик (каждые 100мс)
+    var blockDevTools = function() {
+        var start = new Date().getTime();
+        debugger;
+        var end = new Date().getTime();
+        if (end - start > 100) {
+            document.body.innerHTML = '<div style="display:flex;justify-content:center;align-items:center;height:100vh;background:#000;color:#f00;font-size:2rem;font-family:sans-serif;">⛔ Доступ запрещён</div>';
+            throw new Error('DevTools detected');
+        }
+    };
+    setInterval(blockDevTools, 100);
+    
+    // Защита от открытия через view-source:
+    if (window.location.protocol === 'view-source:') {
+        window.location.href = 'about:blank';
+    }
+    
+    // Очистка консоли
+    setTimeout(function() {
+        console.clear();
+        console.log = function(){};
+        console.warn = function(){};
+        console.error = function(){};
+        console.info = function(){};
+    }, 100);
+    
+    // Блокировка кнопки "Сохранить страницу" в меню браузера
+    window.addEventListener('beforeunload', function(e) {
+        // Не мешаем навигации, но усложняем сохранение
+    });
+    
+    // Защита от mousedown с модификаторами
+    document.addEventListener('mousedown', function(e) {
+        if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) {
             e.preventDefault();
             return false;
         }
-    });
-    
-    // Запрет выделения текста
-    document.addEventListener('selectstart', e => e.preventDefault());
-    
-    // Запрет перетаскивания
-    document.addEventListener('dragstart', e => e.preventDefault());
-    
-    // Блокировка DevTools через отладчик
-    setInterval(function() {
-        var before = new Date().getTime();
-        debugger;
-        var after = new Date().getTime();
-        if (after - before > 100) {
-            document.body.innerHTML = '<div style="display:flex;justify-content:center;align-items:center;height:100vh;background:#000;color:#f00;font-size:2rem;font-family:sans-serif;">⛔ Доступ запрещён</div>';
-        }
-    }, 1000);
-    
-    // Защита от скриншотов (Android/iOS)
-    if (navigator.mediaSession) {
-        navigator.mediaSession.setActionHandler('seekto', null);
-    }
+    }, true);
 })();
 
 // ==================== АНТИ-ФЛУД ====================
