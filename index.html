@@ -13,604 +13,505 @@
             --card-hover: #0f141f;
             --accent: #d4a373;
             --accent-light: #e4b98a;
-            --border: rgba(255, 255, 255, 0.06);
-            --border-light: rgba(255, 255, 255, 0.1);
+            --border: rgba(255,255,255,0.06);
+            --border-light: rgba(255,255,255,0.1);
             --text: #ffffff;
             --text-dim: #94a3b8;
             --error: #ff4d4d;
-            --error-bg: rgba(255, 77, 77, 0.1);
             --success: #4ade80;
-            --overlay: rgba(0, 0, 0, 0.8);
+            --overlay: rgba(0,0,0,0.85);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: var(--bg); color: var(--text); overflow-x: hidden; min-height: 100vh; }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; }
+        body { background:var(--bg); color:var(--text); overflow-x:hidden; min-height:100vh; }
 
-        #preloader { position: fixed; inset: 0; background: var(--bg); z-index: 100000; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.5s ease; }
-        .loader-logo { width: 120px; filter: drop-shadow(0 0 30px var(--accent)); margin-bottom: 30px; animation: pulse 2s infinite; }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-        .loader-bar { width: 200px; height: 3px; background: var(--border); border-radius: 3px; position: relative; overflow: hidden; }
-        .loader-progress { position: absolute; width: 40%; height: 100%; background: linear-gradient(90deg, transparent, var(--accent), transparent); animation: move 1.5s infinite linear; border-radius: 3px; }
-        @keyframes move { from { left: -50%; } to { left: 110%; } }
+        #preloader { position:fixed; inset:0; background:var(--bg); z-index:100000; display:flex; flex-direction:column; justify-content:center; align-items:center; }
+        .loader-logo { width:120px; filter:drop-shadow(0 0 30px var(--accent)); margin-bottom:30px; animation:pulse 2s infinite; }
+        @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
+        .loader-bar { width:200px; height:3px; background:var(--border); border-radius:3px; overflow:hidden; }
+        .loader-progress { width:40%; height:100%; background:linear-gradient(90deg,transparent,var(--accent),transparent); animation:move 1.5s infinite linear; }
+        @keyframes move { from{left:-50%} to{left:110%} }
 
-        header { display: none; justify-content: space-between; align-items: center; padding: 0 5%; height: 80px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: rgba(3, 5, 10, 0.9); backdrop-filter: blur(20px); z-index: 1000; }
-        .header-right { display: flex; align-items: center; gap: 12px; }
+        header { display:none; justify-content:space-between; align-items:center; padding:0 5%; height:70px; border-bottom:1px solid var(--border); position:sticky; top:0; background:rgba(3,5,10,0.9); backdrop-filter:blur(20px); z-index:999; }
+        .header-right { display:flex; align-items:center; gap:10px; }
 
-        .container { display: none; max-width: 1300px; margin: 0 auto; padding: 40px 20px; }
-        .page { display: none; animation: fadeIn 0.4s ease forwards; }
-        .page.active-page { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .container { display:none; max-width:1200px; margin:0 auto; padding:40px 20px; }
+        .page { display:none; animation:fadeIn 0.3s ease; }
+        .page.active-page { display:block; }
+        @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-        .card { background: var(--card); padding: 45px 25px; border-radius: 20px; border: 1px solid var(--border); text-align: center; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden; }
-        .card:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3); }
-        .card-emoji { font-size: 3.5rem; margin-bottom: 15px; position: relative; z-index: 1; }
-        .card-title { font-weight: 800; text-transform: uppercase; letter-spacing: 1px; position: relative; z-index: 1; }
+        .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:20px; }
+        .card { background:var(--card); padding:40px 20px; border-radius:20px; border:1px solid var(--border); text-align:center; cursor:pointer; transition:all 0.3s; }
+        .card:hover { border-color:var(--accent); transform:translateY(-5px); box-shadow:0 15px 40px rgba(0,0,0,0.3); }
+        .card-emoji { font-size:3rem; margin-bottom:12px; }
+        .card-title { font-weight:800; text-transform:uppercase; letter-spacing:1px; font-size:0.95rem; }
 
-        .u-input { width: 100%; padding: 16px 20px; background: var(--bg); border: 1px solid var(--border); border-radius: 14px; color: var(--text); outline: none; margin-bottom: 8px; font-size: 0.95rem; transition: all 0.3s ease; resize: vertical; }
-        .u-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(212, 163, 115, 0.1); }
-        .u-input.error { border-color: var(--error); box-shadow: 0 0 0 3px var(--error-bg); }
-        textarea.u-input { min-height: 80px; }
-        input[type="color"].u-input { padding: 8px 20px; height: 50px; cursor: pointer; }
+        .u-input { width:100%; padding:14px 16px; background:var(--bg); border:1px solid var(--border); border-radius:12px; color:var(--text); outline:none; font-size:0.9rem; transition:0.3s; resize:vertical; }
+        .u-input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(212,163,115,0.1); }
+        .u-input.error { border-color:var(--error); }
+        textarea.u-input { min-height:80px; }
+        input[type="color"].u-input { padding:8px 16px; height:45px; cursor:pointer; }
+        select.u-input { appearance:auto; }
 
-        .btn { padding: 14px 28px; border-radius: 14px; border: none; font-weight: 700; cursor: pointer; transition: all 0.3s ease; font-size: 0.95rem; letter-spacing: 0.5px; }
-        .btn-accent { background: linear-gradient(135deg, var(--accent), var(--accent-light)); color: #000; }
-        .btn-accent:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 8px 25px rgba(212, 163, 115, 0.3); }
-        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
-        .btn-outline:hover { border-color: var(--accent); background: rgba(212, 163, 115, 0.05); }
-        .btn-danger { background: var(--error); color: #fff; }
-        .btn-sm { padding: 10px 18px; font-size: 0.8rem; border-radius: 10px; }
-        .btn-block { width: 100%; }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+        .btn { padding:12px 24px; border-radius:12px; border:none; font-weight:700; cursor:pointer; transition:0.3s; font-size:0.9rem; }
+        .btn-accent { background:linear-gradient(135deg,var(--accent),var(--accent-light)); color:#000; }
+        .btn-accent:hover { opacity:0.9; transform:translateY(-2px); }
+        .btn-outline { background:transparent; border:1px solid var(--border); color:var(--text); }
+        .btn-outline:hover { border-color:var(--accent); }
+        .btn-danger { background:var(--error); color:#fff; }
+        .btn-sm { padding:8px 14px; font-size:0.75rem; border-radius:8px; }
+        .btn-block { width:100%; }
+        .btn:disabled { opacity:0.5; pointer-events:none; }
 
-        .opt-btn { padding: 18px 20px; background: var(--card); border: 2px solid var(--border); border-radius: 14px; color: var(--text); cursor: pointer; text-align: center; font-weight: 700; font-size: 0.9rem; transition: all 0.3s ease; }
-        .opt-btn:hover { border-color: var(--accent); background: var(--card-hover); }
-        .opt-btn.active { border-color: var(--accent); background: rgba(212, 163, 115, 0.15); color: var(--accent); box-shadow: 0 0 20px rgba(212, 163, 115, 0.15); }
+        .opt-btn { padding:16px; background:var(--card); border:2px solid var(--border); border-radius:12px; text-align:center; cursor:pointer; font-weight:700; font-size:0.85rem; transition:0.3s; }
+        .opt-btn:hover { border-color:var(--accent); }
+        .opt-btn.active { border-color:var(--accent); background:rgba(212,163,115,0.15); color:var(--accent); }
 
-        .admin-layout { display: grid; grid-template-columns: 340px 1fr; gap: 25px; align-items: start; }
-        .admin-sidebar { background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid var(--border); }
-        .cat-item { padding: 16px 18px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: all 0.3s ease; }
-        .cat-item:hover { border-color: var(--accent); background: rgba(255,255,255,0.04); }
-        .admin-editor { background: var(--card); padding: 35px; border-radius: 20px; border: 1px solid var(--border); min-height: 400px; }
+        label { display:block; font-size:0.7rem; color:var(--accent); font-weight:700; text-transform:uppercase; margin:18px 0 6px; letter-spacing:1px; }
+        label:first-child { margin-top:0; }
 
-        label { display: block; font-size: 0.75rem; color: var(--accent); font-weight: 700; text-transform: uppercase; margin: 20px 0 8px; letter-spacing: 1.5px; }
-        label:first-child { margin-top: 0; }
+        /* МОДАЛЬНЫЕ ОКНА (формы и админка) */
+        .modal-overlay { position:fixed; inset:0; background:var(--overlay); z-index:10000; display:flex; justify-content:center; align-items:center; backdrop-filter:blur(10px); padding:20px; }
+        .modal-box { background:var(--card); border:1px solid var(--border-light); padding:35px; border-radius:24px; width:100%; max-width:600px; max-height:85vh; overflow-y:auto; border-top:4px solid var(--accent); box-shadow:0 30px 60px rgba(0,0,0,0.5); animation:modalIn 0.3s ease; }
+        .modal-wide { max-width:800px; }
+        @keyframes modalIn { from{opacity:0;transform:scale(0.95)} to{opacity:1;transform:scale(1)} }
 
-        #modal-overlay { position: fixed; inset: 0; background: var(--overlay); z-index: 10000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(10px); padding: 20px; }
-        .modal-box { background: var(--card); border: 1px solid var(--border-light); padding: 35px; border-radius: 24px; width: 100%; max-width: 550px; max-height: 90vh; overflow-y: auto; border-top: 4px solid var(--accent); box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); animation: modalIn 0.3s ease; }
-        @keyframes modalIn { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-        .modal-title { font-weight: 900; margin-bottom: 10px; font-size: 1.5rem; }
-        .modal-text { color: var(--text-dim); margin-bottom: 25px; font-size: 0.9rem; line-height: 1.5; }
-        .modal-extra { margin-bottom: 20px; }
-        .modal-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+        /* БОКОВОЕ МЕНЮ */
+        .sidebar { position:fixed; top:70px; left:0; bottom:0; width:280px; background:var(--card); border-right:1px solid var(--border); z-index:998; overflow-y:auto; padding:30px 20px; transform:translateX(-100%); transition:transform 0.3s ease; }
+        .sidebar.open { transform:translateX(0); }
+        .sidebar-backdrop { position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:997; display:none; }
+        .sidebar-backdrop.show { display:block; }
+        .sidebar-item { display:flex; align-items:center; gap:12px; padding:14px 16px; border-radius:12px; cursor:pointer; transition:0.3s; margin-bottom:5px; font-weight:600; font-size:0.9rem; }
+        .sidebar-item:hover { background:var(--card-hover); }
+        .sidebar-item.active { background:rgba(212,163,115,0.1); color:var(--accent); }
 
-        .login-page { display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        .login-card { background: var(--card); padding: 50px 40px; border-radius: 30px; border: 1px solid var(--border); text-align: center; max-width: 420px; width: 100%; }
-        .login-logo { width: 90px; margin-bottom: 25px; filter: drop-shadow(0 0 25px var(--accent)); }
+        .login-page { display:flex; flex-direction:column; justify-content:center; align-items:center; min-height:100vh; padding:20px; }
+        .login-card { background:var(--card); padding:50px 40px; border-radius:30px; border:1px solid var(--border); text-align:center; max-width:420px; width:100%; }
+        .login-logo { width:90px; margin-bottom:25px; filter:drop-shadow(0 0 25px var(--accent)); }
 
-        .toast { position: fixed; bottom: 30px; right: 30px; z-index: 99999; padding: 16px 24px; border-radius: 12px; font-weight: 600; animation: slideIn 0.3s ease; }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .toast-success { background: var(--success); color: #000; }
-        .toast-error { background: var(--error); color: #fff; }
+        .toast { position:fixed; bottom:30px; right:30px; z-index:99999; padding:14px 22px; border-radius:12px; font-weight:600; animation:slideIn 0.3s; }
+        @keyframes slideIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+        .toast-success { background:var(--success); color:#000; }
+        .toast-error { background:var(--error); color:#fff; }
 
-        .log-entry { padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
-        .log-entry:last-child { border-bottom: none; }
-        .log-type { display: inline-block; padding: 2px 8px; border-radius: 4px; font-weight: 700; font-size: 0.7rem; margin-right: 8px; }
-        .log-type-INFO { background: #06b6d4; color: #000; }
-        .log-type-SUCCESS { background: #22c55e; color: #000; }
-        .log-type-WARN { background: #eab308; color: #000; }
-        .log-type-ERROR { background: #ef4444; color: #fff; }
-        .log-type-SUBMIT { background: #a855f7; color: #fff; }
-        .log-type-ADMIN { background: #3b82f6; color: #fff; }
-        .log-type-BUG { background: #f59e0b; color: #000; }
-
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg); }
-        ::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 3px; }
+        ::-webkit-scrollbar { width:5px; }
+        ::-webkit-scrollbar-track { background:var(--bg); }
+        ::-webkit-scrollbar-thumb { background:var(--border-light); border-radius:3px; }
     </style>
 </head>
 <body>
 
-    <div id="preloader">
-        <img src="image.png" class="loader-logo" alt="LSCSD">
-        <div class="loader-bar"><div class="loader-progress"></div></div>
+<div id="preloader">
+    <img src="image.png" class="loader-logo">
+    <div class="loader-bar"><div class="loader-progress"></div></div>
+</div>
+
+<!-- Боковое меню -->
+<div class="sidebar-backdrop" id="sidebar-backdrop" onclick="closeSidebar()"></div>
+<nav class="sidebar" id="sidebar">
+    <a class="sidebar-item active" onclick="showPage('page-home');closeSidebar()">🏠 Главная</a>
+    <div id="sidebar-admin-items"></div>
+</nav>
+
+<!-- Модальное окно для форм и админки -->
+<div class="modal-overlay" id="modal-overlay" style="display:none;">
+    <div class="modal-box" id="modal-box"></div>
+</div>
+
+<div id="page-login" class="login-page" style="display:none;">
+    <div class="login-card">
+        <img src="image.png" class="login-logo">
+        <h2 style="font-weight:900;font-size:1.8rem;margin-bottom:10px;">LSCSD PORTAL</h2>
+        <p style="color:var(--text-dim);margin-bottom:30px;">Портал подачи заявок</p>
+        <button class="btn btn-block" style="background:#5865F2;color:#fff;font-size:1rem;" onclick="login()">🔐 Войти через Discord</button>
     </div>
+</div>
 
-    <div id="modal-overlay" style="display:none;">
-        <div class="modal-box">
-            <div class="modal-title" id="modal-title"></div>
-            <div class="modal-text" id="modal-text"></div>
-            <div class="modal-extra" id="modal-extra"></div>
-            <div class="modal-actions" id="modal-actions"></div>
-        </div>
+<header id="ui-header">
+    <div style="display:flex;align-items:center;gap:15px;">
+        <button class="btn btn-outline btn-sm" onclick="openSidebar()" style="font-size:1.2rem;">☰</button>
+        <img src="image.png" style="height:38px;cursor:pointer;" onclick="showPage('page-home')">
     </div>
-
-    <div id="page-login" class="login-page" style="display:none;">
-        <div class="login-card">
-            <img src="image.png" class="login-logo" alt="LSCSD">
-            <h2 style="margin-bottom:10px;font-weight:900;font-size:1.8rem;">LSCSD PORTAL</h2>
-            <p style="color:var(--text-dim);margin-bottom:30px;">Портал подачи заявок</p>
-            <button class="btn btn-block" style="background:#5865F2;color:#fff;font-size:1rem;" onclick="login()">🔐 Войти через Discord</button>
-        </div>
+    <div class="header-right">
+        <button class="btn btn-outline btn-sm" onclick="openBug()">🐛 Баг</button>
+        <div id="adm-btn-wrap"></div>
+        <img id="u-ava" style="width:38px;border-radius:50%;border:2px solid var(--accent);cursor:pointer;" onclick="logout()">
     </div>
+</header>
 
-    <header id="ui-header">
-        <img src="image.png" style="height:45px;cursor:pointer;" onclick="showPage('page-home')" alt="Home">
-        <div class="header-right">
-            <button class="btn btn-outline btn-sm" onclick="openBug()">🐛 Баг-репорт</button>
-            <div id="adm-btn-wrap"></div>
-            <img id="u-ava" style="width:42px;border-radius:50%;border:2px solid var(--accent);cursor:pointer;" onclick="logout()" alt="User">
-        </div>
-    </header>
-
-    <div class="container" id="main-container">
-        
-        <div id="page-home" class="page active-page">
-            <h1 style="margin-bottom:10px;font-weight:900;font-size:2.2rem;">📋 Доступные заявки</h1>
-            <p style="color:var(--text-dim);margin-bottom:35px;">Выберите форму для заполнения</p>
-            <div id="grid-main" class="grid"></div>
-        </div>
-
-        <div id="page-apply" class="page">
-            <div style="background:var(--card);padding:40px;border-radius:24px;border:1px solid var(--border);">
-                <button class="btn btn-outline btn-sm" onclick="showPage('page-home')" style="margin-bottom:25px;">← НАЗАД К ФОРМАМ</button>
-                <h2 id="apply-title" style="font-weight:900;font-size:1.8rem;margin-bottom:30px;"></h2>
-                <div id="dept-selector" style="display:none;margin-bottom:30px;">
-                    <label id="dept-label"></label>
-                    <div id="dept-btns" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;"></div>
-                </div>
-                <div id="apply-fields"></div>
-                <button id="submit-btn" class="btn btn-accent btn-block" style="margin-top:20px;font-size:1rem;" onclick="submitApp()">📨 ОТПРАВИТЬ ЗАЯВКУ</button>
-            </div>
-        </div>
-
-        <div id="page-admin" class="page">
-            <div class="admin-layout">
-                <div class="admin-sidebar">
-                    <label style="margin-top:0;">📂 ФОРМЫ</label>
-                    <div id="admin-cat-list"></div>
-                    <button class="btn btn-accent btn-block btn-sm" onclick="addForm()">+ СОЗДАТЬ ФОРМУ</button>
-                    
-                    <div id="owner-tools" style="display:none;margin-top:25px;padding-top:25px;border-top:1px solid var(--border);">
-                        <label style="margin-top:0;">⚙️ УПРАВЛЕНИЕ</label>
-                        <button class="btn btn-outline btn-block btn-sm" style="margin-bottom:8px;" onclick="manageAdmins()">👥 Администраторы</button>
-                        <button class="btn btn-outline btn-block btn-sm" style="margin-bottom:8px;" onclick="manageLvls()">🏷️ Названия уровней</button>
-                        <button class="btn btn-outline btn-block btn-sm" onclick="viewLogs()">📋 Логи системы</button>
-                    </div>
-                </div>
-                <div class="admin-editor" id="admin-editor">
-                    <div style="text-align:center;color:var(--text-dim);margin-top:80px;">
-                        <div style="font-size:4rem;margin-bottom:20px;">📝</div>
-                        <p>Выберите форму слева для редактирования</p>
-                        <p style="font-size:0.8rem;">или создайте новую</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+<div class="container" id="main-container">
+    <div id="page-home" class="page active-page">
+        <h1 style="font-weight:900;font-size:2rem;margin-bottom:10px;">📋 Доступные заявки</h1>
+        <p style="color:var(--text-dim);margin-bottom:30px;">Выберите форму для заполнения</p>
+        <div id="grid-main" class="grid"></div>
     </div>
+</div>
 
 <script>
-    const API_BASE = 'https://meri-server.64.188.66.210.nip.io';
+const API_BASE = 'https://meri-server.64.188.66.210.nip.io';
+const state = { user:null, cats:[], activeCat:null, selDept:null, userLevel:0, lvlNames:[], admins:[] };
+
+function toast(msg,type='success'){
+    document.querySelectorAll('.toast').forEach(e=>e.remove());
+    const t=document.createElement('div');
+    t.className='toast toast-'+type;
+    t.textContent=msg;
+    document.body.appendChild(t);
+    setTimeout(()=>t.remove(),3000);
+}
+
+async function init(){
+    const hash=window.location.hash.slice(1);
+    const params=new URLSearchParams(hash);
+    let token=params.get('access_token')||localStorage.getItem('sd_token');
+    if(token){
+        window.location.hash='';
+        localStorage.setItem('sd_token',token);
+        try{
+            const res=await fetch(API_BASE+'/api/user/me',{headers:{Authorization:'Bearer '+token}});
+            if(!res.ok)throw new Error('Invalid');
+            const data=await res.json();
+            state.user=data;
+            state.userLevel=data.level;
+            state.lvlNames=data.lvlNames||[];
+            await loadData();
+            document.getElementById('ui-header').style.display='flex';
+            document.getElementById('main-container').style.display='block';
+            renderHeader();
+            renderSidebar();
+            document.getElementById('preloader').style.display='none';
+        }catch(e){logout();}
+    }else{
+        document.getElementById('preloader').style.display='none';
+        document.getElementById('page-login').style.display='flex';
+    }
+}
+
+function login(){window.location.href=API_BASE+'/login';}
+function logout(){localStorage.clear();window.location.reload();}
+
+function showPage(id){
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active-page'));
+    document.getElementById(id).classList.add('active-page');
+    closeAllModals();
+}
+
+function openModal(content){
+    document.getElementById('modal-box').innerHTML=content;
+    document.getElementById('modal-overlay').style.display='flex';
+}
+function closeModal(){
+    document.getElementById('modal-overlay').style.display='none';
+}
+function closeAllModals(){
+    closeModal();
+    closeSidebar();
+}
+document.getElementById('modal-overlay').addEventListener('click',function(e){if(e.target===this)closeModal();});
+
+function openSidebar(){
+    document.getElementById('sidebar').classList.add('open');
+    document.getElementById('sidebar-backdrop').classList.add('show');
+}
+function closeSidebar(){
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebar-backdrop').classList.remove('show');
+}
+
+function renderHeader(){
+    if(!state.user)return;
+    document.getElementById('u-ava').src='https://cdn.discordapp.com/avatars/'+state.user.id+'/'+state.user.avatar+'.png';
+    document.getElementById('u-ava').title=state.user.username;
+    document.getElementById('adm-btn-wrap').innerHTML='';
+}
+
+function renderSidebar(){
+    const sidebarAdmin=document.getElementById('sidebar-admin-items');
+    sidebarAdmin.innerHTML='';
+    if(state.userLevel>0){
+        sidebarAdmin.innerHTML+=`<a class="sidebar-item" onclick="openAdminPanel()">⚡ Админ-панель</a>`;
+        if(state.userLevel>=4){
+            sidebarAdmin.innerHTML+=`<a class="sidebar-item" onclick="openAdminsList()">👥 Администраторы</a>`;
+            sidebarAdmin.innerHTML+=`<a class="sidebar-item" onclick="openLvlNames()">🏷️ Названия уровней</a>`;
+            sidebarAdmin.innerHTML+=`<a class="sidebar-item" onclick="openLogs()">📋 Логи</a>`;
+        }
+    }
+}
+
+async function loadData(){
+    const catsRes=await fetch(API_BASE+'/api/categories');
+    state.cats=await catsRes.json();
+    renderHome();
+    try{
+        const admRes=await fetch(API_BASE+'/api/admin/admins',{headers:{Authorization:'Bearer '+localStorage.getItem('sd_token')}});
+        if(admRes.ok)state.admins=await admRes.json();
+    }catch(e){}
+}
+
+function renderHome(){
+    const grid=document.getElementById('grid-main');
+    if(state.cats.length===0){
+        grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--text-dim);"><div style="font-size:4rem;">📭</div><p>Нет доступных форм</p></div>';
+        return;
+    }
+    grid.innerHTML='';
+    state.cats.forEach(c=>{
+        const card=document.createElement('div');
+        card.className='card';
+        card.innerHTML=`<div class="card-emoji">${c.emoji||'📁'}</div><div class="card-title">${c.name}</div>`;
+        card.onclick=()=>openFormModal(c.id);
+        grid.appendChild(card);
+    });
+}
+
+function openFormModal(id){
+    state.activeCat=state.cats.find(c=>c.id==id);
+    state.selDept=null;
+    let html=`<h2 style="font-weight:900;margin-bottom:20px;">${state.activeCat.emoji||''} ${state.activeCat.name}</h2>`;
     
-    const state = {
-        user: null,
-        cats: [],
-        activeCat: null,
-        selDept: null,
-        userLevel: 0,
-        lvlNames: []
-    };
-
-    function toast(msg, type = 'success') {
-        const existing = document.querySelector('.toast');
-        if (existing) existing.remove();
-        const t = document.createElement('div');
-        t.className = `toast toast-${type}`;
-        t.textContent = msg;
-        document.body.appendChild(t);
-        setTimeout(() => t.remove(), 3000);
-    }
-
-    async function init() {
-        const hash = window.location.hash.slice(1);
-        const params = new URLSearchParams(hash);
-        let token = params.get('access_token') || localStorage.getItem('sd_token');
-        if (token) {
-            window.location.hash = '';
-            localStorage.setItem('sd_token', token);
-            try {
-                const res = await fetch(`${API_BASE}/api/user/me`, { headers: { Authorization: `Bearer ${token}` } });
-                if (!res.ok) throw new Error('Invalid token');
-                const data = await res.json();
-                state.user = data;
-                state.userLevel = data.level;
-                state.lvlNames = data.lvlNames || [];
-                await loadCategories();
-                document.getElementById('ui-header').style.display = 'flex';
-                document.getElementById('main-container').style.display = 'block';
-                renderHeader();
-                document.getElementById('preloader').style.opacity = '0';
-                setTimeout(() => document.getElementById('preloader').style.display = 'none', 500);
-            } catch (e) { logout(); }
-        } else {
-            document.getElementById('preloader').style.display = 'none';
-            document.getElementById('page-login').style.display = 'flex';
-        }
-    }
-
-    function login() { window.location.href = `${API_BASE}/login`; }
-    function logout() { localStorage.removeItem('sd_token'); window.location.hash = ''; window.location.reload(); }
-
-    function showPage(id) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
-        const page = document.getElementById(id);
-        if (page) page.classList.add('active-page');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function renderHeader() {
-        if (state.user) {
-            document.getElementById('u-ava').src = `https://cdn.discordapp.com/avatars/${state.user.id}/${state.user.avatar}.png`;
-            document.getElementById('u-ava').title = state.user.username;
-            const admWrap = document.getElementById('adm-btn-wrap');
-            if (state.userLevel > 0) {
-                admWrap.innerHTML = `<button class="btn btn-accent btn-sm" onclick="showPage('page-admin')">⚡ АДМИН-ПАНЕЛЬ</button>`;
-                document.getElementById('owner-tools').style.display = state.userLevel >= 4 ? 'block' : 'none';
-            } else { admWrap.innerHTML = ''; }
-        }
-    }
-
-    async function loadCategories() {
-        const res = await fetch(`${API_BASE}/api/categories`);
-        state.cats = await res.json();
-        renderHome();
-        if (document.getElementById('admin-cat-list')) renderAdminList();
-    }
-
-    function renderHome() {
-        const grid = document.getElementById('grid-main');
-        if (!grid) return;
-        grid.innerHTML = state.cats.length === 0 
-            ? '<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--text-dim);"><div style="font-size:4rem;margin-bottom:20px;">📭</div><p>Нет доступных форм</p></div>'
-            : '';
-        state.cats.forEach(c => {
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `<div class="card-emoji">${c.emoji || '📁'}</div><div class="card-title">${c.name}</div>`;
-            card.onclick = () => openForm(c.id);
-            grid.appendChild(card);
-        });
-    }
-
-    function openForm(id) {
-        state.activeCat = state.cats.find(c => c.id == id);
-        state.selDept = null;
-        document.getElementById('apply-title').innerText = state.activeCat.name;
-        const fields = document.getElementById('apply-fields');
-        fields.innerHTML = '';
-        const deptSelector = document.getElementById('dept-selector');
-        deptSelector.style.display = 'none';
-
-        state.activeCat.questions.forEach(q => {
-            if (q.includes('[') && q.includes('|')) {
-                deptSelector.style.display = 'block';
-                document.getElementById('dept-label').innerText = q.split('[')[0].trim();
-                const bBox = document.getElementById('dept-btns');
-                bBox.innerHTML = '';
-                const match = q.match(/\[(.*?)\]/);
-                if (match) {
-                    const rawOptions = match[1].split(/,(?![^[]*\])/);
-                    rawOptions.forEach(optionStr => {
-                        const parts = optionStr.split('|').map(s => s.trim()).filter(s => s);
-                        if (parts.length >= 3) {
-                            const btn = document.createElement('div');
-                            btn.className = 'opt-btn';
-                            btn.innerText = parts[0];
-                            btn.onclick = () => {
-                                bBox.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('active'));
-                                btn.classList.add('active');
-                                state.selDept = { name: parts[0], role: parts[1], webhook: parts[2] };
-                            };
-                            bBox.appendChild(btn);
-                        }
-                    });
-                }
-            } else {
-                const isRequired = q.endsWith('*');
-                const cleanName = q.replace('*', '');
-                const fieldDiv = document.createElement('div');
-                fieldDiv.style.marginBottom = '15px';
-                fieldDiv.innerHTML = `
-                    <label style="margin-top:0;">${cleanName} ${isRequired ? '<span style="color:var(--error);">*</span>' : ''}</label>
-                    <textarea class="u-input" data-req="${isRequired}" rows="1" 
-                        oninput="this.style.height='';this.style.height=this.scrollHeight+'px'"
-                        placeholder="Введите ${cleanName.toLowerCase()}"></textarea>
-                `;
-                fields.appendChild(fieldDiv);
-            }
-        });
-        showPage('page-apply');
-    }
-
-    async function submitApp() {
-        const inputs = Array.from(document.querySelectorAll('#apply-fields textarea'));
-        let valid = true;
-        const answers = [];
-        inputs.forEach(i => {
-            const val = i.value.trim();
-            answers.push(val);
-            if (i.dataset.req === 'true' && !val) { i.classList.add('error'); valid = false; }
-            else i.classList.remove('error');
-        });
-        if (!valid) return toast('Заполните все обязательные поля!', 'error');
-        if (!state.selDept && document.getElementById('dept-selector').style.display !== 'none') return toast('Выберите отдел!', 'error');
-
-        const payload = { categoryId: state.activeCat.id, selectedDept: state.selDept, answers };
-        const btn = document.getElementById('submit-btn');
-        btn.disabled = true; btn.innerHTML = '⏳ ОТПРАВКА...';
-        try {
-            const res = await fetch(`${API_BASE}/api/submit`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('sd_token')}` },
-                body: JSON.stringify(payload)
-            });
-            if (!res.ok) throw new Error(await res.text());
-            toast('✅ Заявка успешно отправлена!');
-            showPage('page-home');
-        } catch (e) { toast('❌ Ошибка: ' + e.message, 'error'); }
-        finally { btn.disabled = false; btn.innerHTML = '📨 ОТПРАВИТЬ ЗАЯВКУ'; }
-    }
-
-    function modal(title, text) {
-        document.getElementById('modal-title').innerText = title;
-        document.getElementById('modal-text').innerText = text || '';
-        document.getElementById('modal-overlay').style.display = 'flex';
-    }
-
-    function closeModal() {
-        document.getElementById('modal-overlay').style.display = 'none';
-        document.getElementById('modal-extra').innerHTML = '';
-        document.getElementById('modal-actions').innerHTML = '';
-    }
-
-    document.getElementById('modal-overlay').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
-
-    function openBug() {
-        modal('🐛 Сообщить об ошибке', 'Опишите проблему, которую вы обнаружили.');
-        document.getElementById('modal-extra').innerHTML = `<textarea id="bug-text" class="u-input" style="height:120px;" placeholder="Что пошло не так?"></textarea>`;
-        document.getElementById('modal-actions').innerHTML = `
-            <button class="btn btn-accent" onclick="sendBug()">📨 Отправить</button>
-            <button class="btn btn-outline" onclick="closeModal()">Отмена</button>
-        `;
-    }
-
-    async function sendBug() {
-        const desc = document.getElementById('bug-text').value;
-        if (!desc.trim()) return toast('Введите описание ошибки!', 'error');
-        try {
-            await fetch(`${API_BASE}/api/bug`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('sd_token')}` },
-                body: JSON.stringify({ description: desc })
-            });
-            closeModal();
-            toast('✅ Отчёт отправлен!');
-        } catch (e) { toast('❌ Ошибка отправки', 'error'); }
-    }
-
-    // ==================== АДМИН-ПАНЕЛЬ ====================
-    function renderAdminList() {
-        const list = document.getElementById('admin-cat-list');
-        if (!list) return;
-        list.innerHTML = '';
-        state.cats.forEach(c => {
-            const minLvl = c.minLvl || 1;
-            const acc = state.userLevel >= minLvl;
-            const item = document.createElement('div');
-            item.className = 'cat-item';
-            item.style.opacity = acc ? '1' : '0.4';
-            item.style.pointerEvents = acc ? 'auto' : 'none';
-            item.innerHTML = `
-                <span style="font-weight:600;">${c.emoji || '📁'} ${c.name}</span>
-                <span style="font-size:0.65rem;background:${c.color || '#d4a373'};color:#000;padding:3px 8px;border-radius:6px;font-weight:700;">
-                    ${state.lvlNames[minLvl-1] || 'Lvl '+minLvl}
-                </span>
-            `;
-            item.onclick = () => editForm(c.id);
-            list.appendChild(item);
-        });
-    }
-
-    function editForm(id) {
-        const cat = state.cats.find(c => c.id == id);
-        const editor = document.getElementById('admin-editor');
-        editor.innerHTML = `
-            <h2 style="margin-bottom:25px;font-weight:900;">${cat.emoji || '📁'} ${cat.name}</h2>
-            
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
-                <div>
-                    <label>Название формы</label>
-                    <input id="ed-n" class="u-input" value="${cat.name}">
-                </div>
-                <div>
-                    <label>Эмодзи</label>
-                    <input id="ed-e" class="u-input" value="${cat.emoji || '📁'}">
-                </div>
-            </div>
-            
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;">
-                <div>
-                    <label>Мин. уровень доступа</label>
-                    <select id="ed-l" class="u-input" style="appearance:auto;">
-                        ${state.lvlNames.map((n,i) => `<option value="${i+1}" ${cat.minLvl==i+1?'selected':''}>${i+1} — ${n}</option>`).join('')}
-                    </select>
-                </div>
-                <div>
-                    <label>Цвет эмбеда</label>
-                    <input id="ed-c" type="color" class="u-input" value="${cat.color || '#d4a373'}">
-                </div>
-                <div>
-                    <label>Превью цвета</label>
-                    <div id="color-preview" style="height:50px;border-radius:14px;background:${cat.color || '#d4a373'};border:1px solid var(--border);"></div>
-                </div>
-            </div>
-            
-            <label>Общий Webhook URL</label>
-            <input id="ed-w" class="u-input" value="${cat.webhook || ''}" placeholder="https://discord.com/api/webhooks/...">
-            
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
-                <div>
-                    <label>Thumbnail URL (маленькая картинка справа)</label>
-                    <input id="ed-th" class="u-input" value="${cat.thumbnail || ''}" placeholder="https://...">
-                </div>
-                <div>
-                    <label>Image URL (большая картинка внизу)</label>
-                    <input id="ed-im" class="u-input" value="${cat.image || ''}" placeholder="https://...">
-                </div>
-            </div>
-            
-            <label>Вопросы <span style="font-weight:400;text-transform:none;letter-spacing:0;">(по одному на строку, * — обязательно. Для выбора отдела: Вопрос [Отдел1|роль|webhook, Отдел2|роль|webhook])</span></label>
-            <textarea id="ed-q" class="u-input" style="height:200px;font-family:monospace;font-size:0.85rem;">${cat.questions.join('\n')}</textarea>
-            
-            <div style="display:flex;gap:10px;margin-top:25px;">
-                <button class="btn btn-accent" onclick="saveForm(${id})">💾 Сохранить</button>
-                <button class="btn btn-danger" onclick="deleteForm(${id})">🗑️ Удалить</button>
-            </div>
-        `;
-
-        // Live preview цвета
-        document.getElementById('ed-c').addEventListener('input', function() {
-            document.getElementById('color-preview').style.background = this.value;
-        });
-    }
-
-    async function saveForm(id) {
-        const idx = state.cats.findIndex(c => c.id == id);
-        state.cats[idx] = {
-            ...state.cats[idx],
-            name: document.getElementById('ed-n').value,
-            emoji: document.getElementById('ed-e').value,
-            minLvl: parseInt(document.getElementById('ed-l').value),
-            webhook: document.getElementById('ed-w').value,
-            questions: document.getElementById('ed-q').value.split('\n').filter(q => q.trim()),
-            color: document.getElementById('ed-c').value,
-            thumbnail: document.getElementById('ed-th').value,
-            image: document.getElementById('ed-im').value
-        };
-        await updateCategoriesOnServer();
-        toast('✅ Форма сохранена');
-    }
-
-    async function deleteForm(id) {
-        if (!confirm('Вы уверены? Форма будет удалена безвозвратно.')) return;
-        state.cats = state.cats.filter(c => c.id != id);
-        await updateCategoriesOnServer();
-        document.getElementById('admin-editor').innerHTML = '<div style="text-align:center;color:var(--text-dim);margin-top:80px;"><div style="font-size:4rem;margin-bottom:20px;">📝</div><p>Выберите форму слева для редактирования</p></div>';
-        toast('🗑️ Форма удалена');
-    }
-
-    function addForm() {
-        state.cats.push({ id: Date.now(), name: 'Новая форма', emoji: '📋', questions: ['Ваше имя*'], minLvl: 1, color: '#d4a373', thumbnail: '', image: '' });
-        updateCategoriesOnServer();
-    }
-
-    async function updateCategoriesOnServer() {
-        try {
-            await fetch(`${API_BASE}/api/admin/categories`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('sd_token')}` },
-                body: JSON.stringify({ categories: state.cats })
-            });
-            renderHome();
-            renderAdminList();
-        } catch (e) { toast('❌ Ошибка сохранения', 'error'); }
-    }
-
-    function manageAdmins() {
-        modal('👥 Управление админами', 'Введите ID пользователя Discord и уровень доступа.');
-        document.getElementById('modal-extra').innerHTML = `
-            <input id="mid" class="u-input" placeholder="ID Discord (например: 1097047579876929616)">
-            <input id="mlvl" type="number" class="u-input" placeholder="Уровень (0 = снять доступ)">
-        `;
-        document.getElementById('modal-actions').innerHTML = `
-            <button class="btn btn-accent" onclick="setAdmin()">💾 Сохранить</button>
-            <button class="btn btn-outline" onclick="closeModal()">Отмена</button>
-        `;
-    }
-
-    async function setAdmin() {
-        const userId = document.getElementById('mid').value.trim();
-        const level = parseInt(document.getElementById('mlvl').value);
-        if (!userId || isNaN(level)) return;
-        try {
-            await fetch(`${API_BASE}/api/admin/admins`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('sd_token')}` },
-                body: JSON.stringify({ userId, level })
-            });
-            closeModal();
-            toast('✅ Админ обновлён');
-        } catch (e) { toast('❌ Ошибка', 'error'); }
-    }
-
-    function manageLvls() {
-        modal('🏷️ Названия уровней', 'Измените названия для каждого уровня доступа.');
-        document.getElementById('modal-extra').innerHTML = state.lvlNames.map((n,i) => 
-            `<input class="u-input l-edit" value="${n}" placeholder="Уровень ${i+1}">`
-        ).join('');
-        document.getElementById('modal-actions').innerHTML = `
-            <button class="btn btn-accent" onclick="saveLvlNames()">💾 Сохранить</button>
-            <button class="btn btn-outline" onclick="closeModal()">Отмена</button>
-        `;
-    }
-
-    async function saveLvlNames() {
-        const names = Array.from(document.querySelectorAll('.l-edit')).map(i => i.value.trim());
-        if (names.length !== 5) return toast('❌ Должно быть ровно 5 уровней', 'error');
-        try {
-            await fetch(`${API_BASE}/api/admin/lvlnames`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('sd_token')}` },
-                body: JSON.stringify({ names })
-            });
-            closeModal();
-            state.lvlNames = names;
-            if (document.getElementById('admin-cat-list')) renderAdminList();
-            toast('✅ Названия сохранены');
-        } catch (e) { toast('❌ Ошибка', 'error'); }
-    }
-
-    async function viewLogs() {
-        modal('📋 Логи системы', 'Последние действия в системе.');
-        try {
-            const res = await fetch(`${API_BASE}/api/admin/logs?limit=50`, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('sd_token')}` }
-            });
-            const logs = await res.json();
-            let html = '<div style="max-height:400px;overflow-y:auto;">';
-            if (logs.length === 0) {
-                html += '<p style="color:var(--text-dim);text-align:center;padding:20px;">Логи пусты</p>';
-            } else {
-                logs.forEach(l => {
-                    html += `
-                        <div class="log-entry">
-                            <span class="log-type log-type-${l.type}">${l.type}</span>
-                            <span style="color:var(--text-dim);font-size:0.75rem;">${l.timestamp}</span>
-                            <span style="font-weight:600;">${l.user}</span>
-                            <span style="color:var(--text-dim);">— ${l.action}</span>
-                            ${l.details ? `<div style="color:var(--text-dim);font-size:0.8rem;margin-top:4px;">${l.details}</div>` : ''}
-                        </div>
-                    `;
+    state.activeCat.questions.forEach(q=>{
+        if(q.includes('[')&&q.includes('|')){
+            html+=`<label>${q.split('[')[0].trim()}</label><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:15px;" id="dept-btns">`;
+            const match=q.match(/\[(.*?)\]/);
+            if(match){
+                match[1].split(',').forEach(opt=>{
+                    const parts=opt.split('|').map(s=>s.trim());
+                    if(parts.length>=3){
+                        html+=`<div class="opt-btn" data-name="${parts[0]}" data-role="${parts[1]}" data-webhook="${parts[2]}" onclick="selectDept(this)">${parts[0]}</div>`;
+                    }
                 });
             }
-            html += '</div>';
-            document.getElementById('modal-extra').innerHTML = html;
-            document.getElementById('modal-actions').innerHTML = `<button class="btn btn-outline" onclick="closeModal()">Закрыть</button>`;
-        } catch (e) { toast('❌ Ошибка загрузки логов', 'error'); }
-    }
+            html+=`</div>`;
+        }else{
+            const isReq=q.endsWith('*');
+            const clean=q.replace('*','');
+            html+=`<label>${clean} ${isReq?'<span style="color:var(--error);">*</span>':''}</label>
+            <textarea class="u-input app-field" data-req="${isReq}" rows="2" placeholder="Введите ${clean.toLowerCase()}"></textarea>`;
+        }
+    });
+    
+    html+=`<div style="display:flex;gap:10px;margin-top:20px;">
+        <button class="btn btn-accent btn-block" onclick="submitAppModal()">📨 Отправить</button>
+        <button class="btn btn-outline" onclick="closeModal()">Отмена</button>
+    </div>`;
+    
+    openModal(html);
+}
 
-    window.onload = init;
+function selectDept(el){
+    document.querySelectorAll('#dept-btns .opt-btn').forEach(b=>b.classList.remove('active'));
+    el.classList.add('active');
+    state.selDept={name:el.dataset.name,role:el.dataset.role,webhook:el.dataset.webhook};
+}
+
+async function submitAppModal(){
+    const inputs=document.querySelectorAll('.app-field');
+    let valid=true;
+    const answers=[];
+    inputs.forEach(i=>{
+        const val=i.value.trim();
+        answers.push(val);
+        if(i.dataset.req==='true'&&!val){i.classList.add('error');valid=false;}
+        else i.classList.remove('error');
+    });
+    if(!valid)return toast('Заполните обязательные поля!','error');
+    
+    try{
+        const res=await fetch(API_BASE+'/api/submit',{
+            method:'POST',
+            headers:{'Content-Type':'application/json',Authorization:'Bearer '+localStorage.getItem('sd_token')},
+            body:JSON.stringify({categoryId:state.activeCat.id,selectedDept:state.selDept,answers})
+        });
+        if(!res.ok)throw new Error(await res.text());
+        closeModal();
+        toast('✅ Заявка отправлена!');
+    }catch(e){toast('❌ Ошибка: '+e.message,'error');}
+}
+
+// ==================== АДМИН-ПАНЕЛЬ ====================
+function openAdminPanel(){
+    closeAllModals();
+    let html=`<h2 style="font-weight:900;margin-bottom:15px;">⚡ Админ-панель</h2><p style="color:var(--text-dim);margin-bottom:20px;">Управление формами</p>`;
+    
+    state.cats.forEach(c=>{
+        html+=`<div style="padding:15px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="editFormModal(${c.id})">
+            <span><b>${c.emoji||'📁'} ${c.name}</b></span>
+            <span style="font-size:0.65rem;background:${c.color||'#d4a373'};color:#000;padding:3px 8px;border-radius:6px;">${state.lvlNames[(c.minLvl||1)-1]||'Lvl'}</span>
+        </div>`;
+    });
+    
+    html+=`<button class="btn btn-accent btn-block btn-sm" onclick="addFormModal()" style="margin-top:10px;">+ Новая форма</button>
+    <button class="btn btn-outline btn-block btn-sm" onclick="closeModal()" style="margin-top:5px;">Закрыть</button>`;
+    
+    document.getElementById('modal-box').classList.add('modal-wide');
+    openModal(html);
+}
+
+function editFormModal(id){
+    const cat=state.cats.find(c=>c.id==id);
+    let html=`<h2 style="font-weight:900;margin-bottom:20px;">✏️ ${cat.name}</h2>
+    <label>Название</label><input id="ed-n" class="u-input" value="${cat.name}">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">
+        <div><label>Эмодзи</label><input id="ed-e" class="u-input" value="${cat.emoji||'📁'}"></div>
+        <div><label>Мин. уровень</label><select id="ed-l" class="u-input">${state.lvlNames.map((n,i)=>`<option value="${i+1}" ${(cat.minLvl||1)==i+1?'selected':''}>${i+1} — ${n}</option>`).join('')}</select></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">
+        <div><label>Цвет эмбеда</label><input id="ed-c" type="color" class="u-input" value="${cat.color||'#d4a373'}"></div>
+        <div><label>Пинг-роль (ID)</label><input id="ed-p" class="u-input" value="${cat.pingRole||''}" placeholder="123456789"></div>
+    </div>
+    <label>Webhook URL</label><input id="ed-w" class="u-input" value="${cat.webhook||''}">
+    <label>Thumbnail URL</label><input id="ed-th" class="u-input" value="${cat.thumbnail||''}">
+    <label>Image URL</label><input id="ed-im" class="u-input" value="${cat.image||''}">
+    <label>Вопросы</label><textarea id="ed-q" class="u-input" style="height:150px;font-family:monospace;">${cat.questions.join('\n')}</textarea>
+    <div style="display:flex;gap:10px;margin-top:20px;">
+        <button class="btn btn-accent btn-block" onclick="saveForm(${id})">💾 Сохранить</button>
+        <button class="btn btn-danger" onclick="deleteForm(${id})">🗑️</button>
+    </div>
+    <button class="btn btn-outline btn-block btn-sm" onclick="openAdminPanel()" style="margin-top:5px;">← Назад</button>`;
+    openModal(html);
+}
+
+function addFormModal(){
+    state.cats.push({id:Date.now(),name:'Новая форма',emoji:'📋',questions:['Ваше имя*'],minLvl:1,color:'#d4a373',pingRole:'',thumbnail:'',image:''});
+    editFormModal(state.cats[state.cats.length-1].id);
+}
+
+async function saveForm(id){
+    const idx=state.cats.findIndex(c=>c.id==id);
+    state.cats[idx]={
+        ...state.cats[idx],
+        name:document.getElementById('ed-n').value,
+        emoji:document.getElementById('ed-e').value,
+        minLvl:parseInt(document.getElementById('ed-l').value),
+        webhook:document.getElementById('ed-w').value,
+        questions:document.getElementById('ed-q').value.split('\n').filter(q=>q.trim()),
+        color:document.getElementById('ed-c').value,
+        pingRole:document.getElementById('ed-p').value,
+        thumbnail:document.getElementById('ed-th').value,
+        image:document.getElementById('ed-im').value
+    };
+    await updateCategories();
+    toast('✅ Сохранено');
+    openAdminPanel();
+}
+
+async function deleteForm(id){
+    if(!confirm('Удалить?'))return;
+    state.cats=state.cats.filter(c=>c.id!=id);
+    await updateCategories();
+    toast('🗑️ Удалено');
+    openAdminPanel();
+}
+
+async function updateCategories(){
+    await fetch(API_BASE+'/api/admin/categories',{
+        method:'POST',
+        headers:{'Content-Type':'application/json',Authorization:'Bearer '+localStorage.getItem('sd_token')},
+        body:JSON.stringify({categories:state.cats})
+    });
+    renderHome();
+}
+
+// ==================== АДМИНЫ ====================
+async function openAdminsList(){
+    closeAllModals();
+    const res=await fetch(API_BASE+'/api/admin/admins',{headers:{Authorization:'Bearer '+localStorage.getItem('sd_token')}});
+    state.admins=await res.json();
+    let html=`<h2 style="font-weight:900;margin-bottom:15px;">👥 Администраторы</h2>`;
+    if(state.admins.length===0){
+        html+=`<p style="color:var(--text-dim);">Нет администраторов</p>`;
+    }else{
+        state.admins.forEach(a=>{
+            html+=`<div style="padding:12px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:10px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;">
+                <span>ID: ${a.userId}</span>
+                <span style="background:var(--accent);color:#000;padding:3px 10px;border-radius:6px;font-weight:700;">${state.lvlNames[a.level-1]||'Lvl '+a.level}</span>
+            </div>`;
+        });
+    }
+    html+=`<label>Добавить/Изменить</label>
+    <input id="mid" class="u-input" placeholder="Discord ID">
+    <input id="mlvl" type="number" class="u-input" placeholder="Уровень (0=удалить)" min="0" max="5">
+    <button class="btn btn-accent btn-block" onclick="saveAdmin()">💾 Сохранить</button>
+    <button class="btn btn-outline btn-block btn-sm" onclick="closeModal()" style="margin-top:5px;">Закрыть</button>`;
+    openModal(html);
+}
+
+async function saveAdmin(){
+    const uid=document.getElementById('mid').value.trim();
+    const lvl=parseInt(document.getElementById('mlvl').value);
+    if(!uid||isNaN(lvl))return;
+    await fetch(API_BASE+'/api/admin/admins',{
+        method:'POST',
+        headers:{'Content-Type':'application/json',Authorization:'Bearer '+localStorage.getItem('sd_token')},
+        body:JSON.stringify({userId:uid,level:lvl})
+    });
+    toast('✅ Сохранено');
+    openAdminsList();
+}
+
+// ==================== УРОВНИ ====================
+function openLvlNames(){
+    closeAllModals();
+    let html=`<h2 style="font-weight:900;margin-bottom:15px;">🏷️ Названия уровней</h2>`;
+    state.lvlNames.forEach((n,i)=>html+=`<input class="u-input l-edit" value="${n}" placeholder="Уровень ${i+1}">`);
+    html+=`<button class="btn btn-accent btn-block" onclick="saveLvls()" style="margin-top:15px;">💾 Сохранить</button>
+    <button class="btn btn-outline btn-block btn-sm" onclick="closeModal()" style="margin-top:5px;">Закрыть</button>`;
+    openModal(html);
+}
+
+async function saveLvls(){
+    const names=Array.from(document.querySelectorAll('.l-edit')).map(i=>i.value.trim());
+    await fetch(API_BASE+'/api/admin/lvlnames',{
+        method:'POST',
+        headers:{'Content-Type':'application/json',Authorization:'Bearer '+localStorage.getItem('sd_token')},
+        body:JSON.stringify({names})
+    });
+    state.lvlNames=names;
+    toast('✅ Сохранено');
+    closeModal();
+}
+
+// ==================== ЛОГИ ====================
+async function openLogs(){
+    closeAllModals();
+    const res=await fetch(API_BASE+'/api/admin/logs',{headers:{Authorization:'Bearer '+localStorage.getItem('sd_token')}});
+    const logs=await res.json();
+    let html=`<h2 style="font-weight:900;margin-bottom:15px;">📋 Логи</h2><div style="max-height:400px;overflow-y:auto;">`;
+    logs.forEach(l=>{
+        html+=`<div style="padding:10px;border-bottom:1px solid var(--border);font-size:0.8rem;">
+            <span style="color:var(--accent);">[${l.timestamp}]</span> <b>${l.user}</b>: ${l.action}
+        </div>`;
+    });
+    html+=`</div><button class="btn btn-outline btn-block btn-sm" onclick="closeModal()" style="margin-top:10px;">Закрыть</button>`;
+    document.getElementById('modal-box').classList.add('modal-wide');
+    openModal(html);
+}
+
+// ==================== БАГ-РЕПОРТ ====================
+function openBug(){
+    const html=`<h2 style="font-weight:900;margin-bottom:15px;">🐛 Баг-репорт</h2>
+    <p style="color:var(--text-dim);margin-bottom:15px;">Опишите проблему</p>
+    <textarea id="bug-text" class="u-input" style="height:120px;"></textarea>
+    <div style="display:flex;gap:10px;margin-top:15px;">
+        <button class="btn btn-accent btn-block" onclick="sendBug()">📨 Отправить</button>
+        <button class="btn btn-outline" onclick="closeModal()">Отмена</button>
+    </div>`;
+    openModal(html);
+}
+
+async function sendBug(){
+    const desc=document.getElementById('bug-text').value;
+    if(!desc.trim())return toast('Введите описание!','error');
+    await fetch(API_BASE+'/api/bug',{
+        method:'POST',
+        headers:{'Content-Type':'application/json',Authorization:'Bearer '+localStorage.getItem('sd_token')},
+        body:JSON.stringify({description:desc})
+    });
+    closeModal();
+    toast('✅ Отправлено');
+}
+
+window.onload=init;
 </script>
 </body>
 </html>
