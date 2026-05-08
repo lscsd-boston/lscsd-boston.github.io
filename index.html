@@ -20,6 +20,11 @@
             --error: #ff4d4d;
             --success: #4ade80;
             --overlay: rgba(0,0,0,0.85);
+            --blue: #5865F2;
+            --purple: #a855f7;
+            --green: #22c55e;
+            --orange: #f59e0b;
+            --red: #ef4444;
         }
 
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; }
@@ -70,7 +75,7 @@
         label { display:block; font-size:0.7rem; color:var(--accent); font-weight:700; text-transform:uppercase; margin:18px 0 6px; letter-spacing:1px; }
         label:first-child { margin-top:0; }
 
-        /* МОДАЛЬНЫЕ ОКНА (формы и админка) */
+        /* МОДАЛЬНЫЕ ОКНА */
         .modal-overlay { position:fixed; inset:0; background:var(--overlay); z-index:10000; display:flex; justify-content:center; align-items:center; backdrop-filter:blur(10px); padding:20px; }
         .modal-box { background:var(--card); border:1px solid var(--border-light); padding:35px; border-radius:24px; width:100%; max-width:600px; max-height:85vh; overflow-y:auto; border-top:4px solid var(--accent); box-shadow:0 30px 60px rgba(0,0,0,0.5); animation:modalIn 0.3s ease; }
         .modal-wide { max-width:800px; }
@@ -94,6 +99,22 @@
         .toast-success { background:var(--success); color:#000; }
         .toast-error { background:var(--error); color:#fff; }
 
+        /* FAQ */
+        .faq-section { margin-bottom: 50px; }
+        .faq-section h2 { font-weight: 900; font-size: 1.6rem; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; }
+        .faq-section .subtitle { color: var(--text-dim); margin-bottom: 25px; font-size: 0.9rem; }
+        .faq-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; }
+        .faq-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 30px; transition: all 0.3s; }
+        .faq-card:hover { border-color: var(--accent-light); transform: translateY(-3px); }
+        .faq-icon { font-size: 2.5rem; margin-bottom: 15px; }
+        .faq-card h3 { font-weight: 800; margin-bottom: 10px; font-size: 1.1rem; }
+        .faq-card p { color: var(--text-dim); font-size: 0.85rem; line-height: 1.6; }
+        .faq-card code { background: rgba(255,255,255,0.05); padding: 3px 8px; border-radius: 6px; font-size: 0.8rem; color: var(--accent); }
+        .faq-tag { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; margin-right: 5px; }
+        .tag-admin { background: var(--blue); color: #fff; }
+        .tag-owner { background: var(--purple); color: #fff; }
+        .tag-all { background: var(--green); color: #000; }
+
         ::-webkit-scrollbar { width:5px; }
         ::-webkit-scrollbar-track { background:var(--bg); }
         ::-webkit-scrollbar-thumb { background:var(--border-light); border-radius:3px; }
@@ -110,10 +131,11 @@
 <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="closeSidebar()"></div>
 <nav class="sidebar" id="sidebar">
     <a class="sidebar-item active" onclick="showPage('page-home');closeSidebar()">🏠 Главная</a>
+    <a class="sidebar-item" onclick="showPage('page-faq');closeSidebar()">📖 FAQ / Гайд</a>
     <div id="sidebar-admin-items"></div>
 </nav>
 
-<!-- Модальное окно для форм и админки -->
+<!-- Модальное окно -->
 <div class="modal-overlay" id="modal-overlay" style="display:none;">
     <div class="modal-box" id="modal-box"></div>
 </div>
@@ -140,10 +162,145 @@
 </header>
 
 <div class="container" id="main-container">
+    
+    <!-- ГЛАВНАЯ -->
     <div id="page-home" class="page active-page">
         <h1 style="font-weight:900;font-size:2rem;margin-bottom:10px;">📋 Доступные заявки</h1>
         <p style="color:var(--text-dim);margin-bottom:30px;">Выберите форму для заполнения</p>
         <div id="grid-main" class="grid"></div>
+    </div>
+
+    <!-- FAQ -->
+    <div id="page-faq" class="page">
+        <h1 style="font-weight:900;font-size:2rem;margin-bottom:10px;">📖 FAQ — Гайд по админ-панели</h1>
+        <p style="color:var(--text-dim);margin-bottom:40px;">Полное руководство по всем возможностям системы</p>
+
+        <!-- Уровни доступа -->
+        <div class="faq-section">
+            <h2>🔐 Уровни доступа</h2>
+            <p class="subtitle">Система использует 5-уровневую модель прав</p>
+            <div class="faq-grid">
+                <div class="faq-card">
+                    <div class="faq-icon">⭐</div>
+                    <h3>Уровень 1-3 <span class="faq-tag tag-admin">Админ</span></h3>
+                    <p>Базовый доступ к админ-панели. Можно редактировать формы, доступные вашему уровню.</p>
+                </div>
+                <div class="faq-card">
+                    <div class="faq-icon">👑</div>
+                    <h3>Уровень 4-5 <span class="faq-tag tag-owner">Владелец</span></h3>
+                    <p>Полный доступ. Управление администраторами, названиями уровней, просмотр логов.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Формы -->
+        <div class="faq-section">
+            <h2>📝 Управление формами</h2>
+            <p class="subtitle">Создание и редактирование форм для подачи заявок</p>
+            <div class="faq-grid">
+                <div class="faq-card">
+                    <div class="faq-icon">🆕</div>
+                    <h3>Создание формы</h3>
+                    <p>Нажмите <code>+ Новая форма</code> в админ-панели. Заполните название, эмодзи, минимальный уровень доступа и вопросы.</p>
+                </div>
+                <div class="faq-card">
+                    <div class="faq-icon">🎨</div>
+                    <h3>Цвет эмбеда</h3>
+                    <p>Каждая форма может иметь свой цвет. Выберите цвет через палитру — он будет использоваться в Discord-эмбеде при отправке заявки.</p>
+                </div>
+                <div class="faq-card">
+                    <div class="faq-icon">🖼️</div>
+                    <h3>Thumbnail & Image</h3>
+                    <p>Добавьте URL картинки в поле <code>Thumbnail URL</code> (маленькая иконка) или <code>Image URL</code> (большая картинка внизу эмбеда).</p>
+                </div>
+                <div class="faq-card">
+                    <div class="faq-icon">📢</div>
+                    <h3>Пинг-роль</h3>
+                    <p>Укажите ID роли Discord в поле <code>Пинг-роль</code>. При отправке заявки эта роль будет упомянута. Работает даже без выбора отдела.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Отделы -->
+        <div class="faq-section">
+            <h2>🏢 Выбор отдела (вложенный список)</h2>
+            <p class="subtitle">Создание опроса с выбором подразделения внутри формы</p>
+            <div class="faq-grid">
+                <div class="faq-card">
+                    <div class="faq-icon">📋</div>
+                    <h3>Формат вопроса</h3>
+                    <p>Используйте синтаксис:<br><code>Вопрос [Отдел1|ID_роли|Webhook, Отдел2|ID_роли|Webhook]</code></p>
+                </div>
+                <div class="faq-card">
+                    <div class="faq-icon">🔀</div>
+                    <h3>Разные вебхуки</h3>
+                    <p>Каждый отдел может отправлять заявку на свой вебхук. Если вебхук не указан — используется общий из формы.</p>
+                </div>
+                <div class="faq-card">
+                    <div class="faq-icon">🔕</div>
+                    <h3>Отключение пинга</h3>
+                    <p>Используйте <code>123</code> как ID роли — пинг не отправится. Пример: <code>Отдел кадров|123|https://...</code></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Администраторы -->
+        <div class="faq-section">
+            <h2>👥 Управление администраторами <span class="faq-tag tag-owner">Только Owner</span></h2>
+            <p class="subtitle">Добавление, изменение и удаление администраторов системы</p>
+            <div class="faq-grid">
+                <div class="faq-card">
+                    <div class="faq-icon">➕</div>
+                    <h3>Добавление админа</h3>
+                    <p>Введите Discord ID пользователя и уровень доступа (1-5). Нажмите «Сохранить».</p>
+                </div>
+                <div class="faq-card">
+                    <div class="faq-icon">❌</div>
+                    <h3>Удаление админа</h3>
+                    <p>Установите уровень <code>0</code> — доступ будет полностью снят. Пользователь больше не увидит админ-панель.</p>
+                </div>
+                <div class="faq-card">
+                    <div class="faq-icon">📊</div>
+                    <h3>Просмотр списка</h3>
+                    <p>В меню «Администраторы» отображается полный список всех админов с их уровнями.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Логи и баги -->
+        <div class="faq-section">
+            <h2>📋 Логи и баг-репорты</h2>
+            <p class="subtitle">Отслеживание действий и сообщение об ошибках</p>
+            <div class="faq-grid">
+                <div class="faq-card">
+                    <div class="faq-icon">📜</div>
+                    <h3>Системные логи <span class="faq-tag tag-owner">Owner</span></h3>
+                    <p>Просмотр последних 50 действий: входы, отправка заявок, изменения админов, обновление категорий.</p>
+                </div>
+                <div class="faq-card">
+                    <div class="faq-icon">🐛</div>
+                    <h3>Баг-репорт <span class="faq-tag tag-all">Все</span></h3>
+                    <p>Любой пользователь может отправить баг-репорт. Кнопка «🐛 Баг» в шапке сайта. Сообщение уходит в Discord с эмбедом.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Советы -->
+        <div class="faq-section">
+            <h2>💡 Советы</h2>
+            <div class="faq-grid">
+                <div class="faq-card">
+                    <div class="faq-icon">⭐</div>
+                    <h3>Обязательные поля</h3>
+                    <p>Добавьте <code>*</code> в конце вопроса — поле станет обязательным. Пример: <code>Ваше имя*</code></p>
+                </div>
+                <div class="faq-card">
+                    <div class="faq-icon">🔄</div>
+                    <h3>Названия уровней</h3>
+                    <p>Можно переименовать уровни (например: «Стажёр», «Модер», «Админ»). Меню «Названия уровней» в админ-панели.</p>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
