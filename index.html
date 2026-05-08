@@ -330,32 +330,47 @@
         fields.innerHTML = '';
         const deptSelector = document.getElementById('dept-selector');
         deptSelector.style.display = 'none';
-
+    
         state.activeCat.questions.forEach(q => {
             if (q.includes('[') && q.includes('|')) {
                 deptSelector.style.display = 'block';
                 document.getElementById('dept-label').innerText = q.split('[')[0].trim();
                 const bBox = document.getElementById('dept-btns');
                 bBox.innerHTML = '';
+                
                 // Извлекаем всё, что внутри квадратных скобок
                 const match = q.match(/\[(.*?)\]/);
                 if (match) {
-                    const options = match[1].split(',');
-                    options.forEach(p => {
-                        const parts = p.split('|').map(s => s.trim());
+                    // Разбиваем строку по запятой, но учитываем что внутри опции могут быть пробелы
+                    const rawOptions = match[1].split(/,\s*(?=[А-Яа-яA-Za-z0-9])/);
+                    
+                    rawOptions.forEach(optionStr => {
+                        const parts = optionStr.split('|').map(s => s.trim()).filter(s => s);
+                        
+                        // Если 3 части: имя | роль | webhook
                         if (parts.length >= 3) {
                             const btn = document.createElement('div');
                             btn.className = 'opt-btn';
-                            btn.innerText = parts[0];
+                            btn.innerText = parts[0]; // Имя отдела
                             btn.onclick = () => {
                                 bBox.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('active'));
                                 btn.classList.add('active');
-                                state.selDept = { name: parts[0], role: parts[1], webhook: parts[2] };
+                                state.selDept = { 
+                                    name: parts[0], 
+                                    role: parts[1], 
+                                    webhook: parts[2] 
+                                };
                             };
                             bBox.appendChild(btn);
                         }
                     });
                 }
+                
+                // Если после парсинга кнопок нет — показываем ошибку в консоли
+                if (bBox.children.length === 0) {
+                    console.error('Не удалось распарсить опции:', match ? match[1] : 'нет совпадений');
+                }
+                
             } else {
                 const isRequired = q.endsWith('*');
                 const cleanName = q.replace('*', '');
