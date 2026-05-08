@@ -30,14 +30,14 @@
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; }
         body { background:var(--bg); color:var(--text); overflow-x:hidden; min-height:100vh; }
 
-        #preloader { position:fixed; inset:0; background:var(--bg); z-index:100000; display:flex; flex-direction:column; justify-content:center; align-items:center; }
+        /* ПРЕЛОАДЕР */
+        #preloader { position:fixed; inset:0; background:var(--bg); z-index:100000; display:flex; flex-direction:column; justify-content:center; align-items:center; transition: opacity 0.6s ease; }
         .loader-logo { width:120px; filter:drop-shadow(0 0 30px var(--accent)); margin-bottom:30px; animation:pulse 2s infinite; }
         @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
         .loader-bar { width:200px; height:3px; background:var(--border); border-radius:3px; overflow:hidden; }
-        .loader-progress { width:40%; height:100%; background:linear-gradient(90deg,transparent,var(--accent),transparent); animation:move 1.5s infinite linear; }
-        @keyframes move { from{left:-50%} to{left:110%} }
+        .loader-progress { width:0%; height:100%; background:linear-gradient(90deg,var(--accent),var(--accent-light)); border-radius:3px; transition: width 0.3s ease; }
 
-        header { display:none; justify-content:space-between; align-items:center; padding:0 5%; height:70px; border-bottom:1px solid var(--border); position:sticky; top:0; background:rgba(3,5,10,0.9); backdrop-filter:blur(20px); z-index:999; }
+        header { display:none; justify-content:space-between; align-items:center; padding:0 5%; height:70px; border-bottom:1px solid var(--border); position:sticky; top:0; background:rgba(3,5,10,0.95); backdrop-filter:blur(20px); z-index:999; }
         .header-right { display:flex; align-items:center; gap:10px; }
 
         .container { display:none; max-width:1200px; margin:0 auto; padding:40px 20px; }
@@ -46,10 +46,10 @@
         @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
 
         .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:20px; }
-        .card { background:var(--card); padding:40px 20px; border-radius:20px; border:1px solid var(--border); text-align:center; cursor:pointer; transition:all 0.3s; }
+        .card { background:var(--card); padding:40px 20px; border-radius:20px; border:1px solid var(--border); text-align:center; cursor:pointer; transition:all 0.3s; position:relative; overflow:hidden; }
         .card:hover { border-color:var(--accent); transform:translateY(-5px); box-shadow:0 15px 40px rgba(0,0,0,0.3); }
-        .card-emoji { font-size:3rem; margin-bottom:12px; }
-        .card-title { font-weight:800; text-transform:uppercase; letter-spacing:1px; font-size:0.95rem; }
+        .card-emoji { font-size:3rem; margin-bottom:12px; position:relative; z-index:1; }
+        .card-title { font-weight:800; text-transform:uppercase; letter-spacing:1px; font-size:0.95rem; position:relative; z-index:1; }
 
         .u-input { width:100%; padding:14px 16px; background:var(--bg); border:1px solid var(--border); border-radius:12px; color:var(--text); outline:none; font-size:0.9rem; transition:0.3s; resize:vertical; }
         .u-input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(212,163,115,0.1); }
@@ -75,18 +75,16 @@
         label { display:block; font-size:0.7rem; color:var(--accent); font-weight:700; text-transform:uppercase; margin:18px 0 6px; letter-spacing:1px; }
         label:first-child { margin-top:0; }
 
-        /* МОДАЛЬНЫЕ ОКНА */
         .modal-overlay { position:fixed; inset:0; background:var(--overlay); z-index:10000; display:flex; justify-content:center; align-items:center; backdrop-filter:blur(10px); padding:20px; }
         .modal-box { background:var(--card); border:1px solid var(--border-light); padding:35px; border-radius:24px; width:100%; max-width:600px; max-height:85vh; overflow-y:auto; border-top:4px solid var(--accent); box-shadow:0 30px 60px rgba(0,0,0,0.5); animation:modalIn 0.3s ease; }
         .modal-wide { max-width:800px; }
         @keyframes modalIn { from{opacity:0;transform:scale(0.95)} to{opacity:1;transform:scale(1)} }
 
-        /* БОКОВОЕ МЕНЮ */
         .sidebar { position:fixed; top:70px; left:0; bottom:0; width:280px; background:var(--card); border-right:1px solid var(--border); z-index:998; overflow-y:auto; padding:30px 20px; transform:translateX(-100%); transition:transform 0.3s ease; }
         .sidebar.open { transform:translateX(0); }
         .sidebar-backdrop { position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:997; display:none; }
         .sidebar-backdrop.show { display:block; }
-        .sidebar-item { display:flex; align-items:center; gap:12px; padding:14px 16px; border-radius:12px; cursor:pointer; transition:0.3s; margin-bottom:5px; font-weight:600; font-size:0.9rem; }
+        .sidebar-item { display:flex; align-items:center; gap:12px; padding:14px 16px; border-radius:12px; cursor:pointer; transition:0.3s; margin-bottom:5px; font-weight:600; font-size:0.9rem; color:var(--text); text-decoration:none; }
         .sidebar-item:hover { background:var(--card-hover); }
         .sidebar-item.active { background:rgba(212,163,115,0.1); color:var(--accent); }
 
@@ -99,7 +97,6 @@
         .toast-success { background:var(--success); color:#000; }
         .toast-error { background:var(--error); color:#fff; }
 
-        /* FAQ */
         .faq-section { margin-bottom: 50px; }
         .faq-section h2 { font-weight: 900; font-size: 1.6rem; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; }
         .faq-section .subtitle { color: var(--text-dim); margin-bottom: 25px; font-size: 0.9rem; }
@@ -122,9 +119,10 @@
 </head>
 <body>
 
+<!-- ПРЕЛОАДЕР -->
 <div id="preloader">
-    <img src="image.png" class="loader-logo">
-    <div class="loader-bar"><div class="loader-progress"></div></div>
+    <img src="image.png" class="loader-logo" alt="LSCSD">
+    <div class="loader-bar"><div class="loader-progress" id="loader-progress"></div></div>
 </div>
 
 <!-- Боковое меню -->
@@ -140,27 +138,30 @@
     <div class="modal-box" id="modal-box"></div>
 </div>
 
+<!-- Страница логина -->
 <div id="page-login" class="login-page" style="display:none;">
     <div class="login-card">
-        <img src="image.png" class="login-logo">
+        <img src="image.png" class="login-logo" alt="LSCSD">
         <h2 style="font-weight:900;font-size:1.8rem;margin-bottom:10px;">LSCSD PORTAL</h2>
         <p style="color:var(--text-dim);margin-bottom:30px;">Портал подачи заявок</p>
         <button class="btn btn-block" style="background:#5865F2;color:#fff;font-size:1rem;" onclick="login()">🔐 Войти через Discord</button>
     </div>
 </div>
 
+<!-- Хедер -->
 <header id="ui-header">
     <div style="display:flex;align-items:center;gap:15px;">
         <button class="btn btn-outline btn-sm" onclick="openSidebar()" style="font-size:1.2rem;">☰</button>
-        <img src="image.png" style="height:38px;cursor:pointer;" onclick="showPage('page-home')">
+        <img src="image.png" style="height:38px;cursor:pointer;" onclick="showPage('page-home')" alt="Home">
     </div>
     <div class="header-right">
         <button class="btn btn-outline btn-sm" onclick="openBug()">🐛 Баг</button>
         <div id="adm-btn-wrap"></div>
-        <img id="u-ava" style="width:38px;border-radius:50%;border:2px solid var(--accent);cursor:pointer;" onclick="logout()">
+        <img id="u-ava" style="width:38px;border-radius:50%;border:2px solid var(--accent);cursor:pointer;" onclick="logout()" alt="User">
     </div>
 </header>
 
+<!-- Контент -->
 <div class="container" id="main-container">
     
     <!-- ГЛАВНАЯ -->
@@ -175,7 +176,6 @@
         <h1 style="font-weight:900;font-size:2rem;margin-bottom:10px;">📖 FAQ — Гайд по админ-панели</h1>
         <p style="color:var(--text-dim);margin-bottom:40px;">Полное руководство по всем возможностям системы</p>
 
-        <!-- Уровни доступа -->
         <div class="faq-section">
             <h2>🔐 Уровни доступа</h2>
             <p class="subtitle">Система использует 5-уровневую модель прав</p>
@@ -193,7 +193,6 @@
             </div>
         </div>
 
-        <!-- Формы -->
         <div class="faq-section">
             <h2>📝 Управление формами</h2>
             <p class="subtitle">Создание и редактирование форм для подачи заявок</p>
@@ -206,22 +205,21 @@
                 <div class="faq-card">
                     <div class="faq-icon">🎨</div>
                     <h3>Цвет эмбеда</h3>
-                    <p>Каждая форма может иметь свой цвет. Выберите цвет через палитру — он будет использоваться в Discord-эмбеде при отправке заявки.</p>
+                    <p>Каждая форма может иметь свой цвет. Выберите цвет через палитру — он будет использоваться в Discord-эмбеде.</p>
                 </div>
                 <div class="faq-card">
                     <div class="faq-icon">🖼️</div>
                     <h3>Thumbnail & Image</h3>
-                    <p>Добавьте URL картинки в поле <code>Thumbnail URL</code> (маленькая иконка) или <code>Image URL</code> (большая картинка внизу эмбеда).</p>
+                    <p>Добавьте URL картинки в поле <code>Thumbnail URL</code> (иконка) или <code>Image URL</code> (большая картинка).</p>
                 </div>
                 <div class="faq-card">
                     <div class="faq-icon">📢</div>
                     <h3>Пинг-роль</h3>
-                    <p>Укажите ID роли Discord в поле <code>Пинг-роль</code>. При отправке заявки эта роль будет упомянута. Работает даже без выбора отдела.</p>
+                    <p>Укажите ID роли Discord. При отправке заявки эта роль будет упомянута. Работает без выбора отдела.</p>
                 </div>
             </div>
         </div>
 
-        <!-- Отделы -->
         <div class="faq-section">
             <h2>🏢 Выбор отдела (вложенный список)</h2>
             <p class="subtitle">Создание опроса с выбором подразделения внутри формы</p>
@@ -234,70 +232,12 @@
                 <div class="faq-card">
                     <div class="faq-icon">🔀</div>
                     <h3>Разные вебхуки</h3>
-                    <p>Каждый отдел может отправлять заявку на свой вебхук. Если вебхук не указан — используется общий из формы.</p>
+                    <p>Каждый отдел может отправлять заявку на свой вебхук. Если не указан — используется общий.</p>
                 </div>
                 <div class="faq-card">
                     <div class="faq-icon">🔕</div>
                     <h3>Отключение пинга</h3>
-                    <p>Используйте <code>123</code> как ID роли — пинг не отправится. Пример: <code>Отдел кадров|123|https://...</code></p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Администраторы -->
-        <div class="faq-section">
-            <h2>👥 Управление администраторами <span class="faq-tag tag-owner">Только Owner</span></h2>
-            <p class="subtitle">Добавление, изменение и удаление администраторов системы</p>
-            <div class="faq-grid">
-                <div class="faq-card">
-                    <div class="faq-icon">➕</div>
-                    <h3>Добавление админа</h3>
-                    <p>Введите Discord ID пользователя и уровень доступа (1-5). Нажмите «Сохранить».</p>
-                </div>
-                <div class="faq-card">
-                    <div class="faq-icon">❌</div>
-                    <h3>Удаление админа</h3>
-                    <p>Установите уровень <code>0</code> — доступ будет полностью снят. Пользователь больше не увидит админ-панель.</p>
-                </div>
-                <div class="faq-card">
-                    <div class="faq-icon">📊</div>
-                    <h3>Просмотр списка</h3>
-                    <p>В меню «Администраторы» отображается полный список всех админов с их уровнями.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Логи и баги -->
-        <div class="faq-section">
-            <h2>📋 Логи и баг-репорты</h2>
-            <p class="subtitle">Отслеживание действий и сообщение об ошибках</p>
-            <div class="faq-grid">
-                <div class="faq-card">
-                    <div class="faq-icon">📜</div>
-                    <h3>Системные логи <span class="faq-tag tag-owner">Owner</span></h3>
-                    <p>Просмотр последних 50 действий: входы, отправка заявок, изменения админов, обновление категорий.</p>
-                </div>
-                <div class="faq-card">
-                    <div class="faq-icon">🐛</div>
-                    <h3>Баг-репорт <span class="faq-tag tag-all">Все</span></h3>
-                    <p>Любой пользователь может отправить баг-репорт. Кнопка «🐛 Баг» в шапке сайта. Сообщение уходит в Discord с эмбедом.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Советы -->
-        <div class="faq-section">
-            <h2>💡 Советы</h2>
-            <div class="faq-grid">
-                <div class="faq-card">
-                    <div class="faq-icon">⭐</div>
-                    <h3>Обязательные поля</h3>
-                    <p>Добавьте <code>*</code> в конце вопроса — поле станет обязательным. Пример: <code>Ваше имя*</code></p>
-                </div>
-                <div class="faq-card">
-                    <div class="faq-icon">🔄</div>
-                    <h3>Названия уровней</h3>
-                    <p>Можно переименовать уровни (например: «Стажёр», «Модер», «Админ»). Меню «Названия уровней» в админ-панели.</p>
+                    <p>Используйте <code>123</code> как ID роли — пинг не отправится. Пример: <code>Отдел|123|https://...</code></p>
                 </div>
             </div>
         </div>
@@ -305,66 +245,154 @@
 </div>
 
 <script>
+// ==================== АНТИ-СЛИВ ====================
+(function() {
+    // Запрет правой кнопки мыши
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    
+    // Запрет Ctrl+S, Ctrl+U, Ctrl+C, Ctrl+P, F12, Ctrl+Shift+I, Ctrl+Shift+J
+    document.addEventListener('keydown', function(e) {
+        if (
+            (e.ctrlKey && (e.key === 's' || e.key === 'u' || e.key === 'c' || e.key === 'p' || e.key === 'S' || e.key === 'U' || e.key === 'C' || e.key === 'P')) ||
+            (e.ctrlKey && e.shiftKey && (e.key === 'i' || e.key === 'I' || e.key === 'j' || e.key === 'J' || e.key === 'c' || e.key === 'C')) ||
+            e.key === 'F12' ||
+            (e.ctrlKey && e.key === 'F12')
+        ) {
+            e.preventDefault();
+            return false;
+        }
+    });
+    
+    // Запрет выделения текста
+    document.addEventListener('selectstart', e => e.preventDefault());
+    
+    // Запрет перетаскивания
+    document.addEventListener('dragstart', e => e.preventDefault());
+    
+    // Блокировка DevTools через отладчик
+    setInterval(function() {
+        var before = new Date().getTime();
+        debugger;
+        var after = new Date().getTime();
+        if (after - before > 100) {
+            document.body.innerHTML = '<div style="display:flex;justify-content:center;align-items:center;height:100vh;background:#000;color:#f00;font-size:2rem;font-family:sans-serif;">⛔ Доступ запрещён</div>';
+        }
+    }, 1000);
+    
+    // Защита от скриншотов (Android/iOS)
+    if (navigator.mediaSession) {
+        navigator.mediaSession.setActionHandler('seekto', null);
+    }
+})();
+
+// ==================== АНТИ-ФЛУД ====================
+const antiFlood = {
+    timers: {},
+    limits: {
+        'submit': { count: 3, time: 10000 },
+        'bug': { count: 2, time: 30000 },
+        'admin': { count: 5, time: 5000 },
+        'default': { count: 10, time: 3000 }
+    },
+    
+    check: function(action) {
+        var limit = this.limits[action] || this.limits['default'];
+        var now = Date.now();
+        var key = action + '_' + (state.user ? state.user.id : 'anon');
+        
+        if (!this.timers[key]) this.timers[key] = { count: 0, reset: now + limit.time };
+        
+        if (now > this.timers[key].reset) {
+            this.timers[key] = { count: 1, reset: now + limit.time };
+            return true;
+        }
+        
+        if (this.timers[key].count >= limit.count) return false;
+        
+        this.timers[key].count++;
+        return true;
+    }
+};
+
+// ==================== ПЛАВНЫЙ ПРЕЛОАДЕР ====================
+var loadProgress = 0;
+var loadInterval = setInterval(function() {
+    loadProgress += Math.random() * 30;
+    if (loadProgress > 90) loadProgress = 90;
+    document.getElementById('loader-progress').style.width = loadProgress + '%';
+}, 300);
+
+window.addEventListener('load', function() {
+    document.getElementById('loader-progress').style.width = '100%';
+    setTimeout(function() {
+        clearInterval(loadInterval);
+    }, 500);
+});
+
+// ==================== API ====================
 const API_BASE = 'https://meri-server.64.188.66.210.nip.io';
 const state = { user:null, cats:[], activeCat:null, selDept:null, userLevel:0, lvlNames:[], admins:[] };
 
-function toast(msg,type='success'){
-    document.querySelectorAll('.toast').forEach(e=>e.remove());
-    const t=document.createElement('div');
-    t.className='toast toast-'+type;
-    t.textContent=msg;
+function toast(msg,type){
+    type = type || 'success';
+    document.querySelectorAll('.toast').forEach(function(e){ e.remove(); });
+    var t = document.createElement('div');
+    t.className = 'toast toast-' + type;
+    t.textContent = msg;
     document.body.appendChild(t);
-    setTimeout(()=>t.remove(),3000);
+    setTimeout(function(){ t.remove(); }, 3000);
 }
 
 async function init(){
-    const hash=window.location.hash.slice(1);
-    const params=new URLSearchParams(hash);
-    let token=params.get('access_token')||localStorage.getItem('sd_token');
+    var hash = window.location.hash.slice(1);
+    var params = new URLSearchParams(hash);
+    var token = params.get('access_token') || localStorage.getItem('sd_token');
     if(token){
-        window.location.hash='';
-        localStorage.setItem('sd_token',token);
+        window.location.hash = '';
+        localStorage.setItem('sd_token', token);
         try{
-            const res=await fetch(API_BASE+'/api/user/me',{headers:{Authorization:'Bearer '+token}});
-            if(!res.ok)throw new Error('Invalid');
-            const data=await res.json();
-            state.user=data;
-            state.userLevel=data.level;
-            state.lvlNames=data.lvlNames||[];
+            var res = await fetch(API_BASE + '/api/user/me', { headers: { Authorization: 'Bearer ' + token } });
+            if(!res.ok) throw new Error('Invalid');
+            var data = await res.json();
+            state.user = data;
+            state.userLevel = data.level;
+            state.lvlNames = data.lvlNames || [];
             await loadData();
-            document.getElementById('ui-header').style.display='flex';
-            document.getElementById('main-container').style.display='block';
+            document.getElementById('ui-header').style.display = 'flex';
+            document.getElementById('main-container').style.display = 'block';
             renderHeader();
             renderSidebar();
-            document.getElementById('preloader').style.display='none';
-        }catch(e){logout();}
+            document.getElementById('preloader').style.opacity = '0';
+            setTimeout(function(){ document.getElementById('preloader').style.display = 'none'; }, 600);
+        }catch(e){ logout(); }
     }else{
-        document.getElementById('preloader').style.display='none';
-        document.getElementById('page-login').style.display='flex';
+        document.getElementById('preloader').style.opacity = '0';
+        setTimeout(function(){ document.getElementById('preloader').style.display = 'none'; }, 600);
+        document.getElementById('page-login').style.display = 'flex';
     }
 }
 
-function login(){window.location.href=API_BASE+'/login';}
-function logout(){localStorage.clear();window.location.reload();}
+function login(){ window.location.href = API_BASE + '/login'; }
+function logout(){ localStorage.clear(); window.location.reload(); }
 
 function showPage(id){
-    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active-page'));
+    document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active-page'); });
     document.getElementById(id).classList.add('active-page');
     closeAllModals();
 }
 
 function openModal(content){
-    document.getElementById('modal-box').innerHTML=content;
-    document.getElementById('modal-overlay').style.display='flex';
+    document.getElementById('modal-box').innerHTML = content;
+    document.getElementById('modal-overlay').style.display = 'flex';
 }
 function closeModal(){
-    document.getElementById('modal-overlay').style.display='none';
+    document.getElementById('modal-overlay').style.display = 'none';
 }
 function closeAllModals(){
     closeModal();
     closeSidebar();
 }
-document.getElementById('modal-overlay').addEventListener('click',function(e){if(e.target===this)closeModal();});
+document.getElementById('modal-overlay').addEventListener('click', function(e){ if(e.target === this) closeModal(); });
 
 function openSidebar(){
     document.getElementById('sidebar').classList.add('open');
@@ -376,176 +404,183 @@ function closeSidebar(){
 }
 
 function renderHeader(){
-    if(!state.user)return;
-    document.getElementById('u-ava').src='https://cdn.discordapp.com/avatars/'+state.user.id+'/'+state.user.avatar+'.png';
-    document.getElementById('u-ava').title=state.user.username;
-    document.getElementById('adm-btn-wrap').innerHTML='';
+    if(!state.user) return;
+    document.getElementById('u-ava').src = 'https://cdn.discordapp.com/avatars/' + state.user.id + '/' + state.user.avatar + '.png';
+    document.getElementById('u-ava').title = state.user.username;
+    document.getElementById('adm-btn-wrap').innerHTML = '';
 }
 
 function renderSidebar(){
-    const sidebarAdmin=document.getElementById('sidebar-admin-items');
-    sidebarAdmin.innerHTML='';
-    if(state.userLevel>0){
-        sidebarAdmin.innerHTML+=`<a class="sidebar-item" onclick="openAdminPanel()">⚡ Админ-панель</a>`;
-        if(state.userLevel>=4){
-            sidebarAdmin.innerHTML+=`<a class="sidebar-item" onclick="openAdminsList()">👥 Администраторы</a>`;
-            sidebarAdmin.innerHTML+=`<a class="sidebar-item" onclick="openLvlNames()">🏷️ Названия уровней</a>`;
-            sidebarAdmin.innerHTML+=`<a class="sidebar-item" onclick="openLogs()">📋 Логи</a>`;
+    var sidebarAdmin = document.getElementById('sidebar-admin-items');
+    sidebarAdmin.innerHTML = '';
+    if(state.userLevel > 0){
+        sidebarAdmin.innerHTML += '<a class="sidebar-item" onclick="openAdminPanel()">⚡ Админ-панель</a>';
+        if(state.userLevel >= 4){
+            sidebarAdmin.innerHTML += '<a class="sidebar-item" onclick="openAdminsList()">👥 Администраторы</a>';
+            sidebarAdmin.innerHTML += '<a class="sidebar-item" onclick="openLvlNames()">🏷️ Названия уровней</a>';
+            sidebarAdmin.innerHTML += '<a class="sidebar-item" onclick="openLogs()">📋 Логи</a>';
         }
     }
 }
 
 async function loadData(){
-    const catsRes=await fetch(API_BASE+'/api/categories');
-    state.cats=await catsRes.json();
+    var catsRes = await fetch(API_BASE + '/api/categories');
+    state.cats = await catsRes.json();
     renderHome();
     try{
-        const admRes=await fetch(API_BASE+'/api/admin/admins',{headers:{Authorization:'Bearer '+localStorage.getItem('sd_token')}});
-        if(admRes.ok)state.admins=await admRes.json();
+        var admRes = await fetch(API_BASE + '/api/admin/admins', { headers: { Authorization: 'Bearer ' + localStorage.getItem('sd_token') } });
+        if(admRes.ok) state.admins = await admRes.json();
     }catch(e){}
 }
 
 function renderHome(){
-    const grid=document.getElementById('grid-main');
-    if(state.cats.length===0){
-        grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--text-dim);"><div style="font-size:4rem;">📭</div><p>Нет доступных форм</p></div>';
+    var grid = document.getElementById('grid-main');
+    if(state.cats.length === 0){
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--text-dim);"><div style="font-size:4rem;">📭</div><p>Нет доступных форм</p></div>';
         return;
     }
-    grid.innerHTML='';
-    state.cats.forEach(c=>{
-        const card=document.createElement('div');
-        card.className='card';
-        card.innerHTML=`<div class="card-emoji">${c.emoji||'📁'}</div><div class="card-title">${c.name}</div>`;
-        card.onclick=()=>openFormModal(c.id);
+    grid.innerHTML = '';
+    state.cats.forEach(function(c){
+        var card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = '<div class="card-emoji">' + (c.emoji || '📁') + '</div><div class="card-title">' + c.name + '</div>';
+        card.onclick = function(){ openFormModal(c.id); };
         grid.appendChild(card);
     });
 }
 
 function openFormModal(id){
-    state.activeCat=state.cats.find(c=>c.id==id);
-    state.selDept=null;
-    let html=`<h2 style="font-weight:900;margin-bottom:20px;">${state.activeCat.emoji||''} ${state.activeCat.name}</h2>`;
+    state.activeCat = state.cats.find(function(c){ return c.id == id; });
+    state.selDept = null;
+    var html = '<h2 style="font-weight:900;margin-bottom:20px;">' + (state.activeCat.emoji || '') + ' ' + state.activeCat.name + '</h2>';
     
-    state.activeCat.questions.forEach(q=>{
-        if(q.includes('[')&&q.includes('|')){
-            html+=`<label>${q.split('[')[0].trim()}</label><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:15px;" id="dept-btns">`;
-            const match=q.match(/\[(.*?)\]/);
+    state.activeCat.questions.forEach(function(q){
+        if(q.includes('[') && q.includes('|')){
+            html += '<label>' + q.split('[')[0].trim() + '</label><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:15px;" id="dept-btns">';
+            var match = q.match(/\[(.*?)\]/);
             if(match){
-                match[1].split(',').forEach(opt=>{
-                    const parts=opt.split('|').map(s=>s.trim());
-                    if(parts.length>=3){
-                        html+=`<div class="opt-btn" data-name="${parts[0]}" data-role="${parts[1]}" data-webhook="${parts[2]}" onclick="selectDept(this)">${parts[0]}</div>`;
+                match[1].split(',').forEach(function(opt){
+                    var parts = opt.split('|').map(function(s){ return s.trim(); });
+                    if(parts.length >= 3){
+                        html += '<div class="opt-btn" data-name="' + parts[0] + '" data-role="' + parts[1] + '" data-webhook="' + parts[2] + '" onclick="selectDept(this)">' + parts[0] + '</div>';
                     }
                 });
             }
-            html+=`</div>`;
+            html += '</div>';
         }else{
-            const isReq=q.endsWith('*');
-            const clean=q.replace('*','');
-            html+=`<label>${clean} ${isReq?'<span style="color:var(--error);">*</span>':''}</label>
-            <textarea class="u-input app-field" data-req="${isReq}" rows="2" placeholder="Введите ${clean.toLowerCase()}"></textarea>`;
+            var isReq = q.endsWith('*');
+            var clean = q.replace('*', '');
+            html += '<label>' + clean + ' ' + (isReq ? '<span style="color:var(--error);">*</span>' : '') + '</label>';
+            html += '<textarea class="u-input app-field" data-req="' + isReq + '" rows="2" placeholder="Введите ' + clean.toLowerCase() + '"></textarea>';
         }
     });
     
-    html+=`<div style="display:flex;gap:10px;margin-top:20px;">
-        <button class="btn btn-accent btn-block" onclick="submitAppModal()">📨 Отправить</button>
-        <button class="btn btn-outline" onclick="closeModal()">Отмена</button>
-    </div>`;
+    html += '<div style="display:flex;gap:10px;margin-top:20px;">';
+    html += '<button class="btn btn-accent btn-block" onclick="submitAppModal()">📨 Отправить</button>';
+    html += '<button class="btn btn-outline" onclick="closeModal()">Отмена</button>';
+    html += '</div>';
     
     openModal(html);
 }
 
 function selectDept(el){
-    document.querySelectorAll('#dept-btns .opt-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('#dept-btns .opt-btn').forEach(function(b){ b.classList.remove('active'); });
     el.classList.add('active');
-    state.selDept={name:el.dataset.name,role:el.dataset.role,webhook:el.dataset.webhook};
+    state.selDept = { name: el.dataset.name, role: el.dataset.role, webhook: el.dataset.webhook };
 }
 
 async function submitAppModal(){
-    const inputs=document.querySelectorAll('.app-field');
-    let valid=true;
-    const answers=[];
-    inputs.forEach(i=>{
-        const val=i.value.trim();
+    if(!antiFlood.check('submit')) return toast('⏳ Слишком много запросов! Подождите.', 'error');
+    
+    var inputs = document.querySelectorAll('.app-field');
+    var valid = true;
+    var answers = [];
+    inputs.forEach(function(i){
+        var val = i.value.trim();
         answers.push(val);
-        if(i.dataset.req==='true'&&!val){i.classList.add('error');valid=false;}
+        if(i.dataset.req === 'true' && !val){ i.classList.add('error'); valid = false; }
         else i.classList.remove('error');
     });
-    if(!valid)return toast('Заполните обязательные поля!','error');
+    if(!valid) return toast('Заполните обязательные поля!', 'error');
     
     try{
-        const res=await fetch(API_BASE+'/api/submit',{
-            method:'POST',
-            headers:{'Content-Type':'application/json',Authorization:'Bearer '+localStorage.getItem('sd_token')},
-            body:JSON.stringify({categoryId:state.activeCat.id,selectedDept:state.selDept,answers})
+        var res = await fetch(API_BASE + '/api/submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + localStorage.getItem('sd_token') },
+            body: JSON.stringify({ categoryId: state.activeCat.id, selectedDept: state.selDept, answers: answers })
         });
-        if(!res.ok)throw new Error(await res.text());
+        if(!res.ok) throw new Error(await res.text());
         closeModal();
         toast('✅ Заявка отправлена!');
-    }catch(e){toast('❌ Ошибка: '+e.message,'error');}
+    }catch(e){ toast('❌ Ошибка: ' + e.message, 'error'); }
 }
 
 // ==================== АДМИН-ПАНЕЛЬ ====================
 function openAdminPanel(){
     closeAllModals();
-    let html=`<h2 style="font-weight:900;margin-bottom:15px;">⚡ Админ-панель</h2><p style="color:var(--text-dim);margin-bottom:20px;">Управление формами</p>`;
+    var html = '<h2 style="font-weight:900;margin-bottom:15px;">⚡ Админ-панель</h2><p style="color:var(--text-dim);margin-bottom:20px;">Управление формами</p>';
     
-    state.cats.forEach(c=>{
-        html+=`<div style="padding:15px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="editFormModal(${c.id})">
-            <span><b>${c.emoji||'📁'} ${c.name}</b></span>
-            <span style="font-size:0.65rem;background:${c.color||'#d4a373'};color:#000;padding:3px 8px;border-radius:6px;">${state.lvlNames[(c.minLvl||1)-1]||'Lvl'}</span>
-        </div>`;
+    state.cats.forEach(function(c){
+        html += '<div style="padding:15px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="editFormModal(' + c.id + ')">';
+        html += '<span><b>' + (c.emoji || '📁') + ' ' + c.name + '</b></span>';
+        html += '<span style="font-size:0.65rem;background:' + (c.color || '#d4a373') + ';color:#000;padding:3px 8px;border-radius:6px;">' + (state.lvlNames[(c.minLvl || 1) - 1] || 'Lvl') + '</span>';
+        html += '</div>';
     });
     
-    html+=`<button class="btn btn-accent btn-block btn-sm" onclick="addFormModal()" style="margin-top:10px;">+ Новая форма</button>
-    <button class="btn btn-outline btn-block btn-sm" onclick="closeModal()" style="margin-top:5px;">Закрыть</button>`;
+    html += '<button class="btn btn-accent btn-block btn-sm" onclick="addFormModal()" style="margin-top:10px;">+ Новая форма</button>';
+    html += '<button class="btn btn-outline btn-block btn-sm" onclick="closeModal()" style="margin-top:5px;">Закрыть</button>';
     
     document.getElementById('modal-box').classList.add('modal-wide');
     openModal(html);
 }
 
 function editFormModal(id){
-    const cat=state.cats.find(c=>c.id==id);
-    let html=`<h2 style="font-weight:900;margin-bottom:20px;">✏️ ${cat.name}</h2>
-    <label>Название</label><input id="ed-n" class="u-input" value="${cat.name}">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">
-        <div><label>Эмодзи</label><input id="ed-e" class="u-input" value="${cat.emoji||'📁'}"></div>
-        <div><label>Мин. уровень</label><select id="ed-l" class="u-input">${state.lvlNames.map((n,i)=>`<option value="${i+1}" ${(cat.minLvl||1)==i+1?'selected':''}>${i+1} — ${n}</option>`).join('')}</select></div>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">
-        <div><label>Цвет эмбеда</label><input id="ed-c" type="color" class="u-input" value="${cat.color||'#d4a373'}"></div>
-        <div><label>Пинг-роль (ID)</label><input id="ed-p" class="u-input" value="${cat.pingRole||''}" placeholder="123456789"></div>
-    </div>
-    <label>Webhook URL</label><input id="ed-w" class="u-input" value="${cat.webhook||''}">
-    <label>Thumbnail URL</label><input id="ed-th" class="u-input" value="${cat.thumbnail||''}">
-    <label>Image URL</label><input id="ed-im" class="u-input" value="${cat.image||''}">
-    <label>Вопросы</label><textarea id="ed-q" class="u-input" style="height:150px;font-family:monospace;">${cat.questions.join('\n')}</textarea>
-    <div style="display:flex;gap:10px;margin-top:20px;">
-        <button class="btn btn-accent btn-block" onclick="saveForm(${id})">💾 Сохранить</button>
-        <button class="btn btn-danger" onclick="deleteForm(${id})">🗑️</button>
-    </div>
-    <button class="btn btn-outline btn-block btn-sm" onclick="openAdminPanel()" style="margin-top:5px;">← Назад</button>`;
+    var cat = state.cats.find(function(c){ return c.id == id; });
+    var html = '<h2 style="font-weight:900;margin-bottom:20px;">✏️ ' + cat.name + '</h2>';
+    html += '<label>Название</label><input id="ed-n" class="u-input" value="' + cat.name + '">';
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">';
+    html += '<div><label>Эмодзи</label><input id="ed-e" class="u-input" value="' + (cat.emoji || '📁') + '"></div>';
+    html += '<div><label>Мин. уровень</label><select id="ed-l" class="u-input">';
+    state.lvlNames.forEach(function(n, i){
+        html += '<option value="' + (i+1) + '" ' + ((cat.minLvl || 1) == i+1 ? 'selected' : '') + '>' + (i+1) + ' — ' + n + '</option>';
+    });
+    html += '</select></div></div>';
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">';
+    html += '<div><label>Цвет эмбеда</label><input id="ed-c" type="color" class="u-input" value="' + (cat.color || '#d4a373') + '"></div>';
+    html += '<div><label>Пинг-роль (ID)</label><input id="ed-p" class="u-input" value="' + (cat.pingRole || '') + '" placeholder="123456789"></div>';
+    html += '</div>';
+    html += '<label>Webhook URL</label><input id="ed-w" class="u-input" value="' + (cat.webhook || '') + '">';
+    html += '<label>Thumbnail URL</label><input id="ed-th" class="u-input" value="' + (cat.thumbnail || '') + '">';
+    html += '<label>Image URL</label><input id="ed-im" class="u-input" value="' + (cat.image || '') + '">';
+    html += '<label>Вопросы</label><textarea id="ed-q" class="u-input" style="height:150px;font-family:monospace;">' + cat.questions.join('\n') + '</textarea>';
+    html += '<div style="display:flex;gap:10px;margin-top:20px;">';
+    html += '<button class="btn btn-accent btn-block" onclick="saveForm(' + id + ')">💾 Сохранить</button>';
+    html += '<button class="btn btn-danger" onclick="deleteForm(' + id + ')">🗑️</button>';
+    html += '</div>';
+    html += '<button class="btn btn-outline btn-block btn-sm" onclick="openAdminPanel()" style="margin-top:5px;">← Назад</button>';
     openModal(html);
 }
 
 function addFormModal(){
-    state.cats.push({id:Date.now(),name:'Новая форма',emoji:'📋',questions:['Ваше имя*'],minLvl:1,color:'#d4a373',pingRole:'',thumbnail:'',image:''});
-    editFormModal(state.cats[state.cats.length-1].id);
+    state.cats.push({ id: Date.now(), name: 'Новая форма', emoji: '📋', questions: ['Ваше имя*'], minLvl: 1, color: '#d4a373', pingRole: '', thumbnail: '', image: '' });
+    editFormModal(state.cats[state.cats.length - 1].id);
 }
 
 async function saveForm(id){
-    const idx=state.cats.findIndex(c=>c.id==id);
-    state.cats[idx]={
+    if(!antiFlood.check('admin')) return toast('⏳ Слишком быстро! Подождите.', 'error');
+    
+    var idx = state.cats.findIndex(function(c){ return c.id == id; });
+    state.cats[idx] = {
         ...state.cats[idx],
-        name:document.getElementById('ed-n').value,
-        emoji:document.getElementById('ed-e').value,
-        minLvl:parseInt(document.getElementById('ed-l').value),
-        webhook:document.getElementById('ed-w').value,
-        questions:document.getElementById('ed-q').value.split('\n').filter(q=>q.trim()),
-        color:document.getElementById('ed-c').value,
-        pingRole:document.getElementById('ed-p').value,
-        thumbnail:document.getElementById('ed-th').value,
-        image:document.getElementById('ed-im').value
+        name: document.getElementById('ed-n').value,
+        emoji: document.getElementById('ed-e').value,
+        minLvl: parseInt(document.getElementById('ed-l').value),
+        webhook: document.getElementById('ed-w').value,
+        questions: document.getElementById('ed-q').value.split('\n').filter(function(q){ return q.trim(); }),
+        color: document.getElementById('ed-c').value,
+        pingRole: document.getElementById('ed-p').value,
+        thumbnail: document.getElementById('ed-th').value,
+        image: document.getElementById('ed-im').value
     };
     await updateCategories();
     toast('✅ Сохранено');
@@ -553,18 +588,18 @@ async function saveForm(id){
 }
 
 async function deleteForm(id){
-    if(!confirm('Удалить?'))return;
-    state.cats=state.cats.filter(c=>c.id!=id);
+    if(!confirm('Удалить?')) return;
+    state.cats = state.cats.filter(function(c){ return c.id != id; });
     await updateCategories();
     toast('🗑️ Удалено');
     openAdminPanel();
 }
 
 async function updateCategories(){
-    await fetch(API_BASE+'/api/admin/categories',{
-        method:'POST',
-        headers:{'Content-Type':'application/json',Authorization:'Bearer '+localStorage.getItem('sd_token')},
-        body:JSON.stringify({categories:state.cats})
+    await fetch(API_BASE + '/api/admin/categories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + localStorage.getItem('sd_token') },
+        body: JSON.stringify({ categories: state.cats })
     });
     renderHome();
 }
@@ -572,35 +607,36 @@ async function updateCategories(){
 // ==================== АДМИНЫ ====================
 async function openAdminsList(){
     closeAllModals();
-    const res=await fetch(API_BASE+'/api/admin/admins',{headers:{Authorization:'Bearer '+localStorage.getItem('sd_token')}});
-    state.admins=await res.json();
-    let html=`<h2 style="font-weight:900;margin-bottom:15px;">👥 Администраторы</h2>`;
-    if(state.admins.length===0){
-        html+=`<p style="color:var(--text-dim);">Нет администраторов</p>`;
+    var res = await fetch(API_BASE + '/api/admin/admins', { headers: { Authorization: 'Bearer ' + localStorage.getItem('sd_token') } });
+    state.admins = await res.json();
+    var html = '<h2 style="font-weight:900;margin-bottom:15px;">👥 Администраторы</h2>';
+    if(state.admins.length === 0){
+        html += '<p style="color:var(--text-dim);">Нет администраторов</p>';
     }else{
-        state.admins.forEach(a=>{
-            html+=`<div style="padding:12px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:10px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;">
-                <span>ID: ${a.userId}</span>
-                <span style="background:var(--accent);color:#000;padding:3px 10px;border-radius:6px;font-weight:700;">${state.lvlNames[a.level-1]||'Lvl '+a.level}</span>
-            </div>`;
+        state.admins.forEach(function(a){
+            html += '<div style="padding:12px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:10px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;">';
+            html += '<span>ID: ' + a.userId + '</span>';
+            html += '<span style="background:var(--accent);color:#000;padding:3px 10px;border-radius:6px;font-weight:700;">' + (state.lvlNames[a.level-1] || 'Lvl ' + a.level) + '</span>';
+            html += '</div>';
         });
     }
-    html+=`<label>Добавить/Изменить</label>
-    <input id="mid" class="u-input" placeholder="Discord ID">
-    <input id="mlvl" type="number" class="u-input" placeholder="Уровень (0=удалить)" min="0" max="5">
-    <button class="btn btn-accent btn-block" onclick="saveAdmin()">💾 Сохранить</button>
-    <button class="btn btn-outline btn-block btn-sm" onclick="closeModal()" style="margin-top:5px;">Закрыть</button>`;
+    html += '<label>Добавить/Изменить</label>';
+    html += '<input id="mid" class="u-input" placeholder="Discord ID">';
+    html += '<input id="mlvl" type="number" class="u-input" placeholder="Уровень (0=удалить)" min="0" max="5">';
+    html += '<button class="btn btn-accent btn-block" onclick="saveAdmin()">💾 Сохранить</button>';
+    html += '<button class="btn btn-outline btn-block btn-sm" onclick="closeModal()" style="margin-top:5px;">Закрыть</button>';
     openModal(html);
 }
 
 async function saveAdmin(){
-    const uid=document.getElementById('mid').value.trim();
-    const lvl=parseInt(document.getElementById('mlvl').value);
-    if(!uid||isNaN(lvl))return;
-    await fetch(API_BASE+'/api/admin/admins',{
-        method:'POST',
-        headers:{'Content-Type':'application/json',Authorization:'Bearer '+localStorage.getItem('sd_token')},
-        body:JSON.stringify({userId:uid,level:lvl})
+    if(!antiFlood.check('admin')) return toast('⏳ Слишком быстро!', 'error');
+    var uid = document.getElementById('mid').value.trim();
+    var lvl = parseInt(document.getElementById('mlvl').value);
+    if(!uid || isNaN(lvl)) return;
+    await fetch(API_BASE + '/api/admin/admins', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + localStorage.getItem('sd_token') },
+        body: JSON.stringify({ userId: uid, level: lvl })
     });
     toast('✅ Сохранено');
     openAdminsList();
@@ -609,21 +645,22 @@ async function saveAdmin(){
 // ==================== УРОВНИ ====================
 function openLvlNames(){
     closeAllModals();
-    let html=`<h2 style="font-weight:900;margin-bottom:15px;">🏷️ Названия уровней</h2>`;
-    state.lvlNames.forEach((n,i)=>html+=`<input class="u-input l-edit" value="${n}" placeholder="Уровень ${i+1}">`);
-    html+=`<button class="btn btn-accent btn-block" onclick="saveLvls()" style="margin-top:15px;">💾 Сохранить</button>
-    <button class="btn btn-outline btn-block btn-sm" onclick="closeModal()" style="margin-top:5px;">Закрыть</button>`;
+    var html = '<h2 style="font-weight:900;margin-bottom:15px;">🏷️ Названия уровней</h2>';
+    state.lvlNames.forEach(function(n, i){ html += '<input class="u-input l-edit" value="' + n + '" placeholder="Уровень ' + (i+1) + '">'; });
+    html += '<button class="btn btn-accent btn-block" onclick="saveLvls()" style="margin-top:15px;">💾 Сохранить</button>';
+    html += '<button class="btn btn-outline btn-block btn-sm" onclick="closeModal()" style="margin-top:5px;">Закрыть</button>';
     openModal(html);
 }
 
 async function saveLvls(){
-    const names=Array.from(document.querySelectorAll('.l-edit')).map(i=>i.value.trim());
-    await fetch(API_BASE+'/api/admin/lvlnames',{
-        method:'POST',
-        headers:{'Content-Type':'application/json',Authorization:'Bearer '+localStorage.getItem('sd_token')},
-        body:JSON.stringify({names})
+    if(!antiFlood.check('admin')) return toast('⏳ Слишком быстро!', 'error');
+    var names = Array.from(document.querySelectorAll('.l-edit')).map(function(i){ return i.value.trim(); });
+    await fetch(API_BASE + '/api/admin/lvlnames', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + localStorage.getItem('sd_token') },
+        body: JSON.stringify({ names: names })
     });
-    state.lvlNames=names;
+    state.lvlNames = names;
     toast('✅ Сохранено');
     closeModal();
 }
@@ -631,44 +668,46 @@ async function saveLvls(){
 // ==================== ЛОГИ ====================
 async function openLogs(){
     closeAllModals();
-    const res=await fetch(API_BASE+'/api/admin/logs',{headers:{Authorization:'Bearer '+localStorage.getItem('sd_token')}});
-    const logs=await res.json();
-    let html=`<h2 style="font-weight:900;margin-bottom:15px;">📋 Логи</h2><div style="max-height:400px;overflow-y:auto;">`;
-    logs.forEach(l=>{
-        html+=`<div style="padding:10px;border-bottom:1px solid var(--border);font-size:0.8rem;">
-            <span style="color:var(--accent);">[${l.timestamp}]</span> <b>${l.user}</b>: ${l.action}
-        </div>`;
+    var res = await fetch(API_BASE + '/api/admin/logs', { headers: { Authorization: 'Bearer ' + localStorage.getItem('sd_token') } });
+    var logs = await res.json();
+    var html = '<h2 style="font-weight:900;margin-bottom:15px;">📋 Логи</h2><div style="max-height:400px;overflow-y:auto;">';
+    logs.forEach(function(l){
+        html += '<div style="padding:10px;border-bottom:1px solid var(--border);font-size:0.8rem;">';
+        html += '<span style="color:var(--accent);">[' + l.timestamp + ']</span> <b>' + l.user + '</b>: ' + l.action;
+        html += '</div>';
     });
-    html+=`</div><button class="btn btn-outline btn-block btn-sm" onclick="closeModal()" style="margin-top:10px;">Закрыть</button>`;
+    html += '</div><button class="btn btn-outline btn-block btn-sm" onclick="closeModal()" style="margin-top:10px;">Закрыть</button>';
     document.getElementById('modal-box').classList.add('modal-wide');
     openModal(html);
 }
 
 // ==================== БАГ-РЕПОРТ ====================
 function openBug(){
-    const html=`<h2 style="font-weight:900;margin-bottom:15px;">🐛 Баг-репорт</h2>
-    <p style="color:var(--text-dim);margin-bottom:15px;">Опишите проблему</p>
-    <textarea id="bug-text" class="u-input" style="height:120px;"></textarea>
-    <div style="display:flex;gap:10px;margin-top:15px;">
-        <button class="btn btn-accent btn-block" onclick="sendBug()">📨 Отправить</button>
-        <button class="btn btn-outline" onclick="closeModal()">Отмена</button>
-    </div>`;
+    var html = '<h2 style="font-weight:900;margin-bottom:15px;">🐛 Баг-репорт</h2>';
+    html += '<p style="color:var(--text-dim);margin-bottom:15px;">Опишите проблему</p>';
+    html += '<textarea id="bug-text" class="u-input" style="height:120px;"></textarea>';
+    html += '<div style="display:flex;gap:10px;margin-top:15px;">';
+    html += '<button class="btn btn-accent btn-block" onclick="sendBug()">📨 Отправить</button>';
+    html += '<button class="btn btn-outline" onclick="closeModal()">Отмена</button>';
+    html += '</div>';
     openModal(html);
 }
 
 async function sendBug(){
-    const desc=document.getElementById('bug-text').value;
-    if(!desc.trim())return toast('Введите описание!','error');
-    await fetch(API_BASE+'/api/bug',{
-        method:'POST',
-        headers:{'Content-Type':'application/json',Authorization:'Bearer '+localStorage.getItem('sd_token')},
-        body:JSON.stringify({description:desc})
+    if(!antiFlood.check('bug')) return toast('⏳ Слишком много баг-репортов! Подождите 30 секунд.', 'error');
+    var desc = document.getElementById('bug-text').value;
+    if(!desc.trim()) return toast('Введите описание!', 'error');
+    await fetch(API_BASE + '/api/bug', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + localStorage.getItem('sd_token') },
+        body: JSON.stringify({ description: desc })
     });
     closeModal();
     toast('✅ Отправлено');
 }
 
-window.onload=init;
+// ==================== ЗАПУСК ====================
+window.onload = init;
 </script>
 </body>
 </html>
