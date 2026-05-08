@@ -26,7 +26,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: var(--bg); color: var(--text); overflow-x: hidden; min-height: 100vh; }
 
-        /* ПРЕЛОАДЕР */
         #preloader { position: fixed; inset: 0; background: var(--bg); z-index: 100000; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.5s ease; }
         .loader-logo { width: 120px; filter: drop-shadow(0 0 30px var(--accent)); margin-bottom: 30px; animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
@@ -34,96 +33,89 @@
         .loader-progress { position: absolute; width: 40%; height: 100%; background: linear-gradient(90deg, transparent, var(--accent), transparent); animation: move 1.5s infinite linear; border-radius: 3px; }
         @keyframes move { from { left: -50%; } to { left: 110%; } }
 
-        /* ХЕДЕР */
         header { display: none; justify-content: space-between; align-items: center; padding: 0 5%; height: 80px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: rgba(3, 5, 10, 0.9); backdrop-filter: blur(20px); z-index: 1000; }
-        .header-left { display: flex; align-items: center; gap: 15px; }
         .header-right { display: flex; align-items: center; gap: 12px; }
 
-        /* КОНТЕЙНЕР */
         .container { display: none; max-width: 1300px; margin: 0 auto; padding: 40px 20px; }
         .page { display: none; animation: fadeIn 0.4s ease forwards; }
         .page.active-page { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* СЕТКА КАТЕГОРИЙ */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
         .card { background: var(--card); padding: 45px 25px; border-radius: 20px; border: 1px solid var(--border); text-align: center; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden; }
-        .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at 50% 0%, var(--accent), transparent 70%); opacity: 0; transition: opacity 0.3s ease; }
         .card:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3); }
-        .card:hover::before { opacity: 0.05; }
         .card-emoji { font-size: 3.5rem; margin-bottom: 15px; position: relative; z-index: 1; }
         .card-title { font-weight: 800; text-transform: uppercase; letter-spacing: 1px; position: relative; z-index: 1; }
 
-        /* ИНПУТЫ */
         .u-input { width: 100%; padding: 16px 20px; background: var(--bg); border: 1px solid var(--border); border-radius: 14px; color: var(--text); outline: none; margin-bottom: 8px; font-size: 0.95rem; transition: all 0.3s ease; resize: vertical; }
         .u-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(212, 163, 115, 0.1); }
         .u-input.error { border-color: var(--error); box-shadow: 0 0 0 3px var(--error-bg); }
         textarea.u-input { min-height: 80px; }
+        input[type="color"].u-input { padding: 8px 20px; height: 50px; cursor: pointer; }
 
-        /* КНОПКИ */
         .btn { padding: 14px 28px; border-radius: 14px; border: none; font-weight: 700; cursor: pointer; transition: all 0.3s ease; font-size: 0.95rem; letter-spacing: 0.5px; }
         .btn-accent { background: linear-gradient(135deg, var(--accent), var(--accent-light)); color: #000; }
         .btn-accent:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 8px 25px rgba(212, 163, 115, 0.3); }
         .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
         .btn-outline:hover { border-color: var(--accent); background: rgba(212, 163, 115, 0.05); }
         .btn-danger { background: var(--error); color: #fff; }
-        .btn-danger:hover { opacity: 0.9; }
         .btn-sm { padding: 10px 18px; font-size: 0.8rem; border-radius: 10px; }
         .btn-block { width: 100%; }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
 
-        /* КНОПКИ ВЫБОРА ОТДЕЛА */
         .opt-btn { padding: 18px 20px; background: var(--card); border: 2px solid var(--border); border-radius: 14px; color: var(--text); cursor: pointer; text-align: center; font-weight: 700; font-size: 0.9rem; transition: all 0.3s ease; }
         .opt-btn:hover { border-color: var(--accent); background: var(--card-hover); }
         .opt-btn.active { border-color: var(--accent); background: rgba(212, 163, 115, 0.15); color: var(--accent); box-shadow: 0 0 20px rgba(212, 163, 115, 0.15); }
 
-        /* АДМИН-ПАНЕЛЬ */
-        .admin-layout { display: grid; grid-template-columns: 320px 1fr; gap: 25px; align-items: start; }
+        .admin-layout { display: grid; grid-template-columns: 340px 1fr; gap: 25px; align-items: start; }
         .admin-sidebar { background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid var(--border); }
         .cat-item { padding: 16px 18px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: all 0.3s ease; }
         .cat-item:hover { border-color: var(--accent); background: rgba(255,255,255,0.04); }
         .admin-editor { background: var(--card); padding: 35px; border-radius: 20px; border: 1px solid var(--border); min-height: 400px; }
 
-        /* ТЕГИ */
-        label { display: block; font-size: 0.75rem; color: var(--accent); font-weight: 700; text-transform: uppercase; margin: 25px 0 10px; letter-spacing: 1.5px; }
+        label { display: block; font-size: 0.75rem; color: var(--accent); font-weight: 700; text-transform: uppercase; margin: 20px 0 8px; letter-spacing: 1.5px; }
         label:first-child { margin-top: 0; }
 
-        /* МОДАЛЬНОЕ ОКНО */
         #modal-overlay { position: fixed; inset: 0; background: var(--overlay); z-index: 10000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(10px); padding: 20px; }
-        .modal-box { background: var(--card); border: 1px solid var(--border-light); padding: 35px; border-radius: 24px; width: 100%; max-width: 500px; border-top: 4px solid var(--accent); box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); animation: modalIn 0.3s ease; }
+        .modal-box { background: var(--card); border: 1px solid var(--border-light); padding: 35px; border-radius: 24px; width: 100%; max-width: 550px; max-height: 90vh; overflow-y: auto; border-top: 4px solid var(--accent); box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); animation: modalIn 0.3s ease; }
         @keyframes modalIn { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
         .modal-title { font-weight: 900; margin-bottom: 10px; font-size: 1.5rem; }
         .modal-text { color: var(--text-dim); margin-bottom: 25px; font-size: 0.9rem; line-height: 1.5; }
         .modal-extra { margin-bottom: 20px; }
         .modal-actions { display: flex; gap: 10px; flex-wrap: wrap; }
 
-        /* СТРАНИЦА ЛОГИНА */
         .login-page { display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
         .login-card { background: var(--card); padding: 50px 40px; border-radius: 30px; border: 1px solid var(--border); text-align: center; max-width: 420px; width: 100%; }
         .login-logo { width: 90px; margin-bottom: 25px; filter: drop-shadow(0 0 25px var(--accent)); }
 
-        /* УВЕДОМЛЕНИЯ */
         .toast { position: fixed; bottom: 30px; right: 30px; z-index: 99999; padding: 16px 24px; border-radius: 12px; font-weight: 600; animation: slideIn 0.3s ease; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .toast-success { background: var(--success); color: #000; }
         .toast-error { background: var(--error); color: #fff; }
 
-        /* СКРОЛЛБАР */
+        .log-entry { padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+        .log-entry:last-child { border-bottom: none; }
+        .log-type { display: inline-block; padding: 2px 8px; border-radius: 4px; font-weight: 700; font-size: 0.7rem; margin-right: 8px; }
+        .log-type-INFO { background: #06b6d4; color: #000; }
+        .log-type-SUCCESS { background: #22c55e; color: #000; }
+        .log-type-WARN { background: #eab308; color: #000; }
+        .log-type-ERROR { background: #ef4444; color: #fff; }
+        .log-type-SUBMIT { background: #a855f7; color: #fff; }
+        .log-type-ADMIN { background: #3b82f6; color: #fff; }
+        .log-type-BUG { background: #f59e0b; color: #000; }
+
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: var(--bg); }
         ::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
     </style>
 </head>
 <body>
 
-    <!-- ПРЕЛОАДЕР -->
     <div id="preloader">
         <img src="image.png" class="loader-logo" alt="LSCSD">
         <div class="loader-bar"><div class="loader-progress"></div></div>
     </div>
 
-    <!-- МОДАЛЬНОЕ ОКНО -->
     <div id="modal-overlay" style="display:none;">
         <div class="modal-box">
             <div class="modal-title" id="modal-title"></div>
@@ -133,57 +125,45 @@
         </div>
     </div>
 
-    <!-- СТРАНИЦА ЛОГИНА -->
     <div id="page-login" class="login-page" style="display:none;">
         <div class="login-card">
             <img src="image.png" class="login-logo" alt="LSCSD">
-            <h2 style="margin-bottom: 10px; font-weight: 900; font-size: 1.8rem;">LSCSD PORTAL</h2>
-            <p style="color: var(--text-dim); margin-bottom: 30px;">Портал подачи заявок</p>
-            <button class="btn btn-block" style="background:#5865F2; color:#fff; font-size: 1rem;" onclick="login()">
-                🔐 Войти через Discord
-            </button>
+            <h2 style="margin-bottom:10px;font-weight:900;font-size:1.8rem;">LSCSD PORTAL</h2>
+            <p style="color:var(--text-dim);margin-bottom:30px;">Портал подачи заявок</p>
+            <button class="btn btn-block" style="background:#5865F2;color:#fff;font-size:1rem;" onclick="login()">🔐 Войти через Discord</button>
         </div>
     </div>
 
-    <!-- ХЕДЕР -->
     <header id="ui-header">
-        <div class="header-left">
-            <img src="image.png" style="height:45px; cursor:pointer;" onclick="showPage('page-home')" alt="Home">
-        </div>
+        <img src="image.png" style="height:45px;cursor:pointer;" onclick="showPage('page-home')" alt="Home">
         <div class="header-right">
             <button class="btn btn-outline btn-sm" onclick="openBug()">🐛 Баг-репорт</button>
             <div id="adm-btn-wrap"></div>
-            <img id="u-ava" style="width:42px; border-radius:50%; border:2px solid var(--accent); cursor:pointer;" onclick="logout()" alt="User">
+            <img id="u-ava" style="width:42px;border-radius:50%;border:2px solid var(--accent);cursor:pointer;" onclick="logout()" alt="User">
         </div>
     </header>
 
-    <!-- ОСНОВНОЙ КОНТЕНТ -->
     <div class="container" id="main-container">
         
-        <!-- ГЛАВНАЯ -->
         <div id="page-home" class="page active-page">
-            <h1 style="margin-bottom: 10px; font-weight: 900; font-size: 2.2rem;">📋 Доступные заявки</h1>
-            <p style="color: var(--text-dim); margin-bottom: 35px;">Выберите форму для заполнения</p>
+            <h1 style="margin-bottom:10px;font-weight:900;font-size:2.2rem;">📋 Доступные заявки</h1>
+            <p style="color:var(--text-dim);margin-bottom:35px;">Выберите форму для заполнения</p>
             <div id="grid-main" class="grid"></div>
         </div>
 
-        <!-- ЗАПОЛНЕНИЕ ФОРМЫ -->
         <div id="page-apply" class="page">
-            <div style="background:var(--card); padding:40px; border-radius:24px; border:1px solid var(--border);">
+            <div style="background:var(--card);padding:40px;border-radius:24px;border:1px solid var(--border);">
                 <button class="btn btn-outline btn-sm" onclick="showPage('page-home')" style="margin-bottom:25px;">← НАЗАД К ФОРМАМ</button>
-                <h2 id="apply-title" style="font-weight:900; font-size:1.8rem; margin-bottom:30px;"></h2>
-                <div id="dept-selector" style="display:none; margin-bottom: 30px;">
+                <h2 id="apply-title" style="font-weight:900;font-size:1.8rem;margin-bottom:30px;"></h2>
+                <div id="dept-selector" style="display:none;margin-bottom:30px;">
                     <label id="dept-label"></label>
-                    <div id="dept-btns" style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;"></div>
+                    <div id="dept-btns" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;"></div>
                 </div>
                 <div id="apply-fields"></div>
-                <button id="submit-btn" class="btn btn-accent btn-block" style="margin-top:20px; font-size:1rem;" onclick="submitApp()">
-                    📨 ОТПРАВИТЬ ЗАЯВКУ
-                </button>
+                <button id="submit-btn" class="btn btn-accent btn-block" style="margin-top:20px;font-size:1rem;" onclick="submitApp()">📨 ОТПРАВИТЬ ЗАЯВКУ</button>
             </div>
         </div>
 
-        <!-- АДМИН-ПАНЕЛЬ -->
         <div id="page-admin" class="page">
             <div class="admin-layout">
                 <div class="admin-sidebar">
@@ -191,15 +171,16 @@
                     <div id="admin-cat-list"></div>
                     <button class="btn btn-accent btn-block btn-sm" onclick="addForm()">+ СОЗДАТЬ ФОРМУ</button>
                     
-                    <div id="owner-tools" style="display:none; margin-top: 25px; padding-top: 25px; border-top: 1px solid var(--border);">
+                    <div id="owner-tools" style="display:none;margin-top:25px;padding-top:25px;border-top:1px solid var(--border);">
                         <label style="margin-top:0;">⚙️ УПРАВЛЕНИЕ</label>
                         <button class="btn btn-outline btn-block btn-sm" style="margin-bottom:8px;" onclick="manageAdmins()">👥 Администраторы</button>
-                        <button class="btn btn-outline btn-block btn-sm" onclick="manageLvls()">🏷️ Названия уровней</button>
+                        <button class="btn btn-outline btn-block btn-sm" style="margin-bottom:8px;" onclick="manageLvls()">🏷️ Названия уровней</button>
+                        <button class="btn btn-outline btn-block btn-sm" onclick="viewLogs()">📋 Логи системы</button>
                     </div>
                 </div>
                 <div class="admin-editor" id="admin-editor">
-                    <div style="text-align:center; color:var(--text-dim); margin-top:80px;">
-                        <div style="font-size:4rem; margin-bottom:20px;">📝</div>
+                    <div style="text-align:center;color:var(--text-dim);margin-top:80px;">
+                        <div style="font-size:4rem;margin-bottom:20px;">📝</div>
                         <p>Выберите форму слева для редактирования</p>
                         <p style="font-size:0.8rem;">или создайте новую</p>
                     </div>
@@ -210,10 +191,8 @@
     </div>
 
 <script>
-    // ==================== КОНФИГУРАЦИЯ ====================
     const API_BASE = 'https://meri-server.64.188.66.210.nip.io';
     
-    // ==================== СОСТОЯНИЕ ====================
     const state = {
         user: null,
         cats: [],
@@ -223,7 +202,6 @@
         lvlNames: []
     };
 
-    // ==================== УВЕДОМЛЕНИЯ ====================
     function toast(msg, type = 'success') {
         const existing = document.querySelector('.toast');
         if (existing) existing.remove();
@@ -234,19 +212,15 @@
         setTimeout(() => t.remove(), 3000);
     }
 
-    // ==================== АВТОРИЗАЦИЯ ====================
     async function init() {
         const hash = window.location.hash.slice(1);
         const params = new URLSearchParams(hash);
         let token = params.get('access_token') || localStorage.getItem('sd_token');
-
         if (token) {
             window.location.hash = '';
             localStorage.setItem('sd_token', token);
             try {
-                const res = await fetch(`${API_BASE}/api/user/me`, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
+                const res = await fetch(`${API_BASE}/api/user/me`, { headers: { Authorization: `Bearer ${token}` } });
                 if (!res.ok) throw new Error('Invalid token');
                 const data = await res.json();
                 state.user = data;
@@ -257,414 +231,3 @@
                 document.getElementById('main-container').style.display = 'block';
                 renderHeader();
                 document.getElementById('preloader').style.opacity = '0';
-                setTimeout(() => document.getElementById('preloader').style.display = 'none', 500);
-            } catch (e) {
-                logout();
-            }
-        } else {
-            document.getElementById('preloader').style.display = 'none';
-            document.getElementById('page-login').style.display = 'flex';
-        }
-    }
-
-    function login() {
-        window.location.href = `${API_BASE}/login`;
-    }
-
-    function logout() {
-        localStorage.removeItem('sd_token');
-        window.location.hash = '';
-        window.location.reload();
-    }
-
-    // ==================== UI ====================
-    function showPage(id) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
-        const page = document.getElementById(id);
-        if (page) page.classList.add('active-page');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function renderHeader() {
-        if (state.user) {
-            document.getElementById('u-ava').src = `https://cdn.discordapp.com/avatars/${state.user.id}/${state.user.avatar}.png`;
-            document.getElementById('u-ava').title = state.user.username;
-            const admWrap = document.getElementById('adm-btn-wrap');
-            if (state.userLevel > 0) {
-                admWrap.innerHTML = `<button class="btn btn-accent btn-sm" onclick="showPage('page-admin')">⚡ АДМИН-ПАНЕЛЬ</button>`;
-                document.getElementById('owner-tools').style.display = state.userLevel >= 4 ? 'block' : 'none';
-            } else {
-                admWrap.innerHTML = '';
-            }
-        }
-    }
-
-    // ==================== КАТЕГОРИИ ====================
-    async function loadCategories() {
-        const res = await fetch(`${API_BASE}/api/categories`);
-        state.cats = await res.json();
-        renderHome();
-        if (document.getElementById('admin-cat-list')) renderAdminList();
-    }
-
-    function renderHome() {
-        const grid = document.getElementById('grid-main');
-        if (!grid) return;
-        grid.innerHTML = state.cats.length === 0 
-            ? '<div style="grid-column:1/-1; text-align:center; padding:60px; color:var(--text-dim);"><div style="font-size:4rem; margin-bottom:20px;">📭</div><p>Нет доступных форм</p></div>'
-            : '';
-        state.cats.forEach(c => {
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `<div class="card-emoji">${c.emoji || '📁'}</div><div class="card-title">${c.name}</div>`;
-            card.onclick = () => openForm(c.id);
-            grid.appendChild(card);
-        });
-    }
-
-    function openForm(id) {
-        state.activeCat = state.cats.find(c => c.id == id);
-        state.selDept = null;
-        document.getElementById('apply-title').innerText = state.activeCat.name;
-        const fields = document.getElementById('apply-fields');
-        fields.innerHTML = '';
-        const deptSelector = document.getElementById('dept-selector');
-        deptSelector.style.display = 'none';
-    
-        state.activeCat.questions.forEach(q => {
-            if (q.includes('[') && q.includes('|')) {
-                deptSelector.style.display = 'block';
-                document.getElementById('dept-label').innerText = q.split('[')[0].trim();
-                const bBox = document.getElementById('dept-btns');
-                bBox.innerHTML = '';
-                
-                // Извлекаем всё, что внутри квадратных скобок
-                const match = q.match(/\[(.*?)\]/);
-                if (match) {
-                    // Разбиваем строку по запятой, но учитываем что внутри опции могут быть пробелы
-                    const rawOptions = match[1].split(/,\s*(?=[А-Яа-яA-Za-z0-9])/);
-                    
-                    rawOptions.forEach(optionStr => {
-                        const parts = optionStr.split('|').map(s => s.trim()).filter(s => s);
-                        
-                        // Если 3 части: имя | роль | webhook
-                        if (parts.length >= 3) {
-                            const btn = document.createElement('div');
-                            btn.className = 'opt-btn';
-                            btn.innerText = parts[0]; // Имя отдела
-                            btn.onclick = () => {
-                                bBox.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('active'));
-                                btn.classList.add('active');
-                                state.selDept = { 
-                                    name: parts[0], 
-                                    role: parts[1], 
-                                    webhook: parts[2] 
-                                };
-                            };
-                            bBox.appendChild(btn);
-                        }
-                    });
-                }
-                
-                // Если после парсинга кнопок нет — показываем ошибку в консоли
-                if (bBox.children.length === 0) {
-                    console.error('Не удалось распарсить опции:', match ? match[1] : 'нет совпадений');
-                }
-                
-            } else {
-                const isRequired = q.endsWith('*');
-                const cleanName = q.replace('*', '');
-                const fieldDiv = document.createElement('div');
-                fieldDiv.style.marginBottom = '15px';
-                fieldDiv.innerHTML = `
-                    <label style="margin-top:0;">${cleanName} ${isRequired ? '<span style="color:var(--error);">*</span>' : ''}</label>
-                    <textarea class="u-input" data-req="${isRequired}" rows="1" 
-                        oninput="this.style.height='';this.style.height=this.scrollHeight+'px'"
-                        placeholder="Введите ${cleanName.toLowerCase()}"></textarea>
-                `;
-                fields.appendChild(fieldDiv);
-            }
-        });
-        showPage('page-apply');
-    }
-
-    async function submitApp() {
-        const inputs = Array.from(document.querySelectorAll('#apply-fields textarea'));
-        let valid = true;
-        const answers = [];
-        inputs.forEach(i => {
-            const val = i.value.trim();
-            answers.push(val);
-            if (i.dataset.req === 'true' && !val) {
-                i.classList.add('error');
-                valid = false;
-            } else {
-                i.classList.remove('error');
-            }
-        });
-
-        if (!valid) {
-            toast('Заполните все обязательные поля!', 'error');
-            return;
-        }
-
-        if (!state.selDept && document.getElementById('dept-selector').style.display !== 'none') {
-            toast('Выберите отдел!', 'error');
-            return;
-        }
-
-        const payload = {
-            categoryId: state.activeCat.id,
-            selectedDept: state.selDept,
-            answers
-        };
-
-        const btn = document.getElementById('submit-btn');
-        btn.disabled = true;
-        btn.innerHTML = '⏳ ОТПРАВКА...';
-        try {
-            const res = await fetch(`${API_BASE}/api/submit`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${localStorage.getItem('sd_token')}`
-                },
-                body: JSON.stringify(payload)
-            });
-            if (!res.ok) throw new Error(await res.text());
-            toast('✅ Заявка успешно отправлена!');
-            showPage('page-home');
-        } catch (e) {
-            toast('❌ Ошибка: ' + e.message, 'error');
-        } finally {
-            btn.disabled = false;
-            btn.innerHTML = '📨 ОТПРАВИТЬ ЗАЯВКУ';
-        }
-    }
-
-    // ==================== МОДАЛЬНЫЕ ОКНА ====================
-    function modal(title, text) {
-        document.getElementById('modal-title').innerText = title;
-        document.getElementById('modal-text').innerText = text || '';
-        document.getElementById('modal-overlay').style.display = 'flex';
-    }
-
-    function closeModal() {
-        document.getElementById('modal-overlay').style.display = 'none';
-        document.getElementById('modal-extra').innerHTML = '';
-        document.getElementById('modal-actions').innerHTML = '';
-    }
-
-    // Закрытие по клику на оверлей
-    document.getElementById('modal-overlay').addEventListener('click', function(e) {
-        if (e.target === this) closeModal();
-    });
-
-    // ==================== БАГ-РЕПОРТ ====================
-    function openBug() {
-        modal('🐛 Сообщить об ошибке', 'Опишите проблему, которую вы обнаружили.');
-        document.getElementById('modal-extra').innerHTML = `
-            <textarea id="bug-text" class="u-input" style="height:120px;" placeholder="Что пошло не так?"></textarea>
-        `;
-        document.getElementById('modal-actions').innerHTML = `
-            <button class="btn btn-accent" onclick="sendBug()">📨 Отправить</button>
-            <button class="btn btn-outline" onclick="closeModal()">Отмена</button>
-        `;
-    }
-
-    async function sendBug() {
-        const desc = document.getElementById('bug-text').value;
-        if (!desc.trim()) return toast('Введите описание ошибки!', 'error');
-        try {
-            await fetch(`${API_BASE}/api/bug`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${localStorage.getItem('sd_token')}`
-                },
-                body: JSON.stringify({ description: desc })
-            });
-            closeModal();
-            toast('✅ Отчёт отправлен!');
-        } catch (e) {
-            toast('❌ Ошибка отправки', 'error');
-        }
-    }
-
-    // ==================== АДМИН-ПАНЕЛЬ ====================
-    function renderAdminList() {
-        const list = document.getElementById('admin-cat-list');
-        if (!list) return;
-        list.innerHTML = '';
-        state.cats.forEach(c => {
-            const minLvl = c.minLvl || 1;
-            const acc = state.userLevel >= minLvl;
-            const item = document.createElement('div');
-            item.className = 'cat-item';
-            item.style.opacity = acc ? '1' : '0.4';
-            item.style.pointerEvents = acc ? 'auto' : 'none';
-            item.innerHTML = `
-                <span style="font-weight:600;">${c.emoji || '📁'} ${c.name}</span>
-                <span style="font-size:0.65rem; background:var(--accent); color:#000; padding:3px 8px; border-radius:6px; font-weight:700;">
-                    ${state.lvlNames[minLvl-1] || 'Lvl '+minLvl}
-                </span>
-            `;
-            item.onclick = () => editForm(c.id);
-            list.appendChild(item);
-        });
-    }
-
-    function editForm(id) {
-        const cat = state.cats.find(c => c.id == id);
-        const editor = document.getElementById('admin-editor');
-        editor.innerHTML = `
-            <h2 style="margin-bottom:25px; font-weight:900;">${cat.emoji || '📁'} ${cat.name}</h2>
-            
-            <label>Название формы</label>
-            <input id="ed-n" class="u-input" value="${cat.name}">
-            
-            <label>Эмодзи</label>
-            <input id="ed-e" class="u-input" value="${cat.emoji || '📁'}">
-            
-            <label>Минимальный уровень доступа</label>
-            <select id="ed-l" class="u-input" style="appearance:auto;">
-                ${state.lvlNames.map((n, i) => `<option value="${i+1}" ${cat.minLvl == i+1 ? 'selected' : ''}>${i+1} — ${n}</option>`).join('')}
-            </select>
-            
-            <label>Общий Webhook URL</label>
-            <input id="ed-w" class="u-input" value="${cat.webhook || ''}" placeholder="https://discord.com/api/webhooks/...">
-            
-            <label>Вопросы <span style="font-weight:400; text-transform:none; letter-spacing:0;">(по одному на строку, * — обязательно. Для выбора отдела: Вопрос [Отдел1|роль|webhook, Отдел2|роль|webhook])</span></label>
-            <textarea id="ed-q" class="u-input" style="height:200px; font-family:monospace; font-size:0.85rem;">${cat.questions.join('\n')}</textarea>
-            
-            <div style="display:flex; gap:10px; margin-top:25px;">
-                <button class="btn btn-accent" onclick="saveForm(${id})">💾 Сохранить</button>
-                <button class="btn btn-danger" onclick="deleteForm(${id})">🗑️ Удалить</button>
-            </div>
-        `;
-    }
-
-    async function saveForm(id) {
-        const idx = state.cats.findIndex(c => c.id == id);
-        state.cats[idx] = {
-            ...state.cats[idx],
-            name: document.getElementById('ed-n').value,
-            emoji: document.getElementById('ed-e').value,
-            minLvl: parseInt(document.getElementById('ed-l').value),
-            webhook: document.getElementById('ed-w').value,
-            questions: document.getElementById('ed-q').value.split('\n').filter(q => q.trim())
-        };
-        await updateCategoriesOnServer();
-        toast('✅ Форма сохранена');
-    }
-
-    async function deleteForm(id) {
-        if (!confirm('Вы уверены? Форма будет удалена безвозвратно.')) return;
-        state.cats = state.cats.filter(c => c.id != id);
-        await updateCategoriesOnServer();
-        document.getElementById('admin-editor').innerHTML = `
-            <div style="text-align:center; color:var(--text-dim); margin-top:80px;">
-                <div style="font-size:4rem; margin-bottom:20px;">📝</div>
-                <p>Выберите форму слева для редактирования</p>
-            </div>
-        `;
-        toast('🗑️ Форма удалена');
-    }
-
-    function addForm() {
-        state.cats.push({
-            id: Date.now(),
-            name: 'Новая форма',
-            emoji: '📋',
-            questions: ['Ваше имя*'],
-            minLvl: 1
-        });
-        updateCategoriesOnServer();
-    }
-
-    async function updateCategoriesOnServer() {
-        try {
-            await fetch(`${API_BASE}/api/admin/categories`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${localStorage.getItem('sd_token')}`
-                },
-                body: JSON.stringify({ categories: state.cats })
-            });
-            renderHome();
-            renderAdminList();
-        } catch (e) {
-            toast('❌ Ошибка сохранения', 'error');
-        }
-    }
-
-    function manageAdmins() {
-        modal('👥 Управление админами', 'Введите ID пользователя Discord и уровень доступа.');
-        document.getElementById('modal-extra').innerHTML = `
-            <input id="mid" class="u-input" placeholder="ID Discord (например: 1097047579876929616)">
-            <input id="mlvl" type="number" class="u-input" placeholder="Уровень (0 = снять доступ)">
-        `;
-        document.getElementById('modal-actions').innerHTML = `
-            <button class="btn btn-accent" onclick="setAdmin()">💾 Сохранить</button>
-            <button class="btn btn-outline" onclick="closeModal()">Отмена</button>
-        `;
-    }
-
-    async function setAdmin() {
-        const userId = document.getElementById('mid').value.trim();
-        const level = parseInt(document.getElementById('mlvl').value);
-        if (!userId || isNaN(level)) return;
-        try {
-            await fetch(`${API_BASE}/api/admin/admins`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${localStorage.getItem('sd_token')}`
-                },
-                body: JSON.stringify({ userId, level })
-            });
-            closeModal();
-            toast('✅ Админ обновлён');
-        } catch (e) {
-            toast('❌ Ошибка', 'error');
-        }
-    }
-
-    function manageLvls() {
-        modal('🏷️ Названия уровней', 'Измените названия для каждого уровня доступа.');
-        document.getElementById('modal-extra').innerHTML = state.lvlNames.map((n, i) => 
-            `<input class="u-input l-edit" value="${n}" placeholder="Уровень ${i+1}">`
-        ).join('');
-        document.getElementById('modal-actions').innerHTML = `
-            <button class="btn btn-accent" onclick="saveLvlNames()">💾 Сохранить</button>
-            <button class="btn btn-outline" onclick="closeModal()">Отмена</button>
-        `;
-    }
-
-    async function saveLvlNames() {
-        const names = Array.from(document.querySelectorAll('.l-edit')).map(i => i.value.trim());
-        if (names.length !== 5) return toast('❌ Должно быть ровно 5 уровней', 'error');
-        try {
-            await fetch(`${API_BASE}/api/admin/lvlnames`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${localStorage.getItem('sd_token')}`
-                },
-                body: JSON.stringify({ names })
-            });
-            closeModal();
-            state.lvlNames = names;
-            if (document.getElementById('admin-cat-list')) renderAdminList();
-            toast('✅ Названия сохранены');
-        } catch (e) {
-            toast('❌ Ошибка', 'error');
-        }
-    }
-
-    // ==================== ЗАПУСК ====================
-    window.onload = init;
-</script>
-</body>
-</html>
