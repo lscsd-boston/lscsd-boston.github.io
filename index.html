@@ -151,16 +151,13 @@ async function submitAppModal(){
     i.forEach(function(x){var val=x.value.trim();a.push(val);if(x.dataset.req==='true'&&!val){x.classList.add('error');v=false}else x.classList.remove('error')});
     if(!v)return toast('Заполните поля!','error');
     
-    var fd=new FormData();
-    fd.append('categoryId',state.activeCat.id);
-    fd.append('answers',JSON.stringify(a));
-    if(state.selDept)fd.append('selectedDept',JSON.stringify(state.selDept));
-    if(state.uploadedFiles&&state.uploadedFiles.length>0){
-        state.uploadedFiles.forEach(function(f){fd.append('files',f);});
-    }
-    
     try{
-        var r=await fetch(API_BASE+'/api/submit',{method:'POST',headers:{Authorization:'Bearer '+localStorage.getItem('sd_token')},body:fd});
+        var body=JSON.stringify({categoryId:state.activeCat.id,answers:a,selectedDept:state.selDept||null});
+        var r=await fetch(API_BASE+'/api/submit',{
+            method:'POST',
+            headers:{'Content-Type':'application/json',Authorization:'Bearer '+localStorage.getItem('sd_token')},
+            body:body
+        });
         if(!r.ok)throw new Error(await r.text());
         closeModal();toast('✅ Заявка отправлена!');
     }catch(e){toast('❌ '+e.message,'error')}
