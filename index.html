@@ -314,11 +314,11 @@ async function init(){
             document.getElementById('main-container').style.display='block';
             renderHeader();renderSidebar();updateThemeToggle();
             document.getElementById('preloader').style.opacity='0';
-            setTimeout(function(){document.getElementById('preloader').style.display='none'},600);
+            document.getElementById('preloader').style.display='none';
         }catch(e){logout();}
     }else{
         document.getElementById('preloader').style.opacity='0';
-        setTimeout(function(){document.getElementById('preloader').style.display='none'},600);
+        document.getElementById('preloader').style.display='none';
         document.getElementById('page-login').style.display='flex';
     }
 }
