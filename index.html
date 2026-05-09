@@ -612,7 +612,7 @@ async function openAdminApps(){
             html += '<div style="background:rgba(255,255,255,0.02);padding:15px;border-radius:12px;border:1px solid var(--border);margin-bottom:10px;">' +
                 '<div style="display:flex;justify-content:space-between;align-items:center;">' +
                 '<b>' + a.categoryName + '</b>' +
-                '<select onchange="updateAppStatus(' + a.id + ', this.value)" style="background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:5px 10px;">' +
+                '<select onchange="updateAppStatus(' + a.id + ', this.value, \'' + (a.messageId || '') + '\', \'' + (a.channelId || '') + '\', \'' + (a.webhookUrl || '') + '\')" style="background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:5px 10px;">' +
                 '<option value="pending" ' + (a.status==='pending'?'selected':'') + '>⏳ На рассмотрении</option>' +
                 '<option value="approved" ' + (a.status==='approved'?'selected':'') + '>✅ Одобрено</option>' +
                 '<option value="rejected" ' + (a.status==='rejected'?'selected':'') + '>❌ Отказано</option>' +
@@ -625,16 +625,21 @@ async function openAdminApps(){
         openModal(html);
     }catch(e){}
 }
-
-async function updateAppStatus(id, status, messageId) {
+    
+async function updateAppStatus(id, status, messageId, channelId, webhookUrl){
     await fetch(API_BASE + '/api/admin/applications/' + id, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + localStorage.getItem('sd_token') },
-        body: JSON.stringify({ status: status, messageId: messageId || '' })
+        body: JSON.stringify({ 
+            status: status, 
+            messageId: messageId || '', 
+            channelId: channelId || '',
+            webhookUrl: webhookUrl || ''
+        })
     });
     toast('✅ Статус обновлён');
 }
-
+    
 // ==================== АДМИН-ПАНЕЛЬ ====================
 function openAdminPanel(){
     closeAllModals();
