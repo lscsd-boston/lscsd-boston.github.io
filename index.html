@@ -148,17 +148,33 @@ function selectDept(e){document.querySelectorAll('#dept-btns .opt-btn').forEach(
 async function submitAppModal(){
     var a=[];
     document.querySelectorAll('.app-field').forEach(function(x){a.push(x.value.trim())});
+    
+    var body={categoryId:state.activeCat.id,answers:a};
+    
+    if(state.uploadedFiles&&state.uploadedFiles.length>0){
+        var file=state.uploadedFiles[0];
+        var reader=new FileReader();
+        reader.onload=async function(){
+            body.fileBase64=reader.result;
+            body.fileName=file.name;
+            await sendIt(body);
+        };
+        reader.readAsDataURL(file);
+    }else{
+        await sendIt(body);
+    }
+}
+
+async function sendIt(body){
     try{
         var r=await fetch(API_BASE+'/api/submit',{
             method:'POST',
             headers:{'Content-Type':'application/json',Authorization:'Bearer '+localStorage.getItem('sd_token')},
-            body:JSON.stringify({categoryId:state.activeCat.id,answers:a})
+            body:JSON.stringify(body)
         });
-        var d=await r.json();
         closeModal();toast('Заявка отправлена!');
-    }catch(e){alert('Ошибка: '+e.message)}
+    }catch(e){toast('Ошибка: '+e.message,'error')}
 }
-
 async function sendRequest(body){
     try{
         var r=await fetch(API_BASE+'/api/submit',{
