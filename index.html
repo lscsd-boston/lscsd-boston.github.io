@@ -149,19 +149,36 @@ async function submitAppModal(){
     var a=[];
     document.querySelectorAll('.app-field').forEach(function(x){a.push(x.value.trim())});
     
-    var body={categoryId:state.activeCat.id,answers:a};
-    
     if(state.uploadedFiles&&state.uploadedFiles.length>0){
         var file=state.uploadedFiles[0];
+        alert('Читаю файл: '+file.name);
         var reader=new FileReader();
         reader.onload=async function(){
-            body.fileBase64=reader.result;
-            body.fileName=file.name;
-            await sendIt(body);
+            alert('Файл прочитан, отправляю...');
+            var body={categoryId:state.activeCat.id,answers:a,fileBase64:reader.result,fileName:file.name};
+            try{
+                var r=await fetch(API_BASE+'/api/submit',{
+                    method:'POST',
+                    headers:{'Content-Type':'application/json',Authorization:'Bearer '+localStorage.getItem('sd_token')},
+                    body:JSON.stringify(body)
+                });
+                var d=await r.json();
+                alert('Ответ сервера: '+JSON.stringify(d));
+                closeModal();toast('Заявка отправлена!');
+            }catch(e){alert('Ошибка fetch: '+e.message)}
         };
+        reader.onerror=function(){alert('Ошибка чтения файла!')};
         reader.readAsDataURL(file);
     }else{
-        await sendIt(body);
+        alert('Нет файла, отправляю без картинки');
+        try{
+            var r=await fetch(API_BASE+'/api/submit',{
+                method:'POST',
+                headers:{'Content-Type':'application/json',Authorization:'Bearer '+localStorage.getItem('sd_token')},
+                body:JSON.stringify({categoryId:state.activeCat.id,answers:a})
+            });
+            closeModal();toast('Заявка отправлена!');
+        }catch(e){alert('Ошибка: '+e.message)}
     }
 }
 
