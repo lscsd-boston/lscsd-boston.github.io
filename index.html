@@ -145,7 +145,26 @@ function openFormModal(id){state.activeCat=state.cats.find(c=>c.id==id);state.se
 function handleFiles(f){state.uploadedFiles=Array.from(f);var l=document.getElementById('file-list');if(!l)return;l.innerHTML='';state.uploadedFiles.forEach(function(f,i){var d=document.createElement('div');d.style='display:flex;align-items:center;gap:10px;padding:8px;background:var(--card);border-radius:8px;margin-bottom:5px;';d.innerHTML='<span>📄 '+f.name+'</span><button class="btn btn-danger btn-sm" onclick="removeFile('+i+')">✕</button>';l.appendChild(d)})}
 function removeFile(i){state.uploadedFiles.splice(i,1);handleFiles(state.uploadedFiles)}
 function selectDept(e){document.querySelectorAll('#dept-btns .opt-btn').forEach(b=>b.classList.remove('active'));e.classList.add('active');state.selDept={name:e.dataset.name,role:e.dataset.role,webhook:e.dataset.webhook}}
-async function submitAppModal(){if(!antiFlood.check('submit'))return toast('⏳ Слишком много запросов!','error');var i=document.querySelectorAll('.app-field'),v=true,a=[];i.forEach(function(x){var val=x.value.trim();a.push(val);if(x.dataset.req==='true'&&!val){x.classList.add('error');v=false}else x.classList.remove('error')});if(!v)return toast('Заполните поля!','error');try{var r=await fetch(API_BASE+'/api/submit',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+localStorage.getItem('sd_token')},body:JSON.stringify({categoryId:state.activeCat.id,answers:a,selectedDept:state.selDept||null})});if(!r.ok)throw new Error(await r.text());closeModal();toast('✅ Заявка отправлена!')}catch(e){toast('❌ '+e.message,'error')}}
+async function submitAppModal(){
+    if(!antiFlood.check('submit'))return toast('⏳ Слишком много запросов!','error');
+    var i=document.querySelectorAll('.app-field'),v=true,a=[];
+    i.forEach(function(x){var val=x.value.trim();a.push(val);if(x.dataset.req==='true'&&!val){x.classList.add('error');v=false}else x.classList.remove('error')});
+    if(!v)return toast('Заполните поля!','error');
+    
+    var fd=new FormData();
+    fd.append('categoryId',state.activeCat.id);
+    fd.append('answers',JSON.stringify(a));
+    if(state.selDept)fd.append('selectedDept',JSON.stringify(state.selDept));
+    if(state.uploadedFiles&&state.uploadedFiles.length>0){
+        state.uploadedFiles.forEach(function(f){fd.append('files',f);});
+    }
+    
+    try{
+        var r=await fetch(API_BASE+'/api/submit',{method:'POST',headers:{Authorization:'Bearer '+localStorage.getItem('sd_token')},body:fd});
+        if(!r.ok)throw new Error(await r.text());
+        closeModal();toast('✅ Заявка отправлена!');
+    }catch(e){toast('❌ '+e.message,'error')}
+}
 async function loadMyApps(){try{var r=await fetch(API_BASE+'/api/applications',{headers:{Authorization:'Bearer '+localStorage.getItem('sd_token')}}),a=await r.json(),l=document.getElementById('apps-list');if(!l)return;if(a.length===0){l.innerHTML='<div style="text-align:center;padding:60px;color:var(--text-dim);"><div style="font-size:4rem;">📭</div><p>У вас пока нет заявок</p></div>';return}l.innerHTML='';a.forEach(function(x){var ans=JSON.parse(x.answers||'[]');l.innerHTML+='<div style="background:var(--card);padding:20px;border-radius:16px;border:1px solid var(--border);margin-bottom:15px;"><b>'+x.categoryName+'</b><p style="color:var(--text-dim);font-size:0.8rem;">🕐 '+x.createdAt+'</p><div style="margin-top:10px;">'+ans.map(function(v,i){return'<p style="font-size:0.85rem;margin:5px 0;"><span style="color:var(--accent);">▸</span> '+v+'</p>'}).join('')+'</div></div>'})}catch(e){}}
 
 // ==================== СТАТИСТИКА (доступна с 1 уровня) ====================
