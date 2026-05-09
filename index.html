@@ -9,139 +9,78 @@
     <link rel="icon" type="image/png" href="image.png">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-        
         :root {
-            --bg: #03050a;
-            --card: #0a0e15;
-            --card-hover: #0f141f;
-            --accent: #d4a373;
-            --accent-light: #e4b98a;
-            --border: rgba(255,255,255,0.06);
-            --border-light: rgba(255,255,255,0.1);
-            --text: #ffffff;
-            --text-dim: #94a3b8;
-            --error: #ff4d4d;
-            --success: #4ade80;
+            --bg: #03050a; --card: #0a0e15; --card-hover: #0f141f; --accent: #d4a373;
+            --accent-light: #e4b98a; --border: rgba(255,255,255,0.06); --border-light: rgba(255,255,255,0.1);
+            --text: #ffffff; --text-dim: #94a3b8; --error: #ff4d4d; --success: #4ade80;
             --overlay: rgba(0,0,0,0.85);
-            --blue: #5865F2;
-            --purple: #a855f7;
-            --green: #22c55e;
-            --orange: #f59e0b;
-            --red: #ef4444;
         }
-
         [data-theme="light"] {
-            --bg: #f5f5f5;
-            --card: #ffffff;
-            --card-hover: #f0f0f0;
-            --accent: #c0845c;
-            --accent-light: #d4a373;
-            --border: rgba(0,0,0,0.08);
-            --border-light: rgba(0,0,0,0.12);
-            --text: #1a1a1a;
-            --text-dim: #666666;
-            --error: #dc2626;
-            --success: #16a34a;
+            --bg: #f5f5f5; --card: #ffffff; --card-hover: #f0f0f0; --accent: #c0845c;
+            --accent-light: #d4a373; --border: rgba(0,0,0,0.08); --border-light: rgba(0,0,0,0.12);
+            --text: #1a1a1a; --text-dim: #666666; --error: #dc2626; --success: #16a34a;
             --overlay: rgba(255,255,255,0.9);
         }
-
-        * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; -webkit-user-select:none; -moz-user-select:none; -ms-user-select:none; user-select:none; }
-        body { background:var(--bg); color:var(--text); overflow-x:hidden; min-height:100vh; transition: background 0.3s, color 0.3s; }
-
-        #preloader { position:fixed; inset:0; background:var(--bg); z-index:100000; display:flex; flex-direction:column; justify-content:center; align-items:center; transition: opacity 0.6s ease; }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; user-select:none; }
+        body { background:var(--bg); color:var(--text); overflow-x:hidden; min-height:100vh; transition:0.3s; }
+        #preloader { position:fixed; inset:0; background:var(--bg); z-index:100000; display:flex; flex-direction:column; justify-content:center; align-items:center; }
         .loader-logo { width:120px; filter:drop-shadow(0 0 30px var(--accent)); margin-bottom:30px; animation:pulse 2s infinite; }
         @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
         .loader-bar { width:200px; height:3px; background:var(--border); border-radius:3px; overflow:hidden; }
-        .loader-progress { width:0%; height:100%; background:linear-gradient(90deg,var(--accent),var(--accent-light)); border-radius:3px; transition: width 0.3s ease; }
-
-        header { display:none; justify-content:space-between; align-items:center; padding:0 5%; height:70px; border-bottom:1px solid var(--border); position:sticky; top:0; background:var(--bg); backdrop-filter:blur(20px); z-index:999; transition: background 0.3s; }
+        .loader-progress { width:0%; height:100%; background:linear-gradient(90deg,var(--accent),var(--accent-light)); border-radius:3px; transition:0.3s; }
+        header { display:none; justify-content:space-between; align-items:center; padding:0 5%; height:70px; border-bottom:1px solid var(--border); position:sticky; top:0; background:var(--bg); backdrop-filter:blur(20px); z-index:999; }
         .header-right { display:flex; align-items:center; gap:10px; }
-
         .container { display:none; max-width:1200px; margin:0 auto; padding:40px 20px; }
-        .page { display:none; animation:fadeIn 0.3s ease; }
+        .page { display:none; animation:fadeIn 0.3s; }
         .page.active-page { display:block; }
         @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
-
         .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:20px; }
-        .card { background:var(--card); padding:40px 20px; border-radius:20px; border:1px solid var(--border); text-align:center; cursor:pointer; transition:all 0.3s; position:relative; overflow:hidden; }
+        .card { background:var(--card); padding:40px 20px; border-radius:20px; border:1px solid var(--border); text-align:center; cursor:pointer; transition:0.3s; }
         .card:hover { border-color:var(--accent); transform:translateY(-5px); box-shadow:0 15px 40px rgba(0,0,0,0.3); }
-        .card-emoji { font-size:3rem; margin-bottom:12px; position:relative; z-index:1; }
-        .card-title { font-weight:800; text-transform:uppercase; letter-spacing:1px; font-size:0.95rem; position:relative; z-index:1; }
-
+        .card-emoji { font-size:3rem; margin-bottom:12px; }
+        .card-title { font-weight:800; text-transform:uppercase; letter-spacing:1px; font-size:0.95rem; }
         .u-input { width:100%; padding:14px 16px; background:var(--bg); border:1px solid var(--border); border-radius:12px; color:var(--text); outline:none; font-size:0.9rem; transition:0.3s; resize:vertical; }
         .u-input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(212,163,115,0.1); }
         .u-input.error { border-color:var(--error); }
         textarea.u-input { min-height:80px; }
-        input[type="color"].u-input { padding:8px 16px; height:45px; cursor:pointer; }
-        select.u-input { appearance:auto; }
-
         .btn { padding:12px 24px; border-radius:12px; border:none; font-weight:700; cursor:pointer; transition:0.3s; font-size:0.9rem; }
         .btn-accent { background:linear-gradient(135deg,var(--accent),var(--accent-light)); color:#000; }
-        .btn-accent:hover { opacity:0.9; transform:translateY(-2px); }
+        .btn-accent:hover { opacity:0.9; }
         .btn-outline { background:transparent; border:1px solid var(--border); color:var(--text); }
         .btn-outline:hover { border-color:var(--accent); }
         .btn-danger { background:var(--error); color:#fff; }
         .btn-sm { padding:8px 14px; font-size:0.75rem; border-radius:8px; }
         .btn-block { width:100%; }
         .btn:disabled { opacity:0.5; pointer-events:none; }
-
         .opt-btn { padding:16px; background:var(--card); border:2px solid var(--border); border-radius:12px; text-align:center; cursor:pointer; font-weight:700; font-size:0.85rem; transition:0.3s; }
         .opt-btn:hover { border-color:var(--accent); }
         .opt-btn.active { border-color:var(--accent); background:rgba(212,163,115,0.15); color:var(--accent); }
-
         label { display:block; font-size:0.7rem; color:var(--accent); font-weight:700; text-transform:uppercase; margin:18px 0 6px; letter-spacing:1px; }
-        label:first-child { margin-top:0; }
-
         .modal-overlay { position:fixed; inset:0; background:var(--overlay); z-index:10000; display:flex; justify-content:center; align-items:center; backdrop-filter:blur(10px); padding:20px; }
-        .modal-box { background:var(--card); border:1px solid var(--border-light); padding:35px; border-radius:24px; width:100%; max-width:600px; max-height:85vh; overflow-y:auto; border-top:4px solid var(--accent); box-shadow:0 30px 60px rgba(0,0,0,0.5); animation:modalIn 0.3s ease; }
+        .modal-box { background:var(--card); border:1px solid var(--border-light); padding:35px; border-radius:24px; width:100%; max-width:600px; max-height:85vh; overflow-y:auto; border-top:4px solid var(--accent); animation:modalIn 0.3s; }
         .modal-wide { max-width:900px; }
         @keyframes modalIn { from{opacity:0;transform:scale(0.95)} to{opacity:1;transform:scale(1)} }
-
-        .sidebar { position:fixed; top:70px; left:0; bottom:0; width:280px; background:var(--card); border-right:1px solid var(--border); z-index:998; overflow-y:auto; padding:30px 20px; transform:translateX(-100%); transition:transform 0.3s ease; }
+        .sidebar { position:fixed; top:70px; left:0; bottom:0; width:280px; background:var(--card); border-right:1px solid var(--border); z-index:998; overflow-y:auto; padding:30px 20px; transform:translateX(-100%); transition:0.3s; }
         .sidebar.open { transform:translateX(0); }
         .sidebar-backdrop { position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:997; display:none; }
         .sidebar-backdrop.show { display:block; }
-        .sidebar-item { display:flex; align-items:center; gap:12px; padding:14px 16px; border-radius:12px; cursor:pointer; transition:0.3s; margin-bottom:5px; font-weight:600; font-size:0.9rem; color:var(--text); text-decoration:none; }
+        .sidebar-item { display:flex; align-items:center; gap:12px; padding:14px 16px; border-radius:12px; cursor:pointer; transition:0.3s; margin-bottom:5px; font-weight:600; font-size:0.9rem; color:var(--text); }
         .sidebar-item:hover { background:var(--card-hover); }
-
-        .login-page { display:flex; flex-direction:column; justify-content:center; align-items:center; min-height:100vh; padding:20px; }
-        .login-card { background:var(--card); padding:50px 40px; border-radius:30px; border:1px solid var(--border); text-align:center; max-width:420px; width:100%; }
-
+        .login-page { display:flex; justify-content:center; align-items:center; min-height:100vh; }
+        .login-card { background:var(--card); padding:50px 40px; border-radius:30px; border:1px solid var(--border); text-align:center; max-width:420px; }
         .toast { position:fixed; bottom:30px; right:30px; z-index:99999; padding:14px 22px; border-radius:12px; font-weight:600; animation:slideIn 0.3s; }
         @keyframes slideIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
         .toast-success { background:var(--success); color:#000; }
         .toast-error { background:var(--error); color:#fff; }
-
-        .stats-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:15px; margin-bottom:30px; }
+        .stats-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:15px; margin-bottom:30px; }
         .stat-card { background:var(--card); padding:20px; border-radius:16px; border:1px solid var(--border); text-align:center; }
-        .stat-card .stat-icon { font-size:2rem; margin-bottom:8px; }
-        .stat-card .stat-value { font-size:2rem; font-weight:900; }
-        .stat-card .stat-label { color:var(--text-dim); font-size:0.8rem; margin-top:5px; }
-
-        .drag-handle { cursor:grab; padding:8px; margin-right:8px; color:var(--text-dim); }
-        .drag-handle:active { cursor:grabbing; }
-        .question-row { display:flex; align-items:center; gap:10px; padding:10px; background:var(--bg); border:1px solid var(--border); border-radius:12px; margin-bottom:8px; }
-        .question-row.dragover { border-color:var(--accent); background:rgba(212,163,115,0.05); }
-
-        .file-upload-area { border:2px dashed var(--border); border-radius:16px; padding:30px; text-align:center; cursor:pointer; transition:0.3s; margin-bottom:15px; }
-        .file-upload-area:hover { border-color:var(--accent); background:rgba(212,163,115,0.05); }
-        .file-list { margin-top:10px; }
-        .file-item { display:flex; align-items:center; gap:10px; padding:8px; background:var(--card); border-radius:8px; margin-bottom:5px; font-size:0.85rem; }
-
-        .css-editor { font-family:monospace; background:var(--bg); min-height:150px; }
-
-        ::-webkit-scrollbar { width:5px; }
-        ::-webkit-scrollbar-track { background:var(--bg); }
-        ::-webkit-scrollbar-thumb { background:var(--border-light); border-radius:3px; }
+        .stat-value { font-size:2rem; font-weight:900; }
+        .stat-label { color:var(--text-dim); font-size:0.8rem; }
+        ::-webkit-scrollbar { width:5px; } ::-webkit-scrollbar-track { background:var(--bg); } ::-webkit-scrollbar-thumb { background:var(--border-light); border-radius:3px; }
     </style>
 </head>
 <body>
-
-<div id="preloader">
-    <img src="image.png" class="loader-logo" alt="LSCSD">
-    <div class="loader-bar"><div class="loader-progress" id="loader-progress"></div></div>
-</div>
-
+<div id="preloader"><img src="image.png" class="loader-logo"><div class="loader-bar"><div class="loader-progress" id="loader-progress"></div></div></div>
 <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="closeSidebar()"></div>
 <nav class="sidebar" id="sidebar">
     <a class="sidebar-item" onclick="showPage('page-home');closeSidebar()">🏠 Главная</a>
@@ -153,825 +92,73 @@
         <a class="sidebar-item" onclick="toggleTheme()" id="theme-toggle">🌙 Тёмная тема</a>
     </div>
 </nav>
-
-<div class="modal-overlay" id="modal-overlay" style="display:none;">
-    <div class="modal-box" id="modal-box"></div>
-</div>
-
+<div class="modal-overlay" id="modal-overlay" style="display:none;"><div class="modal-box" id="modal-box"></div></div>
 <div id="page-login" class="login-page" style="display:none;">
-    <div class="login-card">
-        <img src="image.png" class="login-logo" style="width:90px;margin-bottom:25px;" alt="LSCSD">
-        <h2 style="font-weight:900;font-size:1.8rem;margin-bottom:10px;">LSCSD PORTAL</h2>
-        <p style="color:var(--text-dim);margin-bottom:30px;">Портал подачи заявок</p>
-        <button class="btn btn-block" style="background:#5865F2;color:#fff;font-size:1rem;" onclick="login()">🔐 Войти через Discord</button>
-    </div>
+    <div class="login-card"><img src="image.png" style="width:90px;margin-bottom:25px;"><h2 style="font-weight:900;font-size:1.8rem;">LSCSD PORTAL</h2><p style="color:var(--text-dim);margin:10px 0 30px;">Портал подачи заявок</p><button class="btn btn-block" style="background:#5865F2;color:#fff;" onclick="login()">🔐 Войти через Discord</button></div>
 </div>
-
 <header id="ui-header">
-    <div style="display:flex;align-items:center;gap:15px;">
-        <button class="btn btn-outline btn-sm" onclick="openSidebar()" style="font-size:1.2rem;">☰</button>
-        <img src="image.png" style="height:38px;cursor:pointer;" onclick="showPage('page-home')" alt="Home">
-    </div>
-    <div class="header-right">
-        <button class="btn btn-outline btn-sm" onclick="openBug()">🐛 Баг</button>
-        <div id="adm-btn-wrap"></div>
-        <img id="u-ava" style="width:38px;border-radius:50%;border:2px solid var(--accent);cursor:pointer;" onclick="logout()" alt="User">
-    </div>
+    <div style="display:flex;align-items:center;gap:15px;"><button class="btn btn-outline btn-sm" onclick="openSidebar()">☰</button><img src="image.png" style="height:38px;cursor:pointer;" onclick="showPage('page-home')"></div>
+    <div class="header-right"><button class="btn btn-outline btn-sm" onclick="openBug()">🐛 Баг</button><img id="u-ava" style="width:38px;border-radius:50%;border:2px solid var(--accent);cursor:pointer;" onclick="logout()"></div>
 </header>
-
 <div class="container" id="main-container">
-    
-    <!-- ГЛАВНАЯ -->
-    <div id="page-home" class="page active-page">
-        <h1 style="font-weight:900;font-size:2rem;margin-bottom:10px;">📋 Доступные заявки</h1>
-        <p style="color:var(--text-dim);margin-bottom:30px;">Выберите форму для заполнения</p>
-        <div id="grid-main" class="grid"></div>
-    </div>
-
-    <!-- СТАТИСТИКА -->
-    <div id="page-stats" class="page">
-        <h1 style="font-weight:900;font-size:2rem;margin-bottom:20px;">📊 Статистика</h1>
-        <div class="stats-grid" id="stats-grid"></div>
-        <div style="background:var(--card);padding:20px;border-radius:16px;border:1px solid var(--border);">
-            <h3 style="font-weight:800;margin-bottom:15px;">📈 Заявки за 7 дней</h3>
-            <canvas id="chart" width="400" height="200" style="width:100%;max-height:300px;"></canvas>
-        </div>
-    </div>
-
-    <!-- МОИ ЗАЯВКИ -->
-    <div id="page-apps" class="page">
-        <h1 style="font-weight:900;font-size:2rem;margin-bottom:20px;">📋 Мои заявки</h1>
-        <div id="apps-list"></div>
-    </div>
-
-    <!-- FAQ -->
-    <div id="page-faq" class="page">
-        <h1 style="font-weight:900;font-size:2rem;margin-bottom:10px;">📖 FAQ — Гайд</h1>
-        <p style="color:var(--text-dim);margin-bottom:40px;">Полное руководство по всем возможностям системы</p>
-        
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(350px,1fr));gap:20px;">
-            <div style="background:var(--card);padding:30px;border-radius:20px;border:1px solid var(--border);">
-                <div style="font-size:2.5rem;margin-bottom:15px;">🔐</div>
-                <h3 style="font-weight:800;margin-bottom:10px;">Уровни доступа</h3>
-                <p style="color:var(--text-dim);font-size:0.85rem;line-height:1.6;">Система использует 6-уровневую модель прав. Уровень 1-3 — базовый доступ к админке. Уровень 4-5 — полный доступ. Уровень 6 — защищённый (нельзя переименовать).</p>
-            </div>
-            
-            <div style="background:var(--card);padding:30px;border-radius:20px;border:1px solid var(--border);">
-                <div style="font-size:2.5rem;margin-bottom:15px;">📝</div>
-                <h3 style="font-weight:800;margin-bottom:10px;">Создание форм</h3>
-                <p style="color:var(--text-dim);font-size:0.85rem;line-height:1.6;">В админ-панели можно создавать формы с вопросами, выбором отдела, загрузкой файлов. Поддерживается Drag&Drop для изменения порядка вопросов.</p>
-            </div>
-            
-            <div style="background:var(--card);padding:30px;border-radius:20px;border:1px solid var(--border);">
-                <div style="font-size:2.5rem;margin-bottom:15px;">🎨</div>
-                <h3 style="font-weight:800;margin-bottom:10px;">Кастомизация</h3>
-                <p style="color:var(--text-dim);font-size:0.85rem;line-height:1.6;">Меняйте цвет эмбеда, добавляйте картинки, пинг-роли. Настройте CSS-тему для каждой формы индивидуально.</p>
-            </div>
-            
-            <div style="background:var(--card);padding:30px;border-radius:20px;border:1px solid var(--border);">
-                <div style="font-size:2.5rem;margin-bottom:15px;">📊</div>
-                <h3 style="font-weight:800;margin-bottom:10px;">Статистика</h3>
-                <p style="color:var(--text-dim);font-size:0.85rem;line-height:1.6;">Просмотр статистики заявок по дням, экспорт в CSV. График активности за последние 7 дней.</p>
-            </div>
-        </div>
-    </div>
+    <div id="page-home" class="page active-page"><h1 style="font-weight:900;font-size:2rem;">📋 Доступные заявки</h1><p style="color:var(--text-dim);margin:10px 0 30px;">Выберите форму</p><div id="grid-main" class="grid"></div></div>
+    <div id="page-stats" class="page"><h1 style="font-weight:900;font-size:2rem;">📊 Статистика</h1><div class="stats-grid" id="stats-grid"></div><canvas id="chart" width="400" height="200" style="width:100%;max-height:300px;"></canvas></div>
+    <div id="page-apps" class="page"><h1 style="font-weight:900;font-size:2rem;">📋 Мои заявки</h1><div id="apps-list"></div></div>
+    <div id="page-faq" class="page"><h1 style="font-weight:900;font-size:2rem;">📖 FAQ</h1><p style="color:var(--text-dim);margin:10px 0 30px;">Гайд по системе</p><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;"><div style="background:var(--card);padding:25px;border-radius:16px;border:1px solid var(--border);"><h3>🔐 Уровни</h3><p style="color:var(--text-dim);font-size:0.85rem;">6 уровней доступа. 6-й защищён от изменений.</p></div><div style="background:var(--card);padding:25px;border-radius:16px;border:1px solid var(--border);"><h3>📝 Формы</h3><p style="color:var(--text-dim);font-size:0.85rem;">Создавайте формы с выбором отдела, загрузкой файлов, Drag&Drop.</p></div><div style="background:var(--card);padding:25px;border-radius:16px;border:1px solid var(--border);"><h3>🎨 Дизайн</h3><p style="color:var(--text-dim);font-size:0.85rem;">Меняйте цвет эмбеда, добавляйте картинки, пинг-роли.</p></div></div></div>
 </div>
 <script>
-// ==================== АНТИ-СЛИВ (УСИЛЕННЫЙ) ====================
-(function() {
-    document.addEventListener('contextmenu', function(e) { e.preventDefault(); e.stopPropagation(); return false; }, true);
-    
-    document.addEventListener('keydown', function(e) {
-        if ((e.ctrlKey || e.metaKey) && (e.key === 'u' || e.key === 'U' || e.keyCode === 85)) { e.preventDefault(); e.stopPropagation(); return false; }
-        if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S' || e.keyCode === 83)) { e.preventDefault(); e.stopPropagation(); return false; }
-        if ((e.ctrlKey || e.metaKey) && (e.key === 'p' || e.key === 'P' || e.keyCode === 80)) { e.preventDefault(); e.stopPropagation(); return false; }
-        if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'C' || e.keyCode === 67)) { e.preventDefault(); e.stopPropagation(); return false; }
-        if ((e.ctrlKey || e.metaKey) && (e.key === 'a' || e.key === 'A' || e.keyCode === 65)) { e.preventDefault(); e.stopPropagation(); return false; }
-        if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'i' || e.key === 'I' || e.keyCode === 73)) { e.preventDefault(); e.stopPropagation(); return false; }
-        if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'j' || e.key === 'J' || e.keyCode === 74)) { e.preventDefault(); e.stopPropagation(); return false; }
-        if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'c' || e.key === 'C' || e.keyCode === 67)) { e.preventDefault(); e.stopPropagation(); return false; }
-        if (e.key === 'F12' || e.keyCode === 123) { e.preventDefault(); e.stopPropagation(); return false; }
-    }, true);
-    
-    document.addEventListener('selectstart', function(e) { e.preventDefault(); return false; });
-    document.addEventListener('dragstart', function(e) { e.preventDefault(); return false; });
-    
-    setInterval(function() { var start = new Date().getTime(); debugger; var end = new Date().getTime(); if (end - start > 100) { document.body.innerHTML = '<div style="display:flex;justify-content:center;align-items:center;height:100vh;background:#000;color:#f00;font-size:2rem;font-family:sans-serif;">⛔ Доступ запрещён</div>'; } }, 100);
-})();
-
-// ==================== АНТИ-ФЛУД ====================
-const antiFlood = {
-    timers: {},
-    limits: { 'submit': { count: 3, time: 10000 }, 'bug': { count: 2, time: 30000 }, 'admin': { count: 5, time: 5000 }, 'default': { count: 10, time: 3000 } },
-    check: function(action) {
-        var limit = this.limits[action] || this.limits['default'];
-        var now = Date.now();
-        var key = action + '_' + (state.user ? state.user.id : 'anon');
-        if (!this.timers[key]) this.timers[key] = { count: 0, reset: now + limit.time };
-        if (now > this.timers[key].reset) { this.timers[key] = { count: 1, reset: now + limit.time }; return true; }
-        if (this.timers[key].count >= limit.count) return false;
-        this.timers[key].count++;
-        return true;
-    }
-};
-
-// ==================== ПРЕЛОАДЕР ====================
-var loadProgress = 0;
-var loadInterval = setInterval(function() {
-    loadProgress += Math.random() * 30;
-    if (loadProgress > 90) loadProgress = 90;
-    document.getElementById('loader-progress').style.width = loadProgress + '%';
-}, 300);
-
-window.addEventListener('load', function() {
-    document.getElementById('loader-progress').style.width = '100%';
-    setTimeout(function() { clearInterval(loadInterval); }, 500);
-});
-
-// ==================== API ====================
-const API_BASE = 'https://meri-server.64.188.66.210.nip.io';
-const state = { user:null, cats:[], activeCat:null, selDept:null, userLevel:0, lvlNames:[], admins:[], departments:[], uploadedFiles:[] };
-
-function toast(msg,type){ type = type || 'success'; document.querySelectorAll('.toast').forEach(function(e){ e.remove(); }); var t = document.createElement('div'); t.className = 'toast toast-' + type; t.textContent = msg; document.body.appendChild(t); setTimeout(function(){ t.remove(); }, 3000); }
-
-// ==================== ИНИЦИАЛИЗАЦИЯ ====================
-async function init(){
-    var hash = window.location.hash.slice(1);
-    var params = new URLSearchParams(hash);
-    var token = params.get('access_token') || localStorage.getItem('sd_token');
-    if(token){
-        window.location.hash = '';
-        localStorage.setItem('sd_token', token);
-        try{
-            var res = await fetch(API_BASE + '/api/user/me', { headers: { Authorization: 'Bearer ' + token } });
-            if(!res.ok) throw new Error('Invalid');
-            var data = await res.json();
-            state.user = data;
-            state.userLevel = data.level;
-            state.lvlNames = data.lvlNames || [];
-            await loadData();
-            document.getElementById('ui-header').style.display = 'flex';
-            document.getElementById('main-container').style.display = 'block';
-            renderHeader();
-            renderSidebar();
-            updateThemeToggle();
-            document.getElementById('preloader').style.opacity = '0';
-            setTimeout(function(){ document.getElementById('preloader').style.display = 'none'; }, 600);
-        }catch(e){ logout(); }
-    }else{
-        document.getElementById('preloader').style.opacity = '0';
-        setTimeout(function(){ document.getElementById('preloader').style.display = 'none'; }, 600);
-        document.getElementById('page-login').style.display = 'flex';
-    }
-}
-
-function login(){ window.location.href = API_BASE + '/login'; }
-function logout(){ localStorage.clear(); window.location.reload(); }
-
-// ==================== ТЕМА ====================
-function toggleTheme(){
-    var current = document.documentElement.getAttribute('data-theme') || 'dark';
-    var next = current === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem('theme', next);
-    updateThemeToggle();
-}
-
-function updateThemeToggle(){
-    var current = document.documentElement.getAttribute('data-theme') || 'dark';
-    var btn = document.getElementById('theme-toggle');
-    if(btn) btn.innerHTML = current === 'dark' ? '☀️ Светлая тема' : '🌙 Тёмная тема';
-}
-
-// Инициализация темы при загрузке
-(function(){
-    var saved = localStorage.getItem('theme') || 'dark';
-    document.documentElement.setAttribute('data-theme', saved);
-})();
-
-function showPage(id){
-    document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active-page'); });
-    var page = document.getElementById(id);
-    if(page) page.classList.add('active-page');
-    if(id === 'page-stats') loadStats();
-    if(id === 'page-apps') loadMyApps();
-    closeAllModals();
-}
-
-function openModal(content){
-    document.getElementById('modal-box').innerHTML = content;
-    document.getElementById('modal-overlay').style.display = 'flex';
-}
-function closeModal(){ document.getElementById('modal-overlay').style.display = 'none'; }
-function closeAllModals(){ closeModal(); closeSidebar(); }
-document.getElementById('modal-overlay').addEventListener('click', function(e){ if(e.target === this) closeModal(); });
-
-function openSidebar(){
-    document.getElementById('sidebar').classList.add('open');
-    document.getElementById('sidebar-backdrop').classList.add('show');
-}
-function closeSidebar(){
-    document.getElementById('sidebar').classList.remove('open');
-    document.getElementById('sidebar-backdrop').classList.remove('show');
-}
-
-function renderHeader(){
-    if(!state.user) return;
-    document.getElementById('u-ava').src = 'https://cdn.discordapp.com/avatars/' + state.user.id + '/' + state.user.avatar + '.png';
-    document.getElementById('u-ava').title = state.user.username;
-}
-
-function renderSidebar(){
-    var sidebarAdmin = document.getElementById('sidebar-admin-items');
-    sidebarAdmin.innerHTML = '';
-    if(state.userLevel > 0){
-        sidebarAdmin.innerHTML += '<a class="sidebar-item" onclick="openAdminPanel()">⚡ Админ-панель</a>';
-        if(state.userLevel >= 4){
-            sidebarAdmin.innerHTML += '<a class="sidebar-item" onclick="openAdminApps()">📋 Все заявки</a>';
-            sidebarAdmin.innerHTML += '<a class="sidebar-item" onclick="openAdminsList()">👥 Администраторы</a>';
-            sidebarAdmin.innerHTML += '<a class="sidebar-item" onclick="openDepartments()">📂 Отделы</a>';
-            sidebarAdmin.innerHTML += '<a class="sidebar-item" onclick="openLvlNames()">🏷️ Уровни</a>';
-            sidebarAdmin.innerHTML += '<a class="sidebar-item" onclick="openBans()">🚫 Баны</a>';
-            sidebarAdmin.innerHTML += '<a class="sidebar-item" onclick="openLogs()">📋 Логи</a>';
-            sidebarAdmin.innerHTML += '<a class="sidebar-item" onclick="exportCSV()">📥 Экспорт CSV</a>';
-        }
-    }
-}
-
-async function loadData(){
-    var catsRes = await fetch(API_BASE + '/api/categories');
-    state.cats = await catsRes.json();
-    renderHome();
-    try{
-        var deptRes = await fetch(API_BASE + '/api/departments');
-        state.departments = await deptRes.json();
-    }catch(e){}
-}
-
-function renderHome(){
-    var grid = document.getElementById('grid-main');
-    if(!grid) return;
-    if(state.cats.length === 0){
-        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--text-dim);"><div style="font-size:4rem;">📭</div><p>Нет доступных форм</p></div>';
-        return;
-    }
-    grid.innerHTML = '';
-    state.cats.forEach(function(c){
-        var card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = '<div class="card-emoji">' + (c.emoji || '📁') + '</div><div class="card-title">' + c.name + '</div>';
-        card.onclick = function(){ openFormModal(c.id); };
-        grid.appendChild(card);
-    });
-}
-
-// ==================== ФОРМА С ФАЙЛАМИ ====================
-function openFormModal(id){
-    state.activeCat = state.cats.find(function(c){ return c.id == id; });
-    state.selDept = null;
-    state.uploadedFiles = [];
-    
-    var html = '<h2 style="font-weight:900;margin-bottom:20px;">' + (state.activeCat.emoji || '') + ' ' + state.activeCat.name + '</h2>';
-    
-    state.activeCat.questions.forEach(function(q){
-        if(q.includes('[') && q.includes('|')){
-            html += '<label>' + q.split('[')[0].trim() + '</label><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:15px;" id="dept-btns">';
-            var match = q.match(/\[(.*?)\]/);
-            if(match){
-                match[1].split(',').forEach(function(opt){
-                    var parts = opt.split('|').map(function(s){ return s.trim(); });
-                    if(parts.length >= 3){
-                        html += '<div class="opt-btn" data-name="' + parts[0] + '" data-role="' + parts[1] + '" data-webhook="' + parts[2] + '" onclick="selectDept(this)">' + parts[0] + '</div>';
-                    }
-                });
-            }
-            html += '</div>';
-        }else if(q.startsWith('file:')){
-            html += '<label>' + q.replace('file:','').trim() + '</label>';
-            html += '<div class="file-upload-area" onclick="document.getElementById(\'file-input\').click()">📎 Нажмите для загрузки файла</div>';
-            html += '<input type="file" id="file-input" multiple style="display:none;" onchange="handleFiles(this.files)">';
-            html += '<div class="file-list" id="file-list"></div>';
-        }else{
-            var isReq = q.endsWith('*');
-            var clean = q.replace('*', '');
-            html += '<label>' + clean + ' ' + (isReq ? '<span style="color:var(--error);">*</span>' : '') + '</label>';
-            html += '<textarea class="u-input app-field" data-req="' + isReq + '" rows="2" placeholder="Введите ' + clean.toLowerCase() + '"></textarea>';
-        }
-    });
-    
-    html += '<div style="display:flex;gap:10px;margin-top:20px;">';
-    html += '<button class="btn btn-accent btn-block" onclick="submitAppModal()">📨 Отправить</button>';
-    html += '<button class="btn btn-outline" onclick="closeModal()">Отмена</button>';
-    html += '</div>';
-    
-    openModal(html);
-}
-
-function handleFiles(files){
-    state.uploadedFiles = Array.from(files);
-    var list = document.getElementById('file-list');
-    if(!list) return;
-    list.innerHTML = '';
-    state.uploadedFiles.forEach(function(f, i){
-        var div = document.createElement('div');
-        div.className = 'file-item';
-        div.innerHTML = '<span>📄 ' + f.name + ' (' + (f.size/1024).toFixed(1) + ' KB)</span><button class="btn btn-danger btn-sm" onclick="removeFile('+i+')">✕</button>';
-        list.appendChild(div);
-    });
-}
-
-function removeFile(index){
-    state.uploadedFiles.splice(index, 1);
-    var list = document.getElementById('file-list');
-    if(list){
-        list.innerHTML = '';
-        state.uploadedFiles.forEach(function(f, i){
-            var div = document.createElement('div');
-            div.className = 'file-item';
-            div.innerHTML = '<span>📄 ' + f.name + '</span><button class="btn btn-danger btn-sm" onclick="removeFile('+i+')">✕</button>';
-            list.appendChild(div);
-        });
-    }
-}
-
-function selectDept(el){
-    document.querySelectorAll('#dept-btns .opt-btn').forEach(function(b){ b.classList.remove('active'); });
-    el.classList.add('active');
-    state.selDept = { name: el.dataset.name, role: el.dataset.role, webhook: el.dataset.webhook };
-}
-
-async function submitAppModal(){
-    if(!antiFlood.check('submit')) return toast('⏳ Слишком много запросов! Подождите.', 'error');
-    
-    var inputs = document.querySelectorAll('.app-field');
-    var valid = true;
-    var answers = [];
-    inputs.forEach(function(i){
-        var val = i.value.trim();
-        answers.push(val);
-        if(i.dataset.req === 'true' && !val){ i.classList.add('error'); valid = false; }
-        else i.classList.remove('error');
-    });
-    if(!valid) return toast('Заполните обязательные поля!', 'error');
-    
-    var formData = new FormData();
-    formData.append('categoryId', state.activeCat.id);
-    formData.append('answers', JSON.stringify(answers));
-    if(state.selDept) formData.append('selectedDept', JSON.stringify(state.selDept));
-    state.uploadedFiles.forEach(function(f){ formData.append('files', f); });
-    
-    try{
-        var res = await fetch(API_BASE + '/api/submit', {
-            method: 'POST',
-            headers: { Authorization: 'Bearer ' + localStorage.getItem('sd_token') },
-            body: formData
-        });
-        if(!res.ok) throw new Error(await res.text());
-        closeModal();
-        toast('✅ Заявка отправлена!');
-    }catch(e){ toast('❌ Ошибка: ' + e.message, 'error'); }
-}
-
-// ==================== МОИ ЗАЯВКИ ====================
-async function loadMyApps(){
-    try{
-        var res = await fetch(API_BASE + '/api/applications', { headers: { Authorization: 'Bearer ' + localStorage.getItem('sd_token') } });
-        var apps = await res.json();
-        var list = document.getElementById('apps-list');
-        if(!list) return;
-        if(apps.length === 0){
-            list.innerHTML = '<div style="text-align:center;padding:60px;color:var(--text-dim);"><div style="font-size:4rem;">📭</div><p>У вас пока нет заявок</p></div>';
-            return;
-        }
-        list.innerHTML = '';
-        apps.forEach(function(a){
-            var statusColor = a.status === 'approved' ? 'var(--success)' : a.status === 'rejected' ? 'var(--error)' : 'var(--orange)';
-            var statusText = a.status === 'approved' ? '✅ Одобрено' : a.status === 'rejected' ? '❌ Отказано' : '⏳ На рассмотрении';
-            list.innerHTML += '<div style="background:var(--card);padding:20px;border-radius:16px;border:1px solid var(--border);margin-bottom:15px;">' +
-                '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">' +
-                '<b>' + a.categoryName + '</b>' +
-                '<span style="color:' + statusColor + ';font-weight:700;font-size:0.85rem;">' + statusText + '</span>' +
-                '</div>' +
-                '<p style="color:var(--text-dim);font-size:0.8rem;">🕐 ' + a.createdAt + '</p>' +
-                (a.adminComment ? '<p style="color:var(--accent);font-size:0.85rem;margin-top:8px;">💬 ' + a.adminComment + '</p>' : '') +
-                '</div>';
-        });
-    }catch(e){}
-}
-
-// ==================== СТАТИСТИКА ====================
-async function loadStats(){
-    if(state.userLevel < 1) return;
-    try{
-        var res = await fetch(API_BASE + '/api/admin/stats', { headers: { Authorization: 'Bearer ' + localStorage.getItem('sd_token') } });
-        var stats = await res.json();
-        var grid = document.getElementById('stats-grid');
-        if(!grid) return;
-        grid.innerHTML = 
-            '<div class="stat-card"><div class="stat-icon">📋</div><div class="stat-value">' + stats.totalApps + '</div><div class="stat-label">Всего заявок</div></div>' +
-            '<div class="stat-card"><div class="stat-icon">📅</div><div class="stat-value">' + stats.todayApps + '</div><div class="stat-label">Сегодня</div></div>' +
-            '<div class="stat-card"><div class="stat-icon">👥</div><div class="stat-value">' + stats.totalUsers + '</div><div class="stat-label">Пользователей</div></div>' +
-            '<div class="stat-card"><div class="stat-icon">⏳</div><div class="stat-value">' + stats.pendingApps + '</div><div class="stat-label">На рассмотрении</div></div>' +
-            '<div class="stat-card"><div class="stat-icon">✅</div><div class="stat-value">' + stats.approvedApps + '</div><div class="stat-label">Одобрено</div></div>' +
-            '<div class="stat-card"><div class="stat-icon">👑</div><div class="stat-value">' + stats.totalAdmins + '</div><div class="stat-label">Админов</div></div>';
-        
-        // График
-        if(stats.appsByDay && stats.appsByDay.length > 0){
-            var canvas = document.getElementById('chart');
-            if(canvas){
-                var ctx = canvas.getContext('2d');
-                var maxVal = Math.max.apply(null, stats.appsByDay.map(function(d){ return d.count; })) || 1;
-                var w = canvas.width, h = canvas.height;
-                ctx.clearRect(0, 0, w, h);
-                ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text-dim').trim();
-                ctx.font = '10px Inter';
-                
-                stats.appsByDay.forEach(function(d, i){
-                    var x = (i / (stats.appsByDay.length - 1)) * (w - 40) + 20;
-                    var y = h - (d.count / maxVal) * (h - 40) - 20;
-                    var barW = 30;
-                    ctx.fillStyle = '#d4a373';
-                    ctx.fillRect(x - barW/2, y, barW, h - y - 20);
-                    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text-dim').trim();
-                    ctx.fillText(d.day.slice(5), x - 15, h - 5);
-                    ctx.fillText(d.count, x - 8, y - 5);
-                });
-            }
-        }
-    }catch(e){}
-}
-
-// ==================== АДМИН: ЗАЯВКИ ====================
-async function openAdminApps(){
-    closeAllModals();
-    try{
-        var res = await fetch(API_BASE + '/api/admin/applications', { headers: { Authorization: 'Bearer ' + localStorage.getItem('sd_token') } });
-        var apps = await res.json();
-        var html = '<h2 style="font-weight:900;margin-bottom:15px;">📋 Все заявки</h2>';
-        apps.forEach(function(a){
-            html += '<div style="background:rgba(255,255,255,0.02);padding:15px;border-radius:12px;border:1px solid var(--border);margin-bottom:10px;">' +
-                '<div style="display:flex;justify-content:space-between;align-items:center;">' +
-                '<b>' + a.categoryName + '</b>' +
-                '<select onchange="updateAppStatus(' + a.id + ', this.value, \'' + (a.messageId || '') + '\', \'' + (a.channelId || '') + '\', \'' + (a.webhookUrl || '') + '\')" style="background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:5px 10px;">' +
-                '<option value="pending" ' + (a.status==='pending'?'selected':'') + '>⏳ На рассмотрении</option>' +
-                '<option value="approved" ' + (a.status==='approved'?'selected':'') + '>✅ Одобрено</option>' +
-                '<option value="rejected" ' + (a.status==='rejected'?'selected':'') + '>❌ Отказано</option>' +
-                '</select></div>' +
-                '<p style="color:var(--text-dim);font-size:0.8rem;">👤 ' + a.username + ' | 🕐 ' + a.createdAt + '</p>' +
-                '</div>';
-        });
-        html += '<button class="btn btn-outline btn-block btn-sm" onclick="closeModal()" style="margin-top:10px;">Закрыть</button>';
-        document.getElementById('modal-box').classList.add('modal-wide');
-        openModal(html);
-    }catch(e){}
-}
-    
-async function updateAppStatus(id, status, messageId, channelId, webhookUrl){
-    await fetch(API_BASE + '/api/admin/applications/' + id, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + localStorage.getItem('sd_token') },
-        body: JSON.stringify({ 
-            status: status, 
-            messageId: messageId || '', 
-            channelId: channelId || '',
-            webhookUrl: webhookUrl || ''
-        })
-    });
-    toast('✅ Статус обновлён');
-}
-    
-// ==================== АДМИН-ПАНЕЛЬ ====================
-function openAdminPanel(){
-    closeAllModals();
-    var html = '<h2 style="font-weight:900;margin-bottom:15px;">⚡ Админ-панель</h2><p style="color:var(--text-dim);margin-bottom:20px;">Управление формами</p>';
-    
-    state.cats.forEach(function(c){
-        html += '<div style="padding:15px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="editFormModal(' + c.id + ')">' +
-            '<span><b>' + (c.emoji || '📁') + ' ' + c.name + '</b></span>' +
-            '<span style="font-size:0.65rem;background:' + (c.color || '#d4a373') + ';color:#000;padding:3px 8px;border-radius:6px;">' + (state.lvlNames[(c.minLvl || 1) - 1] || 'Lvl') + '</span>' +
-            '</div>';
-    });
-    
-    html += '<button class="btn btn-accent btn-block btn-sm" onclick="addFormModal()" style="margin-top:10px;">+ Новая форма</button>';
-    html += '<button class="btn btn-outline btn-block btn-sm" onclick="closeModal()" style="margin-top:5px;">Закрыть</button>';
-    
-    document.getElementById('modal-box').classList.add('modal-wide');
-    openModal(html);
-}
-
-function editFormModal(id){
-    var cat = state.cats.find(function(c){ return c.id == id; });
-    var html = '<h2 style="font-weight:900;margin-bottom:20px;">✏️ ' + cat.name + '</h2>';
-    html += '<label>Название</label><input id="ed-n" class="u-input" value="' + cat.name + '">';
-    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">' +
-        '<div><label>Эмодзи</label><input id="ed-e" class="u-input" value="' + (cat.emoji || '📁') + '"></div>' +
-        '<div><label>Мин. уровень</label><select id="ed-l" class="u-input">';
-    state.lvlNames.forEach(function(n, i){ html += '<option value="' + (i+1) + '" ' + ((cat.minLvl || 1) == i+1 ? 'selected' : '') + '>' + (i+1) + ' — ' + n + '</option>'; });
-    html += '</select></div></div>';
-    html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:15px;">' +
-        '<div><label>Цвет эмбеда</label><input id="ed-c" type="color" class="u-input" value="' + (cat.color || '#d4a373') + '"></div>' +
-        '<div><label>Пинг-роль (ID)</label><input id="ed-p" class="u-input" value="' + (cat.pingRole || '') + '"></div>' +
-        '<div><label>Отдел</label><select id="ed-d" class="u-input"><option value="">— Без отдела —</option>';
-    state.departments.forEach(function(d){ html += '<option value="' + d.id + '" ' + (cat.departmentId === d.id ? 'selected' : '') + '>' + d.name + '</option>'; });
-    html += '</select></div></div>';
-    html += '<label>Webhook URL</label><input id="ed-w" class="u-input" value="' + (cat.webhook || '') + '">';
-    html += '<label>Thumbnail URL</label><input id="ed-th" class="u-input" value="' + (cat.thumbnail || '') + '">';
-    html += '<label>Image URL</label><input id="ed-im" class="u-input" value="' + (cat.image || '') + '">';
-    html += '<label>CSS тема (кастомные стили)</label><textarea id="ed-css" class="u-input css-editor" placeholder=".card { border-color: red; }">' + (cat.cssTheme || '') + '</textarea>';
-    html += '<label>Вопросы (drag&drop, file: для загрузки)</label>';
-    html += '<div id="questions-list" style="margin-bottom:10px;"></div>';
-    html += '<button class="btn btn-outline btn-block btn-sm" onclick="addQuestion()" style="margin-bottom:15px;">+ Добавить вопрос</button>';
-    html += '<textarea id="ed-q" class="u-input" style="height:100px;font-family:monospace;">' + cat.questions.join('\n') + '</textarea>';
-    html += '<div style="display:flex;gap:10px;margin-top:20px;">' +
-        '<button class="btn btn-accent btn-block" onclick="saveForm(' + id + ')">💾 Сохранить</button>' +
-        '<button class="btn btn-danger" onclick="deleteForm(' + id + ')">🗑️</button>' +
-        '</div>';
-    html += '<button class="btn btn-outline btn-block btn-sm" onclick="openAdminPanel()" style="margin-top:5px;">← Назад</button>';
-    
-    openModal(html);
-    renderQuestionsList(cat.questions);
-}
-
-function renderQuestionsList(questions){
-    var list = document.getElementById('questions-list');
-    if(!list) return;
-    list.innerHTML = '';
-    questions.forEach(function(q, i){
-        var div = document.createElement('div');
-        div.className = 'question-row';
-        div.draggable = true;
-        div.innerHTML = '<span class="drag-handle">⋮⋮</span><span style="flex:1;">' + q + '</span><button class="btn btn-danger btn-sm" onclick="removeQuestion('+i+')">✕</button>';
-        div.addEventListener('dragstart', function(e){ e.dataTransfer.setData('text/plain', i); });
-        div.addEventListener('dragover', function(e){ e.preventDefault(); this.classList.add('dragover'); });
-        div.addEventListener('dragleave', function(){ this.classList.remove('dragover'); });
-        div.addEventListener('drop', function(e){ e.preventDefault(); this.classList.remove('dragover'); moveQuestion(i, parseInt(e.dataTransfer.getData('text/plain'))); });
-        list.appendChild(div);
-    });
-}
-
-function addQuestion(){
-    var textarea = document.getElementById('ed-q');
-    if(textarea) textarea.value += '\nНовый вопрос';
-    var cat = state.activeCat;
-    if(cat) renderQuestionsList(textarea.value.split('\n').filter(function(q){ return q.trim(); }));
-}
-
-function removeQuestion(index){
-    var textarea = document.getElementById('ed-q');
-    if(!textarea) return;
-    var questions = textarea.value.split('\n').filter(function(q){ return q.trim(); });
-    questions.splice(index, 1);
-    textarea.value = questions.join('\n');
-    renderQuestionsList(questions);
-}
-
-function moveQuestion(to, from){
-    var textarea = document.getElementById('ed-q');
-    if(!textarea) return;
-    var questions = textarea.value.split('\n').filter(function(q){ return q.trim(); });
-    var item = questions.splice(from, 1)[0];
-    questions.splice(to, 0, item);
-    textarea.value = questions.join('\n');
-    renderQuestionsList(questions);
-}
-
-function addFormModal(){
-    state.cats.push({ id: Date.now(), name: 'Новая форма', emoji: '📋', questions: ['Ваше имя*'], minLvl: 1, color: '#d4a373', pingRole: '', thumbnail: '', image: '', cssTheme: '', departmentId: '' });
-    editFormModal(state.cats[state.cats.length - 1].id);
-}
-
-async function saveForm(id){
-    if(!antiFlood.check('admin')) return toast('⏳ Слишком быстро! Подождите.', 'error');
-    var idx = state.cats.findIndex(function(c){ return c.id == id; });
-    state.cats[idx] = {
-        ...state.cats[idx],
-        name: document.getElementById('ed-n').value,
-        emoji: document.getElementById('ed-e').value,
-        minLvl: parseInt(document.getElementById('ed-l').value),
-        webhook: document.getElementById('ed-w').value,
-        questions: document.getElementById('ed-q').value.split('\n').filter(function(q){ return q.trim(); }),
-        color: document.getElementById('ed-c').value,
-        pingRole: document.getElementById('ed-p').value,
-        thumbnail: document.getElementById('ed-th').value,
-        image: document.getElementById('ed-im').value,
-        cssTheme: document.getElementById('ed-css').value,
-        departmentId: document.getElementById('ed-d').value
-    };
-    await updateCategories();
-    toast('✅ Сохранено');
-    openAdminPanel();
-}
-
-async function deleteForm(id){
-    if(!confirm('Удалить?')) return;
-    state.cats = state.cats.filter(function(c){ return c.id != id; });
-    await updateCategories();
-    toast('🗑️ Удалено');
-    openAdminPanel();
-}
-
-async function updateCategories(){
-    await fetch(API_BASE + '/api/admin/categories', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + localStorage.getItem('sd_token') },
-        body: JSON.stringify({ categories: state.cats })
-    });
-    renderHome();
-}
-
-// ==================== АДМИНЫ ====================
-async function openAdminsList(){
-    closeAllModals();
-    var res = await fetch(API_BASE + '/api/admin/admins', { headers: { Authorization: 'Bearer ' + localStorage.getItem('sd_token') } });
-    state.admins = await res.json();
-    var html = '<h2 style="font-weight:900;margin-bottom:15px;">👥 Администраторы</h2>';
-    if(state.admins.length === 0){
-        html += '<p style="color:var(--text-dim);">Нет администраторов</p>';
-    }else{
-        state.admins.forEach(function(a){
-            html += '<div style="padding:12px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:10px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;">' +
-                '<span>ID: ' + a.userId + (a.departmentId ? ' | Отдел: ' + a.departmentId : '') + '</span>' +
-                '<span style="background:var(--accent);color:#000;padding:3px 10px;border-radius:6px;font-weight:700;">' + (state.lvlNames[a.level-1] || 'Lvl ' + a.level) + '</span>' +
-                '</div>';
-        });
-    }
-    html += '<label>Добавить/Изменить</label>' +
-        '<input id="mid" class="u-input" placeholder="Discord ID">' +
-        '<input id="mlvl" type="number" class="u-input" placeholder="Уровень (0=удалить)" min="0" max="5">' +
-        '<select id="mdep" class="u-input"><option value="">— Без отдела —</option>';
-    state.departments.forEach(function(d){ html += '<option value="' + d.id + '">' + d.name + '</option>'; });
-    html += '</select>' +
-        '<button class="btn btn-accent btn-block" onclick="saveAdmin()">💾 Сохранить</button>' +
-        '<button class="btn btn-outline btn-block btn-sm" onclick="closeModal()" style="margin-top:5px;">Закрыть</button>';
-    openModal(html);
-}
-
-async function saveAdmin(){
-    if(!antiFlood.check('admin')) return toast('⏳ Слишком быстро!', 'error');
-    var uid = document.getElementById('mid').value.trim();
-    var lvl = parseInt(document.getElementById('mlvl').value);
-    var dep = document.getElementById('mdep').value;
-    if(!uid || isNaN(lvl)) return;
-    await fetch(API_BASE + '/api/admin/admins', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + localStorage.getItem('sd_token') },
-        body: JSON.stringify({ userId: uid, level: lvl, departmentId: dep })
-    });
-    toast('✅ Сохранено');
-    openAdminsList();
-}
-
-// ==================== ОТДЕЛЫ ====================
-async function openDepartments(){
-    closeAllModals();
-    var html = '<h2 style="font-weight:900;margin-bottom:15px;">📂 Отделы</h2><div id="dept-list">';
-    state.departments.forEach(function(d){
-        html += '<div style="padding:12px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:10px;margin-bottom:8px;">' +
-            '<b>' + (d.emoji||'📂') + ' ' + d.name + '</b><br>' +
-            '<span style="color:var(--text-dim);font-size:0.8rem;">Webhook: ' + (d.webhook || 'Нет') + '</span>' +
-            '</div>';
-    });
-    html += '</div>' +
-        '<label>Добавить отдел</label>' +
-        '<input id="dname" class="u-input" placeholder="Название отдела">' +
-        '<input id="dwebhook" class="u-input" placeholder="Webhook URL">' +
-        '<button class="btn btn-accent btn-block" onclick="addDepartment()">+ Добавить</button>' +
-        '<button class="btn btn-outline btn-block btn-sm" onclick="closeModal()" style="margin-top:5px;">Закрыть</button>';
-    openModal(html);
-}
-
-async function addDepartment(){
-    var name = document.getElementById('dname').value.trim();
-    var webhook = document.getElementById('dwebhook').value.trim();
-    if(!name) return;
-    state.departments.push({ id: Date.now().toString(), name: name, emoji: '📂', webhook: webhook });
-    await fetch(API_BASE + '/api/admin/departments', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + localStorage.getItem('sd_token') },
-        body: JSON.stringify({ departments: state.departments })
-    });
-    toast('✅ Отдел добавлен');
-    openDepartments();
-}
-
-// ==================== УРОВНИ ====================
-function openLvlNames(){
-    closeAllModals();
-    var html = '<h2 style="font-weight:900;margin-bottom:15px;">🏷️ Названия уровней</h2><p style="color:var(--text-dim);font-size:0.8rem;">6-й уровень защищён от изменений</p>';
-    state.lvlNames.forEach(function(n, i){ 
-        html += '<input class="u-input l-edit" value="' + n + '" placeholder="Уровень ' + (i+1) + '" ' + (i === 5 ? 'readonly style="opacity:0.5;"' : '') + '>';
-    });
-    html += '<button class="btn btn-accent btn-block" onclick="saveLvls()" style="margin-top:15px;">💾 Сохранить</button>' +
-        '<button class="btn btn-outline btn-block btn-sm" onclick="closeModal()" style="margin-top:5px;">Закрыть</button>';
-    openModal(html);
-}
-
-async function saveLvls(){
-    var names = Array.from(document.querySelectorAll('.l-edit')).map(function(i){ return i.value.trim(); });
-    await fetch(API_BASE + '/api/admin/lvlnames', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + localStorage.getItem('sd_token') },
-        body: JSON.stringify({ names: names })
-    });
-    state.lvlNames = names;
-    toast('✅ Сохранено');
-    closeModal();
-}
-
-// ==================== БАНЫ ====================
-async function openBans(){
-    closeAllModals();
-    var res = await fetch(API_BASE + '/api/admin/bans', { headers: { Authorization: 'Bearer ' + localStorage.getItem('sd_token') } });
-    var bans = await res.json();
-    var html = '<h2 style="font-weight:900;margin-bottom:15px;">🚫 Баны</h2>';
-    if(bans.length === 0){
-        html += '<p style="color:var(--text-dim);">Нет забаненных пользователей</p>';
-    }else{
-        bans.forEach(function(b){
-            html += '<div style="padding:12px;background:rgba(255,0,0,0.05);border:1px solid var(--error);border-radius:10px;margin-bottom:8px;">' +
-                '<b>ID: ' + b.userId + '</b><br>' +
-                '<span style="color:var(--text-dim);font-size:0.8rem;">Причина: ' + (b.reason || 'Не указана') + ' | До: ' + (b.expiresAt || 'Навсегда') + '</span>' +
-                '<button class="btn btn-danger btn-sm" onclick="unbanUser(\'' + b.userId + '\')" style="margin-top:8px;">Разбанить</button>' +
-                '</div>';
-        });
-    }
-    html += '<label>Забанить пользователя</label>' +
-        '<input id="ban-id" class="u-input" placeholder="Discord ID">' +
-        '<input id="ban-reason" class="u-input" placeholder="Причина">' +
-        '<select id="ban-duration" class="u-input"><option value="">Навсегда</option><option value="1h">1 час</option><option value="24h">24 часа</option><option value="7d">7 дней</option></select>' +
-        '<button class="btn btn-danger btn-block" onclick="banUser()">🚫 Забанить</button>' +
-        '<button class="btn btn-outline btn-block btn-sm" onclick="closeModal()" style="margin-top:5px;">Закрыть</button>';
-    openModal(html);
-}
-
-async function banUser(){
-    var uid = document.getElementById('ban-id').value.trim();
-    var reason = document.getElementById('ban-reason').value.trim();
-    var duration = document.getElementById('ban-duration').value;
-    if(!uid) return;
-    await fetch(API_BASE + '/api/admin/ban', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + localStorage.getItem('sd_token') },
-        body: JSON.stringify({ userId: uid, reason: reason, duration: duration })
-    });
-    toast('✅ Пользователь забанен');
-    openBans();
-}
-
-async function unbanUser(uid){
-    await fetch(API_BASE + '/api/admin/unban', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + localStorage.getItem('sd_token') },
-        body: JSON.stringify({ userId: uid })
-    });
-    toast('✅ Пользователь разбанен');
-    openBans();
-}
-
-// ==================== ЛОГИ ====================
-async function openLogs(){
-    closeAllModals();
-    var res = await fetch(API_BASE + '/api/admin/logs', { headers: { Authorization: 'Bearer ' + localStorage.getItem('sd_token') } });
-    var logs = await res.json();
-    var html = '<h2 style="font-weight:900;margin-bottom:15px;">📋 Логи</h2><div style="max-height:400px;overflow-y:auto;">';
-    logs.forEach(function(l){
-        html += '<div style="padding:10px;border-bottom:1px solid var(--border);font-size:0.8rem;">' +
-            '<span style="color:var(--accent);">[' + l.timestamp + ']</span> <b>' + l.user + '</b>: ' + l.action +
-            '</div>';
-    });
-    html += '</div><button class="btn btn-outline btn-block btn-sm" onclick="closeModal()" style="margin-top:10px;">Закрыть</button>';
-    document.getElementById('modal-box').classList.add('modal-wide');
-    openModal(html);
-}
-
-// ==================== ЭКСПОРТ ====================
-function exportCSV(){
-    window.open(API_BASE + '/api/admin/export', '_blank');
-}
-
-// ==================== БАГ-РЕПОРТ ====================
-function openBug(){
-    var html = '<h2 style="font-weight:900;margin-bottom:15px;">🐛 Баг-репорт</h2>' +
-        '<p style="color:var(--text-dim);margin-bottom:15px;">Опишите проблему</p>' +
-        '<textarea id="bug-text" class="u-input" style="height:120px;"></textarea>' +
-        '<div style="display:flex;gap:10px;margin-top:15px;">' +
-        '<button class="btn btn-accent btn-block" onclick="sendBug()">📨 Отправить</button>' +
-        '<button class="btn btn-outline" onclick="closeModal()">Отмена</button></div>';
-    openModal(html);
-}
-
-async function sendBug(){
-    if(!antiFlood.check('bug')) return toast('⏳ Слишком много баг-репортов!', 'error');
-    var desc = document.getElementById('bug-text').value;
-    if(!desc.trim()) return toast('Введите описание!', 'error');
-    await fetch(API_BASE + '/api/bug', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + localStorage.getItem('sd_token') },
-        body: JSON.stringify({ description: desc })
-    });
-    closeModal();
-    toast('✅ Отправлено');
-}
-
-window.onload = init;
+(function(){document.addEventListener('contextmenu',e=>e.preventDefault());document.addEventListener('keydown',function(e){if((e.ctrlKey||e.metaKey)&&['u','s','p','c','a','U','S','P','C','A'].includes(e.key)){e.preventDefault();return false}if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&['i','j','c','I','J','C'].includes(e.key))){e.preventDefault();return false}},true);document.addEventListener('selectstart',e=>e.preventDefault());setInterval(function(){var s=new Date().getTime();debugger;if(new Date().getTime()-s>100)document.body.innerHTML='<div style="display:flex;justify-content:center;align-items:center;height:100vh;background:#000;color:#f00;font-size:2rem;">⛔ Доступ запрещён</div>'},100)})();
+const antiFlood={timers:{},limits:{submit:{count:3,time:1e4},bug:{count:2,time:3e4},admin:{count:5,time:5e3},default:{count:10,time:3e3}},check(a){var l=this.limits[a]||this.limits.default,n=Date.now(),k=a+'_'+(state.user?state.user.id:'anon');if(!this.timers[k])this.timers[k]={count:0,reset:n+l.time};if(n>this.timers[k].reset){this.timers[k]={count:1,reset:n+l.time};return 1}if(this.timers[k].count>=l.count)return 0;this.timers[k].count++;return 1}};
+var loadProgress=0,loadInterval=setInterval(function(){loadProgress+=Math.random()*30;if(loadProgress>90)loadProgress=90;document.getElementById('loader-progress').style.width=loadProgress+'%'},300);
+window.addEventListener('load',function(){document.getElementById('loader-progress').style.width='100%';setTimeout(function(){clearInterval(loadInterval)},500)});
+const API_BASE='https://meri-server.64.188.66.210.nip.io';
+const state={user:null,cats:[],activeCat:null,selDept:null,userLevel:0,lvlNames:[],departments:[],uploadedFiles:[]};
+function toast(m,t){t=t||'success';document.querySelectorAll('.toast').forEach(e=>e.remove());var d=document.createElement('div');d.className='toast toast-'+t;d.textContent=m;document.body.appendChild(d);setTimeout(function(){d.remove()},3000)}
+async function init(){var h=window.location.hash.slice(1),p=new URLSearchParams(h),t=p.get('access_token')||localStorage.getItem('sd_token');if(t){window.location.hash='';localStorage.setItem('sd_token',t);try{var r=await fetch(API_BASE+'/api/user/me',{headers:{Authorization:'Bearer '+t}});if(!r.ok)throw new Error('Invalid');var d=await r.json();state.user=d;state.userLevel=d.level;state.lvlNames=d.lvlNames||[];await loadData();document.getElementById('ui-header').style.display='flex';document.getElementById('main-container').style.display='block';renderHeader();renderSidebar();updateThemeToggle();document.getElementById('preloader').style.opacity='0';setTimeout(function(){document.getElementById('preloader').style.display='none'},600)}catch(e){logout()}}else{document.getElementById('preloader').style.opacity='0';setTimeout(function(){document.getElementById('preloader').style.display='none'},600);document.getElementById('page-login').style.display='flex'}}
+function login(){window.location.href=API_BASE+'/login'}
+function logout(){localStorage.clear();window.location.reload()}
+function toggleTheme(){var c=document.documentElement.getAttribute('data-theme')||'dark',n=c==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',n);localStorage.setItem('theme',n);updateThemeToggle()}
+function updateThemeToggle(){var c=document.documentElement.getAttribute('data-theme')||'dark',b=document.getElementById('theme-toggle');if(b)b.innerHTML=c==='dark'?'☀️ Светлая тема':'🌙 Тёмная тема'}
+(function(){document.documentElement.setAttribute('data-theme',localStorage.getItem('theme')||'dark')})();
+function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active-page'));var p=document.getElementById(id);if(p)p.classList.add('active-page');if(id==='page-stats')loadStats();if(id==='page-apps')loadMyApps();closeAllModals()}
+function openModal(c){document.getElementById('modal-box').innerHTML=c;document.getElementById('modal-overlay').style.display='flex'}
+function closeModal(){document.getElementById('modal-overlay').style.display='none'}
+function closeAllModals(){closeModal();closeSidebar()}
+document.getElementById('modal-overlay').addEventListener('click',function(e){if(e.target===this)closeModal()});
+function openSidebar(){document.getElementById('sidebar').classList.add('open');document.getElementById('sidebar-backdrop').classList.add('show')}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebar-backdrop').classList.remove('show')}
+function renderHeader(){if(!state.user)return;document.getElementById('u-ava').src='https://cdn.discordapp.com/avatars/'+state.user.id+'/'+state.user.avatar+'.png'}
+function renderSidebar(){var s=document.getElementById('sidebar-admin-items');s.innerHTML='';if(state.userLevel>0){s.innerHTML+='<a class="sidebar-item" onclick="openAdminPanel()">⚡ Админ-панель</a>';if(state.userLevel>=4){s.innerHTML+='<a class="sidebar-item" onclick="openAdminApps()">📋 Все заявки</a>';s.innerHTML+='<a class="sidebar-item" onclick="openAdminsList()">👥 Администраторы</a>';s.innerHTML+='<a class="sidebar-item" onclick="openDepartments()">📂 Отделы</a>';s.innerHTML+='<a class="sidebar-item" onclick="openLvlNames()">🏷️ Уровни</a>';s.innerHTML+='<a class="sidebar-item" onclick="openBans()">🚫 Баны</a>';s.innerHTML+='<a class="sidebar-item" onclick="openLogs()">📋 Логи</a>';s.innerHTML+='<a class="sidebar-item" onclick="exportCSV()">📥 Экспорт CSV</a>'}}}
+async function loadData(){var r=await fetch(API_BASE+'/api/categories');state.cats=await r.json();renderHome();try{var d=await fetch(API_BASE+'/api/departments');state.departments=await d.json()}catch(e){}}
+function renderHome(){var g=document.getElementById('grid-main');if(!g)return;if(state.cats.length===0){g.innerHTML='<div style="text-align:center;padding:60px;color:var(--text-dim);"><div style="font-size:4rem;">📭</div><p>Нет форм</p></div>';return}g.innerHTML='';state.cats.forEach(function(c){var d=document.createElement('div');d.className='card';d.innerHTML='<div class="card-emoji">'+(c.emoji||'📁')+'</div><div class="card-title">'+c.name+'</div>';d.onclick=function(){openFormModal(c.id)};g.appendChild(d)})}
+function openFormModal(id){state.activeCat=state.cats.find(c=>c.id==id);state.selDept=null;state.uploadedFiles=[];var h='<h2 style="font-weight:900;margin-bottom:20px;">'+(state.activeCat.emoji||'')+' '+state.activeCat.name+'</h2>';state.activeCat.questions.forEach(function(q){if(q.includes('[')&&q.includes('|')){h+='<label>'+q.split('[')[0].trim()+'</label><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:15px;" id="dept-btns">';var m=q.match(/\[(.*?)\]/);if(m){m[1].split(',').forEach(function(o){var p=o.split('|').map(s=>s.trim());if(p.length>=3)h+='<div class="opt-btn" data-name="'+p[0]+'" data-role="'+p[1]+'" data-webhook="'+p[2]+'" onclick="selectDept(this)">'+p[0]+'</div>'})}h+='</div>'}else if(q.startsWith('file:')){h+='<label>'+q.replace('file:','').trim()+'</label><div class="file-upload-area" onclick="document.getElementById(\'file-input\').click()">📎 Загрузить файл</div><input type="file" id="file-input" multiple style="display:none;" onchange="handleFiles(this.files)"><div class="file-list" id="file-list"></div>'}else{var r=q.endsWith('*'),c=q.replace('*','');h+='<label>'+c+' '+(r?'<span style="color:var(--error);">*</span>':'')+'</label><textarea class="u-input app-field" data-req="'+r+'" rows="2" placeholder="'+c.toLowerCase()+'"></textarea>'}});h+='<div style="display:flex;gap:10px;margin-top:20px;"><button class="btn btn-accent btn-block" onclick="submitAppModal()">📨 Отправить</button><button class="btn btn-outline" onclick="closeModal()">Отмена</button></div>';openModal(h)}
+function handleFiles(f){state.uploadedFiles=Array.from(f);var l=document.getElementById('file-list');if(!l)return;l.innerHTML='';state.uploadedFiles.forEach(function(f,i){var d=document.createElement('div');d.className='file-item';d.innerHTML='<span>📄 '+f.name+'</span><button class="btn btn-danger btn-sm" onclick="removeFile('+i+')">✕</button>';l.appendChild(d)})}
+function removeFile(i){state.uploadedFiles.splice(i,1);handleFiles(state.uploadedFiles)}
+function selectDept(e){document.querySelectorAll('#dept-btns .opt-btn').forEach(b=>b.classList.remove('active'));e.classList.add('active');state.selDept={name:e.dataset.name,role:e.dataset.role,webhook:e.dataset.webhook}}
+async function submitAppModal(){if(!antiFlood.check('submit'))return toast('⏳ Слишком много запросов!','error');var i=document.querySelectorAll('.app-field'),v=true,a=[];i.forEach(function(x){var val=x.value.trim();a.push(val);if(x.dataset.req==='true'&&!val){x.classList.add('error');v=false}else x.classList.remove('error')});if(!v)return toast('Заполните обязательные поля!','error');var f=new FormData();f.append('categoryId',state.activeCat.id);f.append('answers',JSON.stringify(a));if(state.selDept)f.append('selectedDept',JSON.stringify(state.selDept));state.uploadedFiles.forEach(function(x){f.append('files',x)});try{var r=await fetch(API_BASE+'/api/submit',{method:'POST',headers:{Authorization:'Bearer '+localStorage.getItem('sd_token')},body:f});if(!r.ok)throw new Error(await r.text());closeModal();toast('✅ Заявка отправлена!')}catch(e){toast('❌ '+e.message,'error')}}
+async function loadMyApps(){try{var r=await fetch(API_BASE+'/api/applications',{headers:{Authorization:'Bearer '+localStorage.getItem('sd_token')}}),a=await r.json(),l=document.getElementById('apps-list');if(!l)return;if(a.length===0){l.innerHTML='<div style="text-align:center;padding:60px;color:var(--text-dim);"><div style="font-size:4rem;">📭</div><p>У вас пока нет заявок</p></div>';return}l.innerHTML='';a.forEach(function(x){var ans=JSON.parse(x.answers||'[]');l.innerHTML+='<div style="background:var(--card);padding:20px;border-radius:16px;border:1px solid var(--border);margin-bottom:15px;"><b>'+x.categoryName+'</b><p style="color:var(--text-dim);font-size:0.8rem;">🕐 '+x.createdAt+'</p><div style="margin-top:10px;">'+ans.map(function(v,i){return'<p style="font-size:0.85rem;margin:5px 0;"><span style="color:var(--accent);">▸</span> '+v+'</p>'}).join('')+'</div></div>'})}catch(e){}}
+async function loadStats(){if(state.userLevel<1)return;try{var r=await fetch(API_BASE+'/api/admin/stats',{headers:{Authorization:'Bearer '+localStorage.getItem('sd_token')}}),s=await r.json(),g=document.getElementById('stats-grid');if(!g)return;g.innerHTML='<div class="stat-card"><div class="stat-value">'+s.totalApps+'</div><div class="stat-label">Всего заявок</div></div><div class="stat-card"><div class="stat-value">'+s.todayApps+'</div><div class="stat-label">Сегодня</div></div><div class="stat-card"><div class="stat-value">'+s.totalUsers+'</div><div class="stat-label">Пользователей</div></div><div class="stat-card"><div class="stat-value">'+s.totalAdmins+'</div><div class="stat-label">Админов</div></div>'}catch(e){}}
+async function openAdminApps(){closeAllModals();try{var r=await fetch(API_BASE+'/api/admin/applications',{headers:{Authorization:'Bearer '+localStorage.getItem('sd_token')}}),a=await r.json(),h='<h2 style="font-weight:900;margin-bottom:15px;">📋 Все заявки</h2>';a.forEach(function(x){var ans=JSON.parse(x.answers||'[]');h+='<div style="background:rgba(255,255,255,0.02);padding:15px;border-radius:12px;border:1px solid var(--border);margin-bottom:10px;"><b>'+x.categoryName+'</b><p style="color:var(--text-dim);font-size:0.8rem;">👤 '+x.username+' | 🕐 '+x.createdAt+'</p><div style="margin-top:8px;">'+ans.map(function(v){return'<span style="background:var(--bg);padding:3px 8px;border-radius:6px;font-size:0.8rem;margin:2px;display:inline-block;">'+v+'</span>'}).join('')+'</div></div>'});h+='<button class="btn btn-outline btn-block btn-sm" onclick="closeModal()" style="margin-top:10px;">Закрыть</button>';document.getElementById('modal-box').classList.add('modal-wide');openModal(h)}catch(e){}}
+function openAdminPanel(){closeAllModals();var h='<h2 style="font-weight:900;margin-bottom:15px;">⚡ Админ-панель</h2>';state.cats.forEach(function(c){h+='<div style="padding:15px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="editFormModal('+c.id+')"><span><b>'+(c.emoji||'📁')+' '+c.name+'</b></span></div>'});h+='<button class="btn btn-accent btn-block btn-sm" onclick="addFormModal()" style="margin-top:10px;">+ Новая форма</button><button class="btn btn-outline btn-block btn-sm" onclick="closeModal()" style="margin-top:5px;">Закрыть</button>';document.getElementById('modal-box').classList.add('modal-wide');openModal(h)}
+function editFormModal(id){var c=state.cats.find(x=>x.id==id),h='<h2 style="font-weight:900;margin-bottom:20px;">✏️ '+c.name+'</h2>';h+='<label>Название</label><input id="ed-n" class="u-input" value="'+c.name+'">';h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;"><div><label>Эмодзи</label><input id="ed-e" class="u-input" value="'+(c.emoji||'📁')+'"></div><div><label>Мин. уровень</label><select id="ed-l" class="u-input">';state.lvlNames.forEach(function(n,i){h+='<option value="'+(i+1)+'" '+(c.minLvl==i+1?'selected':'')+'>'+(i+1)+' — '+n+'</option>'});h+='</select></div></div>';h+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:15px;"><div><label>Цвет</label><input id="ed-c" type="color" class="u-input" value="'+(c.color||'#d4a373')+'"></div><div><label>Пинг-роль</label><input id="ed-p" class="u-input" value="'+(c.pingRole||'')+'"></div><div><label>Отдел</label><select id="ed-d" class="u-input"><option value="">— Без отдела —</option>';state.departments.forEach(function(d){h+='<option value="'+d.id+'" '+(c.departmentId===d.id?'selected':'')+'>'+d.name+'</option>'});h+='</select></div></div>';h+='<label>Webhook URL</label><input id="ed-w" class="u-input" value="'+(c.webhook||'')+'">';h+='<label>Thumbnail URL</label><input id="ed-th" class="u-input" value="'+(c.thumbnail||'')+'">';h+='<label>Image URL</label><input id="ed-im" class="u-input" value="'+(c.image||'')+'">';h+='<label>Вопросы</label><textarea id="ed-q" class="u-input" style="height:150px;font-family:monospace;">'+c.questions.join('\n')+'</textarea>';h+='<div style="display:flex;gap:10px;margin-top:20px;"><button class="btn btn-accent btn-block" onclick="saveForm('+id+')">💾 Сохранить</button><button class="btn btn-danger" onclick="deleteForm('+id+')">🗑️</button></div>';h+='<button class="btn btn-outline btn-block btn-sm" onclick="openAdminPanel()" style="margin-top:5px;">← Назад</button>';openModal(h)}
+function addFormModal(){state.cats.push({id:Date.now(),name:'Новая форма',emoji:'📋',questions:['Ваше имя*'],minLvl:1,color:'#d4a373',pingRole:'',thumbnail:'',image:'',cssTheme:'',departmentId:''});editFormModal(state.cats[state.cats.length-1].id)}
+async function saveForm(id){if(!antiFlood.check('admin'))return toast('⏳ Слишком быстро!','error');var i=state.cats.findIndex(c=>c.id==id);state.cats[i]={...state.cats[i],name:document.getElementById('ed-n').value,emoji:document.getElementById('ed-e').value,minLvl:parseInt(document.getElementById('ed-l').value),webhook:document.getElementById('ed-w').value,questions:document.getElementById('ed-q').value.split('\n').filter(q=>q.trim()),color:document.getElementById('ed-c').value,pingRole:document.getElementById('ed-p').value,thumbnail:document.getElementById('ed-th').value,image:document.getElementById('ed-im').value,departmentId:document.getElementById('ed-d').value};await updateCategories();toast('✅ Сохранено');openAdminPanel()}
+async function deleteForm(id){if(!confirm('Удалить?'))return;state.cats=state.cats.filter(c=>c.id!=id);await updateCategories();toast('🗑️ Удалено');openAdminPanel()}
+async function updateCategories(){await fetch(API_BASE+'/api/admin/categories',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+localStorage.getItem('sd_token')},body:JSON.stringify({categories:state.cats})});renderHome()}
+async function openAdminsList(){closeAllModals();var r=await fetch(API_BASE+'/api/admin/admins',{headers:{Authorization:'Bearer '+localStorage.getItem('sd_token')}}),a=await r.json(),h='<h2 style="font-weight:900;margin-bottom:15px;">👥 Администраторы</h2>';a.forEach(function(x){h+='<div style="padding:12px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:10px;margin-bottom:8px;display:flex;justify-content:space-between;"><span>ID: '+x.userId+'</span><span style="background:var(--accent);color:#000;padding:3px 10px;border-radius:6px;">'+(state.lvlNames[x.level-1]||'Lvl '+x.level)+'</span></div>'});h+='<label>Добавить</label><input id="mid" class="u-input" placeholder="Discord ID"><input id="mlvl" type="number" class="u-input" placeholder="Уровень" min="0" max="5"><button class="btn btn-accent btn-block" onclick="saveAdmin()">💾 Сохранить</button><button class="btn btn-outline btn-block btn-sm" onclick="closeModal()" style="margin-top:5px;">Закрыть</button>';openModal(h)}
+async function saveAdmin(){var u=document.getElementById('mid').value.trim(),l=parseInt(document.getElementById('mlvl').value);if(!u||isNaN(l))return;await fetch(API_BASE+'/api/admin/admins',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+localStorage.getItem('sd_token')},body:JSON.stringify({userId:u,level:l})});toast('✅ Сохранено');openAdminsList()}
+function openDepartments(){closeAllModals();var h='<h2 style="font-weight:900;margin-bottom:15px;">📂 Отделы</h2>';state.departments.forEach(function(d){h+='<div style="padding:12px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:10px;margin-bottom:8px;"><b>📂 '+d.name+'</b></div>'});h+='<label>Добавить</label><input id="dname" class="u-input" placeholder="Название"><input id="dwebhook" class="u-input" placeholder="Webhook URL"><button class="btn btn-accent btn-block" onclick="addDepartment()">+ Добавить</button><button class="btn btn-outline btn-block btn-sm" onclick="closeModal()" style="margin-top:5px;">Закрыть</button>';openModal(h)}
+async function addDepartment(){var n=document.getElementById('dname').value.trim(),w=document.getElementById('dwebhook').value.trim();if(!n)return;state.departments.push({id:Date.now().toString(),name:n,emoji:'📂',webhook:w});await fetch(API_BASE+'/api/admin/departments',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+localStorage.getItem('sd_token')},body:JSON.stringify({departments:state.departments})});toast('✅ Добавлено');openDepartments()}
+function openLvlNames(){closeAllModals();var h='<h2 style="font-weight:900;margin-bottom:15px;">🏷️ Названия уровней</h2>';state.lvlNames.forEach(function(n,i){h+='<input class="u-input l-edit" value="'+n+'" '+(i===5?'readonly style="opacity:0.5;"':'')+'>'});h+='<button class="btn btn-accent btn-block" onclick="saveLvls()" style="margin-top:15px;">💾 Сохранить</button><button class="btn btn-outline btn-block btn-sm" onclick="closeModal()" style="margin-top:5px;">Закрыть</button>';openModal(h)}
+async function saveLvls(){var n=Array.from(document.querySelectorAll('.l-edit')).map(i=>i.value.trim());await fetch(API_BASE+'/api/admin/lvlnames',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+localStorage.getItem('sd_token')},body:JSON.stringify({names:n})});state.lvlNames=n;toast('✅ Сохранено');closeModal()}
+async function openBans(){closeAllModals();var r=await fetch(API_BASE+'/api/admin/bans',{headers:{Authorization:'Bearer '+localStorage.getItem('sd_token')}}),b=await r.json(),h='<h2 style="font-weight:900;margin-bottom:15px;">🚫 Баны</h2>';b.forEach(function(x){h+='<div style="padding:12px;background:rgba(255,0,0,0.05);border:1px solid var(--error);border-radius:10px;margin-bottom:8px;"><b>'+x.userId+'</b> — '+x.reason+'<button class="btn btn-danger btn-sm" onclick="unbanUser(\''+x.userId+'\')">Разбанить</button></div>'});h+='<label>Забанить</label><input id="ban-id" class="u-input" placeholder="Discord ID"><input id="ban-reason" class="u-input" placeholder="Причина"><select id="ban-duration" class="u-input"><option value="">Навсегда</option><option value="1h">1 час</option><option value="24h">24 часа</option><option value="7d">7 дней</option></select><button class="btn btn-danger btn-block" onclick="banUser()">🚫 Забанить</button><button class="btn btn-outline btn-block btn-sm" onclick="closeModal()">Закрыть</button>';openModal(h)}
+async function banUser(){var u=document.getElementById('ban-id').value.trim(),r=document.getElementById('ban-reason').value.trim(),d=document.getElementById('ban-duration').value;await fetch(API_BASE+'/api/admin/ban',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+localStorage.getItem('sd_token')},body:JSON.stringify({userId:u,reason:r,duration:d})});toast('✅ Забанен');openBans()}
+async function unbanUser(u){await fetch(API_BASE+'/api/admin/unban',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+localStorage.getItem('sd_token')},body:JSON.stringify({userId:u})});toast('✅ Разбанен');openBans()}
+async function openLogs(){closeAllModals();var r=await fetch(API_BASE+'/api/admin/logs',{headers:{Authorization:'Bearer '+localStorage.getItem('sd_token')}}),l=await r.json(),h='<h2 style="font-weight:900;margin-bottom:15px;">📋 Логи</h2><div style="max-height:400px;overflow-y:auto;">';l.forEach(function(x){h+='<div style="padding:10px;border-bottom:1px solid var(--border);font-size:0.8rem;"><span style="color:var(--accent);">['+x.timestamp+']</span> <b>'+x.user+'</b>: '+x.action+'</div>'});h+='</div><button class="btn btn-outline btn-block btn-sm" onclick="closeModal()">Закрыть</button>';openModal(h)}
+function exportCSV(){window.open(API_BASE+'/api/admin/export','_blank')}
+function openBug(){var h='<h2 style="font-weight:900;margin-bottom:15px;">🐛 Баг-репорт</h2><textarea id="bug-text" class="u-input" style="height:120px;"></textarea><div style="display:flex;gap:10px;margin-top:15px;"><button class="btn btn-accent btn-block" onclick="sendBug()">📨 Отправить</button><button class="btn btn-outline" onclick="closeModal()">Отмена</button></div>';openModal(h)}
+async function sendBug(){if(!antiFlood.check('bug'))return toast('⏳ Слишком много!','error');var d=document.getElementById('bug-text').value;if(!d.trim())return;await fetch(API_BASE+'/api/bug',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+localStorage.getItem('sd_token')},body:JSON.stringify({description:d})});closeModal();toast('✅ Отправлено')}
+window.onload=init;
 </script>
+</body>
+</html>
