@@ -149,39 +149,24 @@ async function submitAppModal(){
     var a=[];
     document.querySelectorAll('.app-field').forEach(function(x){a.push(x.value.trim())});
     
+    var fd=new FormData();
+    fd.append('categoryId',state.activeCat.id);
+    fd.append('answers',JSON.stringify(a));
+    if(state.selDept)fd.append('selectedDept',JSON.stringify(state.selDept));
     if(state.uploadedFiles&&state.uploadedFiles.length>0){
-        var file=state.uploadedFiles[0];
-        alert('Читаю файл: '+file.name);
-        var reader=new FileReader();
-        reader.onload=async function(){
-            alert('Файл прочитан, отправляю...');
-            var body={categoryId:state.activeCat.id,answers:a,fileBase64:reader.result,fileName:file.name};
-            try{
-                var r=await fetch(API_BASE+'/api/submit',{
-                    method:'POST',
-                    headers:{'Content-Type':'application/json',Authorization:'Bearer '+localStorage.getItem('sd_token')},
-                    body:JSON.stringify(body)
-                });
-                var d=await r.json();
-                alert('Ответ сервера: '+JSON.stringify(d));
-                closeModal();toast('Заявка отправлена!');
-            }catch(e){alert('Ошибка fetch: '+e.message)}
-        };
-        reader.onerror=function(){alert('Ошибка чтения файла!')};
-        reader.readAsDataURL(file);
-    }else{
-        alert('Нет файла, отправляю без картинки');
-        try{
-            var r=await fetch(API_BASE+'/api/submit',{
-                method:'POST',
-                headers:{'Content-Type':'application/json',Authorization:'Bearer '+localStorage.getItem('sd_token')},
-                body:JSON.stringify({categoryId:state.activeCat.id,answers:a})
-            });
-            closeModal();toast('Заявка отправлена!');
-        }catch(e){alert('Ошибка: '+e.message)}
+        state.uploadedFiles.forEach(function(f){fd.append('files',f)});
     }
+    
+    try{
+        var r=await fetch(API_BASE+'/api/submit',{
+            method:'POST',
+            headers:{Authorization:'Bearer '+localStorage.getItem('sd_token')},
+            body:fd
+        });
+        if(!r.ok)throw new Error(await r.text());
+        closeModal();toast('Заявка отправлена!');
+    }catch(e){toast('Ошибка: '+e.message,'error')}
 }
-
 async function sendIt(body){
     try{
         var r=await fetch(API_BASE+'/api/submit',{
