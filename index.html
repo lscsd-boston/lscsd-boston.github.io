@@ -626,11 +626,11 @@ async function openAdminApps(){
     }catch(e){}
 }
 
-async function updateAppStatus(id, status){
+async function updateAppStatus(id, status, messageId) {
     await fetch(API_BASE + '/api/admin/applications/' + id, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + localStorage.getItem('sd_token') },
-        body: JSON.stringify({ status: status })
+        body: JSON.stringify({ status: status, messageId: messageId || '' })
     });
     toast('✅ Статус обновлён');
 }
