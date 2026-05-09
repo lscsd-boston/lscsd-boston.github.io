@@ -146,25 +146,17 @@ function handleFiles(f){state.uploadedFiles=Array.from(f);var l=document.getElem
 function removeFile(i){state.uploadedFiles.splice(i,1);handleFiles(state.uploadedFiles)}
 function selectDept(e){document.querySelectorAll('#dept-btns .opt-btn').forEach(b=>b.classList.remove('active'));e.classList.add('active');state.selDept={name:e.dataset.name,role:e.dataset.role,webhook:e.dataset.webhook}}
 async function submitAppModal(){
-    if(!antiFlood.check('submit'))return toast('Слишком много запросов!','error');
-    var i=document.querySelectorAll('.app-field'),v=true,a=[];
-    i.forEach(function(x){var val=x.value.trim();a.push(val);if(x.dataset.req==='true'&&!val){x.classList.add('error');v=false}else x.classList.remove('error')});
-    if(!v)return toast('Заполните поля!','error');
-    
-    var body={categoryId:state.activeCat.id,answers:a,selectedDept:state.selDept||null};
-    
-    // Если есть файл — читаем как base64
-    if(state.uploadedFiles&&state.uploadedFiles.length>0){
-        var reader=new FileReader();
-        reader.onload=async function(){
-            body.fileBase64=reader.result;
-            body.fileName=state.uploadedFiles[0].name;
-            await sendRequest(body);
-        };
-        reader.readAsDataURL(state.uploadedFiles[0]);
-    }else{
-        await sendRequest(body);
-    }
+    var a=[];
+    document.querySelectorAll('.app-field').forEach(function(x){a.push(x.value.trim())});
+    try{
+        var r=await fetch(API_BASE+'/api/submit',{
+            method:'POST',
+            headers:{'Content-Type':'application/json',Authorization:'Bearer '+localStorage.getItem('sd_token')},
+            body:JSON.stringify({categoryId:state.activeCat.id,answers:a})
+        });
+        var d=await r.json();
+        closeModal();toast('Заявка отправлена!');
+    }catch(e){alert('Ошибка: '+e.message)}
 }
 
 async function sendRequest(body){
