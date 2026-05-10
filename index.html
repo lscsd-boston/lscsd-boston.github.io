@@ -938,13 +938,18 @@ async function openLogs(){
 // ====================================================
 // 📥 ЭКСПОРТ CSV
 // ====================================================
-function exportCSV(){
-    var a=document.createElement('a');
-    a.href=API_BASE+'/api/admin/export';
-    a.download='applications.csv';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+async function exportCSV(){
+    try{
+        var r=await fetch(API_BASE+'/api/admin/export',{
+            headers:{Authorization:'Bearer '+localStorage.getItem('sd_token')}
+        });
+        if(!r.ok)throw new Error('Ошибка');
+        var blob=await r.blob();
+        var a=document.createElement('a');
+        a.href=URL.createObjectURL(blob);
+        a.download='applications.csv';
+        a.click();
+    }catch(e){toast('Ошибка экспорта','error')}
 }
 
 // ====================================================
