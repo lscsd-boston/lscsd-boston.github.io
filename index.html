@@ -28,6 +28,7 @@
         .card { background:var(--card); padding:40px 20px; border-radius:20px; border:1px solid var(--border); text-align:center; cursor:pointer; transition:0.3s; }
         .card:hover { border-color:var(--accent); transform:translateY(-5px); }
         .card-emoji { font-size:3rem; margin-bottom:12px; }
+        .svg-icon{display:inline-flex;width:1.15em;height:1.15em;vertical-align:-.2em;margin-right:.35em;flex:0 0 auto}.svg-icon svg{width:100%;height:100%;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.sidebar-item .svg-icon{color:var(--accent);width:1.25em;height:1.25em}.card .svg-icon{width:42px;height:42px;color:var(--accent);margin:0 auto 12px;display:flex}.modal-box .svg-icon{color:var(--accent)}
         .card-title { font-weight:800; text-transform:uppercase; }
         .u-input { width:100%; padding:14px 16px; background:var(--bg); border:1px solid var(--border); border-radius:12px; color:var(--text); outline:none; font-size:0.9rem; transition:0.3s; resize:vertical; }
         .u-input:focus { border-color:var(--accent); }
@@ -81,6 +82,7 @@
     <a class="sidebar-item" onclick="showPage('page-faq');closeSidebar()">📖 FAQ</a>
     <a class="sidebar-item" onclick="showPage('page-stats');closeSidebar()">📊 Статистика</a>
     <a class="sidebar-item" onclick="showPage('page-apps');closeSidebar()">📋 Мои заявки</a>
+    <a class="sidebar-item" onclick="openProfileSettings()">⚙️ Мой профиль</a>
     <div id="sidebar-admin-items"></div>
     <div style="margin-top:20px;padding-top:20px;border-top:1px solid var(--border);"><a class="sidebar-item" onclick="toggleTheme()" id="theme-toggle">🌙 Тёмная тема</a></div>
 </nav>
@@ -99,7 +101,7 @@
 const antiFlood={timers:{},limits:{submit:{count:3,time:1e4},bug:{count:2,time:3e4},admin:{count:5,time:5e3},default:{count:10,time:3e3}},check(a){var l=this.limits[a]||this.limits.default,n=Date.now(),k=a+'_'+(state.user?state.user.id:'anon');if(!this.timers[k])this.timers[k]={count:0,reset:n+l.time};if(n>this.timers[k].reset){this.timers[k]={count:1,reset:n+l.time};return 1}if(this.timers[k].count>=l.count)return 0;this.timers[k].count++;return 1}};
 var lp=0,li=setInterval(function(){lp+=Math.random()*30;if(lp>90)lp=90;document.getElementById('loader-progress').style.width=lp+'%'},300);
 window.addEventListener('load',function(){document.getElementById('loader-progress').style.width='100%';setTimeout(function(){clearInterval(li)},500)});
-const API_BASE=atob('aHR0cHM6Ly9tZXJpLXNlcnZlci42NC4xODguNjYuMjEwLm5pcC5pbw==');
+const API_BASE='https://meri-server.64.188.66.210.nip.io';
 const state={user:null,cats:[],activeCat:null,selDept:null,userLevel:0,lvlNames:[],departments:[],uploadedFiles:[]};
 function toast(m,t){t=t||'success';document.querySelectorAll('.toast').forEach(e=>e.remove());var d=document.createElement('div');d.className='toast toast-'+t;d.textContent=m;document.body.appendChild(d);setTimeout(function(){d.remove()},3000)}
 function notify(text,title){title=title||'Уведомление';closeModal();var h='<h2 style="font-weight:900;margin-bottom:10px;">'+title+'</h2><p style="color:var(--text-dim);margin-bottom:20px;">'+text+'</p><button class="btn btn-accent btn-block" onclick="closeModal()">OK</button>';openModal(h)}
@@ -171,6 +173,35 @@ async function openLogs(){try{var r=await fetch(API_BASE+'/api/admin/logs',{head
 async function exportCSV(){try{var r=await fetch(API_BASE+'/api/admin/export',{headers:{Authorization:'Bearer '+localStorage.getItem('sd_token')}});if(!r.ok)throw new Error('Ошибка');var blob=await r.blob();var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='applications.csv';a.click()}catch(e){toast('Ошибка экспорта','error')}}
 function openBug(){var h='<h2 style="font-weight:900;margin-bottom:15px;">🐛 Баг-репорт</h2><textarea id="bug-text" class="u-input" style="height:120px;"></textarea><div style="display:flex;gap:10px;margin-top:15px;"><button class="btn btn-accent btn-block" onclick="sendBug()">📨 Отправить</button><button class="btn btn-outline" onclick="closeModal()">Отмена</button></div>';openModal(h)}
 async function sendBug(){if(!antiFlood.check('bug'))return toast('Слишком много!','error');var d=document.getElementById('bug-text').value;if(!d.trim())return;try{await fetch(API_BASE+'/api/bug',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+localStorage.getItem('sd_token')},body:JSON.stringify({description:d})});notify('Баг-репорт отправлен','Успех')}catch(e){toast('Ошибка','error')}}
+
+// Профиль пользователя: имя, фамилия, static, отдел и ранг.
+function openProfileSettings(){
+  closeAllModals();
+  var p=state.user?.profile||JSON.parse(localStorage.getItem('lscsd_profile')||'{}');
+  var h='<h2 style="font-weight:900;margin-bottom:8px;">⚙️ Настройки профиля</h2><p style="color:var(--text-dim);margin-bottom:18px;">Эти данные используются в заявках и Discord-уведомлениях.</p>';
+  h+='<label>Имя</label><input id="profile-first" class="u-input" value="'+(p.firstName||'')+'" placeholder="Имя">';
+  h+='<label>Фамилия</label><input id="profile-last" class="u-input" value="'+(p.lastName||'')+'" placeholder="Фамилия">';
+  h+='<label>Static / игровой ID</label><input id="profile-static" class="u-input" value="'+(p.staticId||'')+'" placeholder="Например, 123456">';
+  h+='<label>Отдел</label><select id="profile-dept" class="u-input"><option value="">— Выберите отдел —</option>'+state.departments.map(function(d){return '<option value="'+d.id+'" '+(p.departmentId===d.id?'selected':'')+'>'+d.name+'</option>'}).join('')+'</select>';
+  h+='<label>Ранг</label><input id="profile-rank" class="u-input" value="'+(p.rank||'')+'" placeholder="Например, Deputy Sheriff II">';
+  h+='<div style="display:flex;gap:10px;margin-top:20px;"><button class="btn btn-accent btn-block" onclick="saveProfileSettings()">💾 Сохранить</button><button class="btn btn-outline" onclick="closeModal()">Отмена</button></div>';
+  openModal(h);
+}
+async function saveProfileSettings(){
+  var p={firstName:document.getElementById('profile-first').value.trim(),lastName:document.getElementById('profile-last').value.trim(),staticId:document.getElementById('profile-static').value.trim(),departmentId:document.getElementById('profile-dept').value,rank:document.getElementById('profile-rank').value.trim()};
+  localStorage.setItem('lscsd_profile',JSON.stringify(p));
+  try{await fetch(API_BASE+'/api/user/profile',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+localStorage.getItem('sd_token')},body:JSON.stringify(p)})}catch(e){}
+  if(state.user)state.user.profile=p; closeModal(); toast('Профиль сохранён','success');
+}
+// Иконки интерфейса — только SVG, без emoji в кнопках и навигации.
+(function(){
+  var paths={home:'<path d="m3 10 9-7 9 7"/><path d="M5 9v11h14V9"/><path d="M9 20v-6h6v6"/>',book:'<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 1 4 17.5z"/><path d="M4 5.5v12"/><path d="M8 7h8M8 11h7"/>',chart:'<path d="M4 19V5M4 19h17"/><path d="m7 15 3-4 3 2 5-7"/>',list:'<path d="M8 6h13M8 12h13M8 18h13"/><path d="M3 6h.01M3 12h.01M3 18h.01"/>',settings:'<path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="m19.4 15 .1.1a2 2 0 1 1-2.8 2.8l-.1-.1a2 2 0 0 0-3.4 1.4V19a2 2 0 1 1-4 0v-.2a2 2 0 0 0-3.4-1.4l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A2 2 0 0 0 3.8 11H3a2 2 0 1 1 0-4h.2A2 2 0 0 0 4.6 3.6l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A2 2 0 0 0 11 2.2V2a2 2 0 1 1 4 0v.2a2 2 0 0 0 3.4 1.4l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1A2 2 0 0 0 20.2 7H20a2 2 0 1 1 0 4h-.2a2 2 0 0 0-.4 4Z"/>',file:'<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v5h5M9 13h6M9 17h6"/>',users:'<path d="M16 20v-1.5a4.5 4.5 0 0 0-9 0V20"/><circle cx="11.5" cy="8" r="3"/><path d="M18 8a2.5 2.5 0 0 1 0 5M19 20v-1a4 4 0 0 0-2.5-3.7"/>',folder:'<path d="M3 6h7l2 2h9v10a2 2 0 0 1-2 2H3z"/><path d="M3 6V4h6l2 2"/>',tag:'<path d="m20 13-7 7-10-10V3h7z"/><circle cx="7" cy="7" r="1"/>',ban:'<circle cx="12" cy="12" r="9"/><path d="m6 6 12 12"/>',download:'<path d="M12 3v12M7 10l5 5 5-5M4 20h16"/>',bug:'<path d="M8 8a4 4 0 0 1 8 0v8a4 4 0 0 1-8 0z"/><path d="M4 12h4M16 12h4M5 7l3 2M19 7l-3 2M5 17l3-2M19 17l-3-2"/>',sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',moon:'<path d="M20 15.5A8 8 0 0 1 8.5 4 8 8 0 1 0 20 15.5Z"/>',send:'<path d="m3 4 18 8-18 8 3-8z"/><path d="M6 12h9"/>',paperclip:'<path d="m21 11-8.5 8.5a6 6 0 0 1-8.5-8.5L12 3a4 4 0 0 1 5.7 5.7l-8.5 8.5a2 2 0 0 1-2.8-2.8L14 6.8"/>',shield:'<path d="M12 3 20 6v5c0 5-3.4 8.2-8 10-4.6-1.8-8-5-8-10V6z"/><path d="m9 12 2 2 4-4"/>'};
+  function make(name){var s=document.createElement('span');s.className='svg-icon';s.setAttribute('aria-hidden','true');s.innerHTML='<svg viewBox="0 0 24 24">'+(paths[name]||paths.settings)+'</svg>';return s}
+  var map={'🏠':'home','📖':'book','📊':'chart','📋':'list','⚙️':'settings','⚙':'settings','🌙':'moon','☀️':'sun','🐛':'bug','📂':'folder','🏷️':'tag','🚫':'ban','📥':'download','📨':'send','📎':'paperclip','🛡️':'shield','🔐':'shield','🗂️':'folder','💾':'download','🔗':'file','📝':'file','📄':'file','✏️':'settings','🗑️':'ban','👥':'users','🕐':'chart','🔒':'shield','🔑':'shield','📭':'file','🏢':'folder','✅':'shield'};
+  function walk(root){var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT),a=[];while(w.nextNode())if(!/^(SCRIPT|STYLE)$/.test(w.currentNode.parentNode?.tagName||''))a.push(w.currentNode);a.forEach(function(n){var text=n.nodeValue;if(!Object.keys(map).some(function(e){return text.includes(e)}))return;var frag=document.createDocumentFragment(),re=/🏠|📖|📊|📋|⚙️|⚙|🌙|☀️|🐛|📂|🏷️|🚫|📥|📨|📎|🛡️|🔐|🗂️|💾|🔗|📝|📄|✏️|🗑️|👥|🕐|🔒|🔑|📭|🏢|✅/g,last=0,m;while((m=re.exec(text))){if(m.index>last)frag.appendChild(document.createTextNode(text.slice(last,m.index)));frag.appendChild(make(map[m[0]]));last=re.lastIndex}if(last<text.length)frag.appendChild(document.createTextNode(text.slice(last)));n.parentNode.replaceChild(frag,n)})}
+  var ready=false;function apply(){if(!ready){ready=true;walk(document.body);setTimeout(function(){ready=false},0)}};window.addEventListener('load',apply);new MutationObserver(function(){if(!ready){ready=true;setTimeout(function(){walk(document.body);ready=false},20)}}).observe(document.body,{childList:true,subtree:true});
+})();
+
 window.onload=init;
 </script>
 </body>
