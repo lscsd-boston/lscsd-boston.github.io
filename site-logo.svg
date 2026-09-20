@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <rect width="128" height="128" rx="34" fill="#d6a45c"/>
+  <path d="M64 16 101 31v25c0 25-16 43-37 54C43 99 27 81 27 56V31l37-15Z" fill="#0b0b0b"/>
+  <path d="M64 37 70 49l13 2-9.5 9.3 2.3 13.1L64 67.4l-11.8 6 2.3-13.1L45 51l13-2Z" fill="#d6a45c"/>
+  <path d="M43 88c12 7 30 7 42 0" fill="none" stroke="#d6a45c" stroke-width="4" stroke-linecap="round"/>
+  <text x="64" y="112" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" font-weight="800" letter-spacing="2" fill="#d6a45c">LSCSD</text>
+</svg>
