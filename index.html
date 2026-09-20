@@ -43,7 +43,7 @@ createApp({components:{Icon},setup(){
  function saveProfile(){if(token&&!demo)fetch(API+'/api/user/profile',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify(user.profile)});notify('Профиль обновлён');close()}
  async function loadLogs(){if(!token)return;try{const r=await fetch(API+'/api/admin/logs',{headers:{Authorization:'Bearer '+token}});if(r.ok)logs.value=await r.json()}catch(e){notify('Не удалось загрузить аудит-лог')}}
   onMounted(async()=>{if(token)await load();loading.value=false});
- return {API,authenticated,loading,demo,view,modal,toast,notifications,logs,toggles,user,forms,apps,departments,team,nav,currentTitle,filteredApps,search,filter,isSaving,open,close,logout,openBuilder,addQuestion,removeQuestion,saveForm,openApplication,submitApplication,saveProfile,login,loadLogs,typeLabel:(t)=>({text:'Текст',select:'Выбор',image:'Картинка',video:'Видео',file:'Файл'}[t]||'Текст'),fieldIcon:(t)=>({text:'text',select:'list',image:'image',video:'video',file:'file'}[t]||'file'),capitalize:(s)=>s.charAt(0).toUpperCase()+s.slice(1)};
+ return {API,authenticated,loading,demo,view,modal,toast,notifications,logs,stats,toggles,user,forms,apps,departments,team,nav,currentTitle,filteredApps,search,filter,isSaving,open,close,logout,openBuilder,addQuestion,removeQuestion,saveForm,openApplication,submitApplication,saveProfile,login,loadLogs,notify,typeLabel:(t)=>({text:'Текст',select:'Выбор',image:'Картинка',video:'Видео',file:'Файл'}[t]||'Текст'),fieldIcon:(t)=>({text:'text',select:'list',image:'image',video:'video',file:'file'}[t]||'file'),capitalize:(s)=>s.charAt(0).toUpperCase()+s.slice(1)};
 }}).mount('#app');
 </script>
 </body></html>
