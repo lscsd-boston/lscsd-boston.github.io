@@ -32,6 +32,7 @@
 @media(max-width:1060px){.settings-grid{grid-template-columns:1fr}.form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:760px){.config-row,.config-row:not(:has(> .input:nth-child(3))){grid-template-columns:1fr}.config-row>.icon-btn{grid-column:auto;justify-self:start}.form-grid{grid-template-columns:1fr}.settings-grid{gap:16px}.modal-head{align-items:flex-start}}
 </style>
+<style id="fixed-sidebar-fix">.sidebar{position:fixed;left:0;top:0;height:100vh;z-index:10;overflow-y:auto;overflow-x:hidden}.main{margin-left:248px}.view-panel{color:#eef3f8}.view-panel .panel,.view-panel .setting-card{background:#151515;border-color:rgba(255,255,255,.12)}.view-panel .input,.view-panel .textarea,.view-panel .select{background:#101010;color:#eef3f8;border-color:rgba(255,255,255,.14)}@media(max-width:760px){.main{margin-left:72px}}</style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute"><defs>
@@ -106,9 +107,4 @@ async function load(){if(!token){loading.value=false;return}const headers={Autho
 }}).mount('#app');
 </script>
 </body></html>
-<style>
-/* Fixed workspace navigation */
-.sidebar{position:fixed;left:0;top:0;height:100vh;z-index:10;overflow-y:auto;overflow-x:hidden}
-.main{margin-left:248px}
-@media(max-width:760px){.main{margin-left:72px}}
-</style>
+
